@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -12,52 +11,47 @@ import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/util
 import type { Product } from "@/utils/types";
 
 export default function CombinedCalculator() {
-  const [selectedSeedType, setSelectedSeedType] = useState<string>("");
-  const [selectedSeedTreatment, setSelectedSeedTreatment] = useState<string>("");
-  const [selectedInFurrowProduct, setSelectedInFurrowProduct] = useState<string>("");
+  const [selectedSeedType, setSelectedSeedType] = useState("");
+  const [selectedSeedTreatment, setSelectedSeedTreatment] = useState("");
+  const [selectedInFurrowProduct, setSelectedInFurrowProduct] = useState("");
 
-  const [acres, setAcres] = useState<string>("");
-  const [seedingRate, setSeedingRate] = useState<string>("");
-  const [seedingRateUnit, setSeedingRateUnit] = useState<string>("seeds/acre");
-  const [overrideSeeds, setOverrideSeeds] = useState<string>("");
+  const [acres, setAcres] = useState("");
+  const [seedingRate, setSeedingRate] = useState("");
+  const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
+  const [overrideSeeds, setOverrideSeeds] = useState("");
+  const [marketPrice, setMarketPrice] = useState("");
+  const [dealerDiscount, setDealerDiscount] = useState("");
+  const [growerDiscount, setGrowerDiscount] = useState("");
 
-  const [marketPrice, setMarketPrice] = useState<string>("");
-  const [dealerDiscount, setDealerDiscount] = useState<string>("");
-  const [growerDiscount, setGrowerDiscount] = useState<string>("");
-
-  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<ReturnType<typeof calculateProductCosts> | null>(null);
+  const [results, setResults] = useState<ReturnType<typeof calculateProductCosts> | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!selectedSeedType || !acres || !seedingRate || !marketPrice) {
       console.error("Missing required inputs.");
       return;
     }
 
     const acresNum = parseFloat(acres);
+    const cropPrice = parseFloat(marketPrice);
     const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
     const grower = growerDiscount ? parseFloat(growerDiscount) : 0;
 
-    // Look up selected products
-    const selectedInFurrowProductObj = productsInFurrowFoliar.find(
-      (p) => p["Product Name"] === selectedInFurrowProduct
-    );
-    const selectedSeedTreatmentObj = productsSeedTreatment.find(
-      (p) => p["Product Name"] === selectedSeedTreatment
-    );
+    const selectedProducts: Product[] = [];
 
-    // Only include valid products
-    const selectedProducts: Product[] = [selectedSeedTreatmentObj, selectedInFurrowProductObj].filter(Boolean) as Product[];
+    const seedProduct = productsSeedTreatment.find((p) => p["Product Name"] === selectedSeedTreatment);
+    if (seedProduct) selectedProducts.push(seedProduct);
 
-    const productCosts = calculateProductCosts(acresNum, selectedProducts, dealer, grower);
-    setInFurrowFoliarResults(productCosts);
+    const inFurrowProduct = productsInFurrowFoliar.find((p) => p["Product Name"] === selectedInFurrowProduct);
+    if (inFurrowProduct) selectedProducts.push(inFurrowProduct);
+
+    const result = calculateProductCosts(acresNum, selectedProducts, dealer, grower, cropPrice);
+    setResults(result);
   };
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
-
     html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "pt", "a4");
@@ -116,17 +110,17 @@ export default function CombinedCalculator() {
         </button>
       </div>
 
-      {inFurrowFoliarResults && (
+      {results && (
         <ResultsDisplay
-          productsData={inFurrowFoliarResults.productsData}
-          totalCostPerAcre={inFurrowFoliarResults.totalCostPerAcre}
-          totalUndiscountedCost={inFurrowFoliarResults.totalUndiscountedCost}
-          totalDiscountedCost={inFurrowFoliarResults.totalDiscountedCost}
-          breakevenYield={null}
-          roi2={null}
-          roi3={null}
-          roi4={null}
-          roi5={null}
+          productsData={results.productsData}
+          totalCostPerAcre={results.totalCostPerAcre}
+          totalUndiscountedCost={results.totalUndiscountedCost}
+          totalDiscountedCost={results.totalDiscountedCost}
+          breakevenYield={results.breakevenYield}
+          roi2={results.roi2}
+          roi3={results.roi3}
+          roi4={results.roi4}
+          roi5={results.roi5}
           cropPriceUnit="bu"
         />
       )}
