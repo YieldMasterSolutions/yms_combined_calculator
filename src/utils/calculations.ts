@@ -8,10 +8,12 @@ export function calculateSeedTreatmentData(
   dealerDiscount: number = 0,
   growerDiscount: number = 0
 ): ProductCalculation {
+  // 🔢 Get seed parameters
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const seedsPerUnit = parseFloat(seedType["Seeds/Unit"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
+  // 🧮 Derived quantities
   let totalSeeds = 0;
   let totalSeedWeight = 0;
   let totalUnits = 0;
@@ -35,23 +37,26 @@ export function calculateSeedTreatmentData(
       break;
   }
 
+  // 🧪 Application rate for seed treatment
   const applicationRate = product["Application Rate in Ounces"] || 0;
   const totalProductNeeded = applicationRate * totalUnits;
 
-  const costPerUnit =
-    product["Product Cost per oz"]
-      ? parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""))
-      : 0;
+  // 💵 Cost per ounce (remove $ and commas)
+  const costPerUnit = product["Product Cost per oz"]
+    ? parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""))
+    : 0;
 
   const packageSize = product["Package Size"];
   const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
-  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
 
+  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
+
+  // 💸 Discounts
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
-  const individualCostPerAcre = (totalProductNeeded / acres) * costPerUnit;
+  const productCostPerAcre = (totalProductNeeded / acres) * costPerUnit;
   const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
 
   const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Product Packaging"]}`;
@@ -62,14 +67,14 @@ export function calculateSeedTreatmentData(
     productPackageString,
     originalTotalCostToGrower,
     discountedTotalCostToGrower,
-    individualCostPerAcre,
+    individualCostPerAcre: productCostPerAcre,
     applicationRate,
     costPerUnit,
     totalProductNeeded,
     seedsPerUnit,
-    totalSeeds,
-    totalSeedWeight,
-    totalUnits,
+    totalSeeds: Math.round(totalSeeds),
+    totalSeedWeight: Math.round(totalSeedWeight),
+    totalUnits: Math.round(totalUnits),
     costPerUnitOfSeed,
   };
 }
