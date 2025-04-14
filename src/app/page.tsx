@@ -9,7 +9,7 @@ import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import { calculateProductCosts } from "@/utils/calculations";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
-import type { Product, SeedType } from "@/utils/types";
+import type { Product } from "@/utils/types";
 
 export default function CombinedCalculator() {
   const [selectedSeedType, setSelectedSeedType] = useState<string>("");
