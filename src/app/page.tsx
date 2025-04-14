@@ -1,4 +1,5 @@
 "use client";
+import type { Product } from "@/utils/calculations";
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
@@ -6,7 +7,11 @@ import { jsPDF } from "jspdf";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
-import { calculateSeedTreatmentData, calculateProductCosts, ProductCalculation } from "@/utils/calculations";
+import {
+  calculateSeedTreatmentData,
+  calculateProductCosts,
+  ProductCalculation,
+} from "@/utils/calculations";
 
 export default function CombinedCalculator() {
   const [selectedSeedType, setSelectedSeedType] = useState("");
@@ -37,18 +42,18 @@ export default function CombinedCalculator() {
   });
 
   const [roi, setRoi] = useState<{
-  breakeven: number | null;
-  roi2: number | null;
-  roi3: number | null;
-  roi4: number | null;
-  roi5: number | null;
-}>({
-  breakeven: null,
-  roi2: null,
-  roi3: null,
-  roi4: null,
-  roi5: null,
-});
+    breakeven: number | null;
+    roi2: number | null;
+    roi3: number | null;
+    roi4: number | null;
+    roi5: number | null;
+  }>({
+    breakeven: null,
+    roi2: null,
+    roi3: null,
+    roi4: null,
+    roi5: null,
+  });
 
   const resultRef = useRef<HTMLDivElement>(null);
 
@@ -69,11 +74,11 @@ export default function CombinedCalculator() {
       return;
     }
 
-    // ✅ Seed Treatment Calculations (now use the detailed method)
+    // ✅ Seed Treatment Calculations (fully typed)
     const seedTreatmentObjs = seedTreatments
       .filter(Boolean)
       .map((name) => productsSeedTreatment.find((p) => p["Product Name"] === name))
-      .filter(Boolean) as any[];
+      .filter(Boolean) as Product[];
 
     const seedTreatmentOutputs = seedTreatmentObjs.map((product) =>
       calculateSeedTreatmentData(
@@ -88,7 +93,7 @@ export default function CombinedCalculator() {
       )
     );
 
-    // ✅ In-Furrow/Foliar Product Calculations
+    // ✅ In-Furrow/Foliar Product Calculations (fully typed)
     const selectedFoliarObjs = inFurrowFoliarProducts
       .filter((p) => p.name)
       .map((p) => {
@@ -97,11 +102,11 @@ export default function CombinedCalculator() {
           ? { ...base, "Product Name": `${base["Product Name"]} (${p.applicationType})` }
           : null;
       })
-      .filter(Boolean) as any[];
+      .filter(Boolean) as Product[];
 
     const foliarOutput = calculateProductCosts(acresNum, selectedFoliarObjs, dealer, grower);
 
-    // ✅ Save results
+    // ✅ Save Results
     setSeedTreatmentResults(seedTreatmentOutputs);
     setFoliarResults(foliarOutput.productsData);
 
