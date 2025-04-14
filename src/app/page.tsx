@@ -1,20 +1,15 @@
 "use client";
-
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
-import { calculateProductCosts } from "@/utils/calculations";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
-import type { Product } from "@/utils/types";
+import { calculateSeedTreatmentData, calculateProductCosts, ProductCalculation } from "@/utils/calculations";
 
 export default function CombinedCalculator() {
   const [selectedSeedType, setSelectedSeedType] = useState("");
-  const [selectedSeedTreatment, setSelectedSeedTreatment] = useState("");
-  const [selectedInFurrowProduct, setSelectedInFurrowProduct] = useState("");
-
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
@@ -23,31 +18,120 @@ export default function CombinedCalculator() {
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
 
-  const [results, setResults] = useState<ReturnType<typeof calculateProductCosts> | null>(null);
+  const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<
+    { name: string; applicationType: string }[]
+  >([
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+  ]);
+
+  const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
+  const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
+  const [totalProgramCost, setTotalProgramCost] = useState({
+    totalUndiscounted: 0,
+    totalDiscounted: 0,
+    costPerAcre: 0,
+  });
+
+  const [roi, setRoi] = useState({
+    breakeven: null,
+    roi2: null,
+    roi3: null,
+    roi4: null,
+    roi5: null,
+  });
+
   const resultRef = useRef<HTMLDivElement>(null);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedSeedType || !acres || !seedingRate || !marketPrice) {
-      console.error("Missing required inputs.");
-      return;
-    }
 
     const acresNum = parseFloat(acres);
+    const rate = parseFloat(seedingRate);
     const cropPrice = parseFloat(marketPrice);
     const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
     const grower = growerDiscount ? parseFloat(growerDiscount) : 0;
+    const override = overrideSeeds ? parseFloat(overrideSeeds) : undefined;
 
-    const selectedProducts: Product[] = [];
+    const seedTypeObj = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
 
-    const seedProduct = productsSeedTreatment.find((p) => p["Product Name"] === selectedSeedTreatment);
-    if (seedProduct) selectedProducts.push(seedProduct);
+    if (!seedTypeObj || isNaN(acresNum) || isNaN(cropPrice) || isNaN(rate)) {
+      console.error("Missing or invalid required values");
+      return;
+    }
 
-    const inFurrowProduct = productsInFurrowFoliar.find((p) => p["Product Name"] === selectedInFurrowProduct);
-    if (inFurrowProduct) selectedProducts.push(inFurrowProduct);
+    // ✅ Seed Treatment Calculations (now use the detailed method)
+    const seedTreatmentObjs = seedTreatments
+      .filter(Boolean)
+      .map((name) => productsSeedTreatment.find((p) => p["Product Name"] === name))
+      .filter(Boolean) as any[];
 
-    const result = calculateProductCosts(acresNum, selectedProducts, dealer, grower, cropPrice);
-    setResults(result);
+    const seedTreatmentOutputs = seedTreatmentObjs.map((product) =>
+      calculateSeedTreatmentData(
+        acresNum,
+        rate,
+        seedingRateUnit,
+        seedTypeObj,
+        override,
+        product,
+        dealer,
+        grower
+      )
+    );
+
+    // ✅ In-Furrow/Foliar Product Calculations
+    const selectedFoliarObjs = inFurrowFoliarProducts
+      .filter((p) => p.name)
+      .map((p) => {
+        const base = productsInFurrowFoliar.find((prod) => prod["Product Name"] === p.name);
+        return base
+          ? { ...base, "Product Name": `${base["Product Name"]} (${p.applicationType})` }
+          : null;
+      })
+      .filter(Boolean) as any[];
+
+    const foliarOutput = calculateProductCosts(acresNum, selectedFoliarObjs, dealer, grower);
+
+    // ✅ Save results
+    setSeedTreatmentResults(seedTreatmentOutputs);
+    setFoliarResults(foliarOutput.productsData);
+
+    const totalUndiscounted =
+      seedTreatmentOutputs.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0) +
+      foliarOutput.totalUndiscountedCost;
+    const totalDiscounted =
+      seedTreatmentOutputs.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
+      foliarOutput.totalDiscountedCost;
+    const totalPerAcre =
+      seedTreatmentOutputs.reduce((sum, p) => sum + p.individualCostPerAcre, 0) +
+      foliarOutput.totalCostPerAcre;
+
+    setTotalProgramCost({
+      totalUndiscounted,
+      totalDiscounted,
+      costPerAcre: totalPerAcre,
+    });
+
+    if (totalPerAcre && cropPrice > 0) {
+      setRoi({
+        breakeven: totalPerAcre / cropPrice,
+        roi2: (2 * totalPerAcre) / cropPrice,
+        roi3: (3 * totalPerAcre) / cropPrice,
+        roi4: (4 * totalPerAcre) / cropPrice,
+        roi5: (5 * totalPerAcre) / cropPrice,
+      });
+    } else {
+      setRoi({
+        breakeven: null,
+        roi2: null,
+        roi3: null,
+        roi4: null,
+        roi5: null,
+      });
+    }
   };
 
   const downloadPDF = () => {
@@ -91,10 +175,10 @@ export default function CombinedCalculator() {
         setDealerDiscount={setDealerDiscount}
         growerDiscount={growerDiscount}
         setGrowerDiscount={setGrowerDiscount}
-        selectedSeedTreatment={selectedSeedTreatment}
-        setSelectedSeedTreatment={setSelectedSeedTreatment}
-        selectedInFurrowProduct={selectedInFurrowProduct}
-        setSelectedInFurrowProduct={setSelectedInFurrowProduct}
+        seedTreatments={seedTreatments}
+        setSeedTreatments={setSeedTreatments}
+        inFurrowFoliarProducts={inFurrowFoliarProducts}
+        setInFurrowFoliarProducts={setInFurrowFoliarProducts}
         seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
@@ -110,17 +194,18 @@ export default function CombinedCalculator() {
         </button>
       </div>
 
-      {results && (
+      {(seedTreatmentResults.length || foliarResults.length) && (
         <ResultsDisplay
-          productsData={results.productsData}
-          totalCostPerAcre={results.totalCostPerAcre}
-          totalUndiscountedCost={results.totalUndiscountedCost}
-          totalDiscountedCost={results.totalDiscountedCost}
-          breakevenYield={results.breakevenYield}
-          roi2={results.roi2}
-          roi3={results.roi3}
-          roi4={results.roi4}
-          roi5={results.roi5}
+          seedTreatmentResults={seedTreatmentResults}
+          inFurrowFoliarResults={foliarResults}
+          totalCostPerAcre={totalProgramCost.costPerAcre}
+          totalUndiscountedCost={totalProgramCost.totalUndiscounted}
+          totalDiscountedCost={totalProgramCost.totalDiscounted}
+          breakevenYield={roi.breakeven}
+          roi2={roi.roi2}
+          roi3={roi.roi3}
+          roi4={roi.roi4}
+          roi5={roi.roi5}
           cropPriceUnit="bu"
         />
       )}
