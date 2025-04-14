@@ -1,5 +1,4 @@
 "use client";
-import type { Product } from "@/utils/calculations";
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
@@ -7,7 +6,13 @@ import { jsPDF } from "jspdf";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
-import { calculateSeedTreatmentData, calculateProductCosts, ProductCalculation } from "@/utils/calculations";
+import {
+  calculateSeedTreatmentData,
+  calculateProductCosts,
+  ProductCalculation,
+  Product,
+  SeedType,
+} from "@/utils/calculations";
 
 export default function CombinedCalculator() {
   const [selectedSeedType, setSelectedSeedType] = useState("");
@@ -21,9 +26,14 @@ export default function CombinedCalculator() {
   const [growerDiscount, setGrowerDiscount] = useState("");
 
   const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
-  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState(
-    Array(4).fill({ name: "", applicationType: "" })
-  );
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<
+    { name: string; applicationType: string }[]
+  >([
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+  ]);
 
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -32,7 +42,14 @@ export default function CombinedCalculator() {
     totalDiscounted: 0,
     costPerAcre: 0,
   });
-  const [roi, setRoi] = useState({
+
+  const [roi, setRoi] = useState<{
+    breakeven: number | null;
+    roi2: number | null;
+    roi3: number | null;
+    roi4: number | null;
+    roi5: number | null;
+  }>({
     breakeven: null,
     roi2: null,
     roi3: null,
@@ -53,7 +70,8 @@ export default function CombinedCalculator() {
     const override = overrideSeeds ? parseFloat(overrideSeeds) : undefined;
 
     const seedTypeObj = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
-    if (!seedTypeObj || isNaN(acresNum) || isNaN(rate) || isNaN(cropPrice)) {
+
+    if (!seedTypeObj || isNaN(acresNum) || isNaN(cropPrice) || isNaN(rate)) {
       console.error("Missing or invalid required values");
       return;
     }
@@ -107,17 +125,23 @@ export default function CombinedCalculator() {
       costPerAcre: totalPerAcre,
     });
 
-    setRoi(
-      cropPrice > 0
-        ? {
-            breakeven: totalPerAcre / cropPrice,
-            roi2: (2 * totalPerAcre) / cropPrice,
-            roi3: (3 * totalPerAcre) / cropPrice,
-            roi4: (4 * totalPerAcre) / cropPrice,
-            roi5: (5 * totalPerAcre) / cropPrice,
-          }
-        : { breakeven: null, roi2: null, roi3: null, roi4: null, roi5: null }
-    );
+    if (totalPerAcre && cropPrice > 0) {
+      setRoi({
+        breakeven: totalPerAcre / cropPrice,
+        roi2: (2 * totalPerAcre) / cropPrice,
+        roi3: (3 * totalPerAcre) / cropPrice,
+        roi4: (4 * totalPerAcre) / cropPrice,
+        roi5: (5 * totalPerAcre) / cropPrice,
+      });
+    } else {
+      setRoi({
+        breakeven: null,
+        roi2: null,
+        roi3: null,
+        roi4: null,
+        roi5: null,
+      });
+    }
   };
 
   const downloadPDF = () => {
