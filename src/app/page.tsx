@@ -1,5 +1,6 @@
+// src/app/page.tsx
 "use client";
-import type { Product, SeedType } from "@/utils/types";
+
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
@@ -8,25 +9,28 @@ import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import { calculateProductCosts } from "@/utils/calculations";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
+import type { Product, SeedType } from "@/utils/types";
 
 export default function CombinedCalculator() {
-  const [selectedSeedType, setSelectedSeedType] = useState("");
-  const [selectedSeedTreatment, setSelectedSeedTreatment] = useState("");
-  const [selectedInFurrowProduct, setSelectedInFurrowProduct] = useState("");
+  const [selectedSeedType, setSelectedSeedType] = useState<string>("");
+  const [selectedSeedTreatment, setSelectedSeedTreatment] = useState<string>("");
+  const [selectedInFurrowProduct, setSelectedInFurrowProduct] = useState<string>("");
 
-  const [acres, setAcres] = useState("");
-  const [seedingRate, setSeedingRate] = useState("");
-  const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
-  const [overrideSeeds, setOverrideSeeds] = useState("");
-  const [marketPrice, setMarketPrice] = useState("");
-  const [dealerDiscount, setDealerDiscount] = useState("");
-  const [growerDiscount, setGrowerDiscount] = useState("");
+  const [acres, setAcres] = useState<string>("");
+  const [seedingRate, setSeedingRate] = useState<string>("");
+  const [seedingRateUnit, setSeedingRateUnit] = useState<string>("seeds/acre");
+  const [overrideSeeds, setOverrideSeeds] = useState<string>("");
+
+  const [marketPrice, setMarketPrice] = useState<string>("");
+  const [dealerDiscount, setDealerDiscount] = useState<string>("");
+  const [growerDiscount, setGrowerDiscount] = useState<string>("");
 
   const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<ReturnType<typeof calculateProductCosts> | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!selectedSeedType || !acres || !seedingRate || !marketPrice) {
       console.error("Missing required inputs.");
       return;
@@ -36,6 +40,7 @@ export default function CombinedCalculator() {
     const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
     const grower = growerDiscount ? parseFloat(growerDiscount) : 0;
 
+    // Look up selected products
     const selectedInFurrowProductObj = productsInFurrowFoliar.find(
       (p) => p["Product Name"] === selectedInFurrowProduct
     );
@@ -43,20 +48,16 @@ export default function CombinedCalculator() {
       (p) => p["Product Name"] === selectedSeedTreatment
     );
 
-    const selectedProducts = [selectedSeedTreatmentObj, selectedInFurrowProductObj].filter(Boolean);
+    // Only include valid products
+    const selectedProducts: Product[] = [selectedSeedTreatmentObj, selectedInFurrowProductObj].filter(Boolean) as Product[];
 
-    const productCosts = calculateProductCosts(
-      acresNum,
-      selectedProducts as Product[],
-      dealer,
-      grower
-    );
-
+    const productCosts = calculateProductCosts(acresNum, selectedProducts, dealer, grower);
     setInFurrowFoliarResults(productCosts);
   };
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
+
     html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "pt", "a4");
@@ -100,7 +101,7 @@ export default function CombinedCalculator() {
         setSelectedSeedTreatment={setSelectedSeedTreatment}
         selectedInFurrowProduct={selectedInFurrowProduct}
         setSelectedInFurrowProduct={setSelectedInFurrowProduct}
-        seedTypes={seedTypes as SeedType[]}
+        seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
         onSubmit={handleFormSubmit}
