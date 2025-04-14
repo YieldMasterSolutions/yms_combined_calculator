@@ -1,9 +1,9 @@
 // src/components/ResultsDisplay.tsx
+
 "use client";
-import React, { useRef } from "react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-import type { ProductCalculation } from "../utils/calculations";
+
+import React from "react";
+import type { ProductCalculation } from "@/utils/calculations";
 
 interface ResultsDisplayProps {
   seedTreatmentResults: ProductCalculation[];
@@ -32,82 +32,73 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi5,
   cropPriceUnit,
 }) => {
-  const resultRef = useRef<HTMLDivElement>(null);
+  const formatCurrency = (num: number) => `$${num.toFixed(2)}`;
+  const formatNumber = (num: number) => num.toLocaleString();
 
-  const downloadPDF = () => {
-    if (!resultRef.current) return;
-    html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "pt", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const margin = 20;
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-      pdf.save("YieldMaster_Calculation.pdf");
-    });
-  };
-
-  const unitLabel = cropPriceUnit ? `${cropPriceUnit}/acre` : "";
+  const renderDetailBox = (label: string, value: string | number) => (
+    <div className="bg-zinc-900 text-white border border-zinc-700 rounded px-4 py-3 text-sm">
+      <p className="text-yellow-400 font-bold mb-1">{label}</p>
+      <p>{value}</p>
+    </div>
+  );
 
   return (
-    <div ref={resultRef} className="mt-6 space-y-6">
+    <div className="space-y-8">
       {/* Seed Treatment Section */}
-      {seedTreatmentResults.map((p, i) => (
-        <div key={i} className="bg-gray-900 border border-gray-700 rounded-xl p-4">
-          <strong className="block text-xl font-bold text-yellow-400 mb-2">{p.productName}</strong>
-          <p>Total Number of Seeds to be Treated = {p.totalSeeds?.toLocaleString()}</p>
-          <p>Total Weight of Seeds to be Treated = {p.totalSeedWeight?.toLocaleString()} lbs</p>
-          <p>Total Number of Units to be Treated = {p.totalUnits?.toLocaleString()}</p>
-          <p>Number of Seeds per Unit = {p.seedsPerUnit?.toLocaleString()}</p>
-          <p>Application Rate = {p.applicationRate ?? 0} oz/unit</p>
-          <p>Total Amount of Product Needed = {p.totalProductNeeded?.toFixed(2)} oz</p>
-          <p>Total Product Units to Order = {p.packagesNeeded} – {p.productPackageString}</p>
-          <p>Product Cost per Ounce = ${p.costPerUnit?.toFixed(2)}</p>
-          <p>Total Cost to Grower (MSRP) = ${p.originalTotalCostToGrower.toFixed(2)}</p>
-          <p>Total Discounted Cost to Grower = ${p.discountedTotalCostToGrower.toFixed(2)}</p>
-          <p>Product Cost per Unit of Treated Seed = ${p.costPerUnitOfSeed?.toFixed(4)}</p>
-          <p>Individual Cost of Seed Treatment per Acre = ${p.individualCostPerAcre.toFixed(2)}</p>
+      {seedTreatmentResults.map((product, index) => (
+        <div key={index} className="space-y-2">
+          <h3 className="text-lg font-bold text-yellow-400">{product.productName}</h3>
+          <div className="grid md:grid-cols-2 gap-3">
+            {renderDetailBox("Total Number of Seeds to be Treated", formatNumber(product.totalSeeds!))}
+            {renderDetailBox("Total Weight of Seeds to be Treated", `${formatNumber(product.totalSeedWeight!)} lbs`)}
+            {renderDetailBox("Total Number of Units to be Treated", formatNumber(product.totalUnits!))}
+            {renderDetailBox("Number of Seeds per Unit", formatNumber(product.seedsPerUnit!))}
+            {renderDetailBox("Application Rate", `${product.applicationRate!.toFixed(2)} oz per unit of seed`)}
+            {renderDetailBox("Total Amount of Product Needed", `${product.totalProductNeeded!.toFixed(2)} oz`)}
+            {renderDetailBox("Total Number of Product Packages", `${product.packagesNeeded} ${product.productPackageString.split(" - ")[2]}`)}
+            {renderDetailBox("Product Cost per Package", formatCurrency(parseFloat(product.productPackageString.match(/\$(\d+(?:\.\d+)?)/)?.[1] || "0") || 0))}
+            {renderDetailBox("Total Cost to the Grower", formatCurrency(product.originalTotalCostToGrower))}
+            {renderDetailBox("Product Cost per Ounce", formatCurrency(product.costPerUnit!))}
+            {renderDetailBox("Product Cost per Unit of Treated Seed", formatCurrency(product.costPerUnitOfSeed!))}
+            {renderDetailBox("Product Cost per Acre", formatCurrency(product.individualCostPerAcre))}
+          </div>
         </div>
       ))}
 
-      {/* In-Furrow / Foliar Product Section */}
-      {inFurrowFoliarResults.map((p, i) => (
-        <div key={i} className="bg-gray-900 border border-gray-700 rounded-xl p-4">
-          <strong className="block text-xl font-bold text-yellow-400 mb-2">{p.productName}</strong>
-          <p>Total Product Units to Order = {p.packagesNeeded} – {p.productPackageString}</p>
-          <p>Total Cost to Grower (MSRP) = ${p.originalTotalCostToGrower.toFixed(2)}</p>
-          <p>Total Discounted Cost to Grower = ${p.discountedTotalCostToGrower.toFixed(2)}</p>
-          <p>Individual Cost of Product per Acre = ${p.individualCostPerAcre.toFixed(2)}</p>
-        </div>
-      ))}
+      {/* In-Furrow / Foliar Section */}
+      {inFurrowFoliarResults.length > 0 && (
+        <>
+          <h3 className="text-lg font-bold text-yellow-400 mt-6">Individual Product Costs</h3>
+          <div className="space-y-4">
+            {inFurrowFoliarResults.map((product, index) => (
+              <div key={index} className="bg-zinc-900 text-white border border-zinc-700 rounded px-4 py-4">
+                <p className="text-yellow-400 font-bold text-md mb-2">{product.productName}</p>
+                <p>Total Product Units to Order = {product.packagesNeeded} – {product.productPackageString}</p>
+                <p>Total Cost to Grower (MSRP) = {formatCurrency(product.originalTotalCostToGrower)}</p>
+                <p>Total Discounted Cost to Grower = {formatCurrency(product.discountedTotalCostToGrower)}</p>
+                <p>Individual Cost of Product per Acre = {formatCurrency(product.individualCostPerAcre)}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
-      {/* Total Program Cost Summary */}
-      <div className="bg-gray-900 border border-gray-700 rounded-xl p-4">
-        <strong className="block text-2xl font-bold text-yellow-400 mb-1">Total YMS Biological Program Cost</strong>
-        <p>Undiscounted Total Cost = ${totalUndiscountedCost.toFixed(2)}</p>
-        <p>Total Discounted Total Cost = ${totalDiscountedCost.toFixed(2)}</p>
-        <p>Total Program Cost per Acre = ${totalCostPerAcre.toFixed(2)}</p>
+      {/* Program Cost Section */}
+      <div className="bg-zinc-900 text-white border border-zinc-700 rounded px-4 py-4">
+        <h3 className="text-lg font-bold text-yellow-400 mb-2">Total YMS Biological Program Cost</h3>
+        <p>Undiscounted Total Cost = {formatCurrency(totalUndiscountedCost)}</p>
+        <p>Total Discounted Total Cost = {formatCurrency(totalDiscountedCost)}</p>
+        <p>Total Program Cost per Acre = {formatCurrency(totalCostPerAcre)}</p>
       </div>
 
-      {/* ROI Breakdown */}
-      <div className="bg-gray-900 border border-gray-700 rounded-xl p-4">
-        <strong className="block text-2xl font-bold text-yellow-400 mb-1">Breakeven ROI Calculation</strong>
-        <p>Breakeven Yield per Acre = {breakevenYield?.toFixed(2) ?? "N/A"} {unitLabel}</p>
-        <p>ROI Yield for 2:1 Investment = {roi2?.toFixed(2) ?? "N/A"} {unitLabel}</p>
-        <p>ROI Yield for 3:1 Investment = {roi3?.toFixed(2) ?? "N/A"} {unitLabel}</p>
-        <p>ROI Yield for 4:1 Investment = {roi4?.toFixed(2) ?? "N/A"} {unitLabel}</p>
-        <p>ROI Yield for 5:1 Investment = {roi5?.toFixed(2) ?? "N/A"} {unitLabel}</p>
-      </div>
-
-      {/* Download PDF */}
-      <div className="text-center my-4">
-        <button
-          onClick={downloadPDF}
-          className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white"
-        >
-          Download PDF
-        </button>
+      {/* ROI Section */}
+      <div className="bg-zinc-900 text-white border border-zinc-700 rounded px-4 py-4">
+        <h3 className="text-lg font-bold text-yellow-400 mb-2">Breakeven ROI Calculation</h3>
+        <p>Breakeven Yield per Acre = {breakevenYield?.toFixed(2) ?? "N/A"} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 2:1 Investment = {roi2?.toFixed(2) ?? "N/A"} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 3:1 Investment = {roi3?.toFixed(2) ?? "N/A"} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 4:1 Investment = {roi4?.toFixed(2) ?? "N/A"} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 5:1 Investment = {roi5?.toFixed(2) ?? "N/A"} {cropPriceUnit}/acre</p>
       </div>
     </div>
   );
