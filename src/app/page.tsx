@@ -8,7 +8,7 @@ import ResultsDisplay from "../components/ResultsDisplay";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
 import {
   calculateSeedTreatmentData,
-  calculateProductCosts,
+  calculateAllFoliarProductCosts,
   ProductCalculation,
   Product,
 } from "@/utils/calculations";
@@ -103,7 +103,7 @@ export default function CombinedCalculator() {
       })
       .filter(Boolean) as Product[];
 
-    const foliarOutput = calculateProductCosts(acresNum, selectedFoliarObjs, dealer, grower);
+    const foliarOutput = calculateAllFoliarProductCosts(acresNum, selectedFoliarObjs, dealer, grower);
 
     setSeedTreatmentResults(seedTreatmentOutputs);
     setFoliarResults(foliarOutput.productsData);
@@ -124,23 +124,23 @@ export default function CombinedCalculator() {
       costPerAcre: totalPerAcre,
     });
 
-    if (totalPerAcre && cropPrice > 0) {
-      setRoi({
-        breakeven: totalPerAcre / cropPrice,
-        roi2: (2 * totalPerAcre) / cropPrice,
-        roi3: (3 * totalPerAcre) / cropPrice,
-        roi4: (4 * totalPerAcre) / cropPrice,
-        roi5: (5 * totalPerAcre) / cropPrice,
-      });
-    } else {
-      setRoi({
-        breakeven: null,
-        roi2: null,
-        roi3: null,
-        roi4: null,
-        roi5: null,
-      });
-    }
+    setRoi(
+      cropPrice > 0
+        ? {
+            breakeven: totalPerAcre / cropPrice,
+            roi2: (2 * totalPerAcre) / cropPrice,
+            roi3: (3 * totalPerAcre) / cropPrice,
+            roi4: (4 * totalPerAcre) / cropPrice,
+            roi5: (5 * totalPerAcre) / cropPrice,
+          }
+        : {
+            breakeven: null,
+            roi2: null,
+            roi3: null,
+            roi4: null,
+            roi5: null,
+          }
+    );
   };
 
   const downloadPDF = () => {
