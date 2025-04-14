@@ -61,7 +61,7 @@ export function calculateSeedTreatmentData(
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
       totalSeedWeight = totalSeeds / seedsPerLb;
-      totalUnits = totalSeeds / seedsPerUnit;
+      totalUnits = totalSeedWeight / lbsPerUnit; // ✅ corrected
       break;
     case "lbs/acre":
       totalSeedWeight = seedingRate * acres;
