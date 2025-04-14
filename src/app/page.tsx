@@ -36,13 +36,19 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  const [roi, setRoi] = useState({
-    breakeven: null,
-    roi2: null,
-    roi3: null,
-    roi4: null,
-    roi5: null,
-  });
+  const [roi, setRoi] = useState<{
+  breakeven: number | null;
+  roi2: number | null;
+  roi3: number | null;
+  roi4: number | null;
+  roi5: number | null;
+}>({
+  breakeven: null,
+  roi2: null,
+  roi3: null,
+  roi4: null,
+  roi5: null,
+});
 
   const resultRef = useRef<HTMLDivElement>(null);
 
