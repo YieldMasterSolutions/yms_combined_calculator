@@ -11,7 +11,6 @@ import {
   calculateProductCosts,
   ProductCalculation,
   Product,
-  SeedType,
 } from "@/utils/calculations";
 
 export default function CombinedCalculator() {
