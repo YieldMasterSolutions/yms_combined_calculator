@@ -1,5 +1,3 @@
-// src/utils/calculations.ts
-
 export interface Product {
   "Product Name": string;
   "Package Size": number;
@@ -10,6 +8,7 @@ export interface Product {
   "Product Cost per oz"?: string;
   "Product Cost per gram"?: string;
   "Application Rate in Fluid Ounces"?: number;
+  "Application Rate in Ounces"?: number;
   "Application Rate in Grams"?: number;
 }
 
@@ -28,7 +27,7 @@ export interface ProductCalculation {
   discountedTotalCostToGrower: number;
   individualCostPerAcre: number;
 
-  // ✅ Optional seed treatment fields
+  // Optional for seed treatments
   applicationRate?: number;
   costPerUnit?: number;
   totalProductNeeded?: number;
@@ -77,7 +76,7 @@ export function calculateSeedTreatmentData(
       break;
   }
 
-  const applicationRate = product["Application Rate in Fluid Ounces"] || 0;
+  const applicationRate = product["Application Rate in Ounces"] || 0;
   const totalProductNeeded = applicationRate * totalUnits;
 
   const costPerUnit =
@@ -142,11 +141,10 @@ export function calculateProductData(
 
   const packageSize = product["Package Size"];
   const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
-
   const requiredTotal = acres * (applicationRate || 0);
   const packagesNeeded = Math.ceil(requiredTotal / packageSize);
-
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
+
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
