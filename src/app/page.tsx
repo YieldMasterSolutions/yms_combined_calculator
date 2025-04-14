@@ -1,16 +1,19 @@
-// src/app/page.tsx
 "use client";
+import type { Product, SeedType } from "@/utils/types";
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
-import { CalculatorForm } from "../components/CalculatorForm";
+import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import { calculateProductCosts } from "@/utils/calculations";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
 
 export default function CombinedCalculator() {
-  const [cropType, setCropType] = useState("");
+  const [selectedSeedType, setSelectedSeedType] = useState("");
+  const [selectedSeedTreatment, setSelectedSeedTreatment] = useState("");
+  const [selectedInFurrowProduct, setSelectedInFurrowProduct] = useState("");
+
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
@@ -24,7 +27,7 @@ export default function CombinedCalculator() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cropType || !acres || !seedingRate || !marketPrice) {
+    if (!selectedSeedType || !acres || !seedingRate || !marketPrice) {
       console.error("Missing required inputs.");
       return;
     }
@@ -33,9 +36,18 @@ export default function CombinedCalculator() {
     const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
     const grower = growerDiscount ? parseFloat(growerDiscount) : 0;
 
+    const selectedInFurrowProductObj = productsInFurrowFoliar.find(
+      (p) => p["Product Name"] === selectedInFurrowProduct
+    );
+    const selectedSeedTreatmentObj = productsSeedTreatment.find(
+      (p) => p["Product Name"] === selectedSeedTreatment
+    );
+
+    const selectedProducts = [selectedSeedTreatmentObj, selectedInFurrowProductObj].filter(Boolean);
+
     const productCosts = calculateProductCosts(
       acresNum,
-      productsInFurrowFoliar,
+      selectedProducts as Product[],
       dealer,
       grower
     );
@@ -68,8 +80,8 @@ export default function CombinedCalculator() {
       </div>
 
       <CalculatorForm
-        cropType={cropType}
-        setCropType={setCropType}
+        selectedSeedType={selectedSeedType}
+        setSelectedSeedType={setSelectedSeedType}
         acres={acres}
         setAcres={setAcres}
         seedingRate={seedingRate}
@@ -84,7 +96,11 @@ export default function CombinedCalculator() {
         setDealerDiscount={setDealerDiscount}
         growerDiscount={growerDiscount}
         setGrowerDiscount={setGrowerDiscount}
-        seedTypes={seedTypes}
+        selectedSeedTreatment={selectedSeedTreatment}
+        setSelectedSeedTreatment={setSelectedSeedTreatment}
+        selectedInFurrowProduct={selectedInFurrowProduct}
+        setSelectedInFurrowProduct={setSelectedInFurrowProduct}
+        seedTypes={seedTypes as SeedType[]}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
         onSubmit={handleFormSubmit}
