@@ -1,6 +1,6 @@
 // src/utils/calculations.ts
 
-interface Product {
+export interface Product {
   "Product Name": string;
   "Package Size": number;
   "Package Units": string;
@@ -13,7 +13,7 @@ interface Product {
   "Application Rate in Grams"?: number;
 }
 
-interface SeedType {
+export interface SeedType {
   "Seed Type": string;
   "Seeds/lb": string;
   "Seeds/Unit": string;
@@ -69,7 +69,7 @@ export function calculateSeedTreatmentData(
       totalUnits = totalSeedWeight / lbsPerUnit;
       break;
     case "bu/acre":
-      const lbsPerBushel = 60; // Default if not specified
+      const lbsPerBushel = 60;
       totalSeedWeight = seedingRate * acres * lbsPerBushel;
       totalSeeds = totalSeedWeight * seedsPerLb;
       totalUnits = totalSeedWeight / lbsPerUnit;
