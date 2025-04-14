@@ -1,3 +1,4 @@
+// src/components/CalculatorForm.tsx
 import React from "react";
 import type { Product, SeedType } from "../utils/types";
 
@@ -14,6 +15,8 @@ interface CalculatorFormProps {
   setOverrideSeeds: (value: string) => void;
   marketPrice: string;
   setMarketPrice: (value: string) => void;
+  cropPriceUnit: string;
+  setCropPriceUnit: (value: string) => void;
   dealerDiscount: string;
   setDealerDiscount: (value: string) => void;
   growerDiscount: string;
@@ -41,6 +44,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setOverrideSeeds,
   marketPrice,
   setMarketPrice,
+  cropPriceUnit,
+  setCropPriceUnit,
   dealerDiscount,
   setDealerDiscount,
   growerDiscount,
@@ -54,22 +59,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   productsSeedTreatment,
   productsInFurrow,
 }) => {
-  const handleSeedTreatmentChange = (index: number, value: string) => {
-    const updated = [...seedTreatments];
-    updated[index] = value;
-    setSeedTreatments(updated);
-  };
-
-  const handleFoliarChange = (index: number, field: "name" | "applicationType", value: string) => {
-    const updated = [...inFurrowFoliarProducts];
-    updated[index] = { ...updated[index], [field]: value };
-    setInFurrowFoliarProducts(updated);
-  };
+  const selectedSeed = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
+  const defaultSeedsPerLb = selectedSeed ? Number(selectedSeed["Seeds/lb"]).toLocaleString() : null;
 
   return (
     <form onSubmit={onSubmit} className="grid grid-cols-1 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
-
-      {/* Mandatory Inputs */}
       <div>
         <label className="block mb-1">Crop Type</label>
         <select
@@ -87,7 +81,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <label className="block mb-1">Acres to be Planted</label>
+        <label className="block mb-1">Number of Acres</label>
         <input type="number" value={acres} onChange={(e) => setAcres(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-700 rounded" />
       </div>
 
@@ -106,38 +100,56 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <label className="block mb-1">Market Price for Crop</label>
+        <label className="block mb-1">Optional Override for Seeds per Pound (Optional)</label>
+        <input
+          type="number"
+          value={overrideSeeds}
+          onChange={(e) => setOverrideSeeds(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          placeholder="Override value (if needed)"
+        />
+        {defaultSeedsPerLb && (
+          <p className="text-sm text-zinc-400 mt-1">Default: {defaultSeedsPerLb} seeds/lb</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block mb-1">Market Price Paid for Crop</label>
         <input type="number" value={marketPrice} onChange={(e) => setMarketPrice(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-700 rounded" />
+        <select value={cropPriceUnit} onChange={(e) => setCropPriceUnit(e.target.value)} className="w-full p-2 mt-1 bg-gray-800 border border-gray-700 rounded">
+          <option value="bu">$/bu</option>
+          <option value="lb">$/lb</option>
+          <option value="cwt">$/cwt</option>
+          <option value="ton">$/ton</option>
+        </select>
       </div>
 
-      {/* Optional Inputs */}
       <div>
-        <label className="block mb-1">Seeds per Pound Override</label>
-        <input type="number" value={overrideSeeds} onChange={(e) => setOverrideSeeds(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-700 rounded" />
-      </div>
-
-      <div>
-        <label className="block mb-1">Dealer Discount (%)</label>
+        <label className="block mb-1">Dealer Discount (%) (Optional)</label>
         <input type="number" value={dealerDiscount} onChange={(e) => setDealerDiscount(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-700 rounded" />
       </div>
 
       <div>
-        <label className="block mb-1">Grower Discount (%)</label>
+        <label className="block mb-1">Grower Discount (%) (Optional)</label>
         <input type="number" value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-700 rounded" />
       </div>
 
-      {/* Seed Treatment Products */}
-      {[0, 1].map((index) => (
-        <div key={`seed-treatment-${index}`}>
-          <label className="block mb-1">Seed Treatment Product {index + 1}</label>
+      {/* Seed Treatment Inputs */}
+      {seedTreatments.map((treatment, i) => (
+        <div key={i}>
+          <label className="block mb-1">Seed Treatment Product {i + 1} (Optional)</label>
           <select
-            value={seedTreatments[index] || ""}
-            onChange={(e) => handleSeedTreatmentChange(index, e.target.value)}
+            value={treatment}
+            onChange={(e) => {
+              const updated = [...seedTreatments];
+              updated[i] = e.target.value;
+              setSeedTreatments(updated);
+            }}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           >
             <option value="">-- Select Product --</option>
-            {productsSeedTreatment.map((p, i) => (
-              <option key={i} value={p["Product Name"]}>
+            {productsSeedTreatment.map((p, j) => (
+              <option key={j} value={p["Product Name"]}>
                 {`${p["Product Name"]} - ${p["Package Size"]} ${p["Package Units"]}`}
               </option>
             ))}
@@ -145,36 +157,39 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       ))}
 
-      {/* In-Furrow/Foliar Products */}
-      {Array.from({ length: 4 }).map((_, index) => (
-        <div key={`infurrow-${index}`} className="grid grid-cols-2 gap-2">
-          <div>
-            <label className="block mb-1">In-Furrow/Foliar Product {index + 1}</label>
-            <select
-              value={inFurrowFoliarProducts[index]?.name || ""}
-              onChange={(e) => handleFoliarChange(index, "name", e.target.value)}
-              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            >
-              <option value="">-- Select Product --</option>
-              {productsInFurrow.map((p, i) => (
-                <option key={i} value={p["Product Name"]}>
-                  {`${p["Product Name"]} - ${p["Package Size"]} ${p["Package Units"]}`}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block mb-1">Application Type</label>
-            <select
-              value={inFurrowFoliarProducts[index]?.applicationType || ""}
-              onChange={(e) => handleFoliarChange(index, "applicationType", e.target.value)}
-              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            >
-              <option value="">-- Select --</option>
-              <option value="In-Furrow">In-Furrow</option>
-              <option value="Foliar">Foliar</option>
-            </select>
-          </div>
+      {/* In-Furrow/Foliar Inputs */}
+      {inFurrowFoliarProducts.map((product, i) => (
+        <div key={i}>
+          <label className="block mb-1">In-Furrow/Foliar Product {i + 1} (Optional)</label>
+          <select
+            value={product.name}
+            onChange={(e) => {
+              const updated = [...inFurrowFoliarProducts];
+              updated[i].name = e.target.value;
+              setInFurrowFoliarProducts(updated);
+            }}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-1"
+          >
+            <option value="">-- Select Product --</option>
+            {productsInFurrow.map((p, j) => (
+              <option key={j} value={p["Product Name"]}>
+                {`${p["Product Name"]} - ${p["Package Size"]} ${p["Package Units"]}`}
+              </option>
+            ))}
+          </select>
+          <select
+            value={product.applicationType}
+            onChange={(e) => {
+              const updated = [...inFurrowFoliarProducts];
+              updated[i].applicationType = e.target.value;
+              setInFurrowFoliarProducts(updated);
+            }}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          >
+            <option value="">-- Select Application --</option>
+            <option value="In-Furrow">In-Furrow</option>
+            <option value="Foliar">Foliar</option>
+          </select>
         </div>
       ))}
 
