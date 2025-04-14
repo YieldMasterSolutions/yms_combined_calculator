@@ -49,7 +49,11 @@ export function calculateSeedTreatmentData(
   dealerDiscount: number = 0,
   growerDiscount: number = 0
 ): ProductCalculation {
-  const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
+  const seedsPerLb =
+    typeof overrideSeedsPerLb === "number" && !isNaN(overrideSeedsPerLb)
+      ? overrideSeedsPerLb
+      : parseFloat(seedType["Seeds/lb"]);
+
   const seedsPerUnit = parseFloat(seedType["Seeds/Unit"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
