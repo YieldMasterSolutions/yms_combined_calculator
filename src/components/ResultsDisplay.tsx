@@ -42,7 +42,7 @@ export default function ResultsDisplay({
       {/* 🟨 Seed Treatment Section */}
       {seedTreatmentResults.length > 0 && (
         <>
-          <h2 className="text-xl font-bold text-yellow-400">Seed Treatment Calculations</h2>
+          <h2 className="text-2xl font-bold text-blue-400">Seed Treatment Calculations</h2>
 
           {/* Seeding Info (1 card only) */}
           <div className="grid grid-cols-2 gap-4 bg-zinc-900 border rounded-md p-4">
@@ -64,8 +64,7 @@ export default function ResultsDisplay({
             </div>
           </div>
 
-          {/* Individual Product Cost Cards */}
-          <h2 className="text-xl font-bold text-yellow-400">Seed Treatment Costs</h2>
+          <h2 className="text-2xl font-bold text-blue-400">Seed Treatment Costs</h2>
           {seedTreatmentResults.map((result, i) => (
             <div key={i} className="bg-zinc-900 border rounded-md p-4">
               <h3 className="text-yellow-400 font-bold mb-2">{result.productName}</h3>
@@ -80,9 +79,7 @@ export default function ResultsDisplay({
                 </div>
                 <div>
                   <p className="text-yellow-400 font-bold">Total Product Units to Order</p>
-                  <p>
-                    {result.packagesNeeded} – {result.productPackageString}
-                  </p>
+                  <p>{result.packagesNeeded} – {result.productPackageString}</p>
                 </div>
                 <div>
                   <p className="text-yellow-400 font-bold">Product Cost per Ounce</p>
@@ -113,7 +110,7 @@ export default function ResultsDisplay({
       {/* 🟩 In-Furrow/Foliar Products */}
       {inFurrowFoliarResults.length > 0 && (
         <>
-          <h2 className="text-xl font-bold text-yellow-400">In-Furrow / Foliar Product Costs</h2>
+          <h2 className="text-2xl font-bold text-blue-400">In-Furrow / Foliar Product Costs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {inFurrowFoliarResults.map((product, i) => (
               <div key={i} className="bg-zinc-900 border rounded-md p-4">
@@ -166,3 +163,4 @@ export default function ResultsDisplay({
     </div>
   );
 }
+

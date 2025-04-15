@@ -86,7 +86,12 @@ export default function CalculatorForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-    
+
+      {/* Crop Inputs Section */}
+      <div>
+        <h2 className="text-blue-400 text-xl font-bold mb-2">Crop Inputs</h2>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="text-yellow-400 font-bold">Crop Type</label>
@@ -203,11 +208,9 @@ export default function CalculatorForm({
         </div>
       </div>
 
-      {/* 🧪 Product Section */}
+      {/* Product Inputs Section */}
       <div className="pt-2">
-        <h3 className="text-lg font-bold text-yellow-400 mt-6 mb-2">
-          Product Inputs
-        </h3>
+        <h2 className="text-blue-400 text-xl font-bold mt-6 mb-2">Product Inputs</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {seedTreatments.map((val, i) => (
