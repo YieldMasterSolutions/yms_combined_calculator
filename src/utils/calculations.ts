@@ -39,7 +39,6 @@ export interface ProductCalculation {
 }
 
 // ✅ SEED TREATMENT CALCULATIONS
-
 export function calculateSeedTreatmentData(
   acres: number,
   seedingRate: number,
@@ -92,10 +91,9 @@ export function calculateSeedTreatmentData(
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
-  const productCostPerAcre = (totalProductNeeded / acres) * costPerUnit;
   const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
+  const individualCostPerAcre = discountedTotalCostToGrower / acres; // ✅ FIXED: based on discounted total cost
 
-  // ✅ Fix for missing Package Units
   const packageUnits = product["Package Units"] || "units";
   const productPackaging = product["Product Packaging"] || "";
   const productPackageString = `${packageSize} ${packageUnits} - ${productPackaging}`;
@@ -106,7 +104,7 @@ export function calculateSeedTreatmentData(
     productPackageString,
     originalTotalCostToGrower,
     discountedTotalCostToGrower,
-    individualCostPerAcre: productCostPerAcre,
+    individualCostPerAcre,
     applicationRate,
     costPerUnit,
     totalProductNeeded,
