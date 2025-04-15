@@ -42,13 +42,7 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  const [roi, setRoi] = useState<{
-    breakeven: number | null;
-    roi2: number | null;
-    roi3: number | null;
-    roi4: number | null;
-    roi5: number | null;
-  }>({
+  const [roi, setRoi] = useState({
     breakeven: null,
     roi2: null,
     roi3: null,
@@ -69,7 +63,6 @@ export default function CombinedCalculator() {
     const override = overrideSeeds ? parseFloat(overrideSeeds) : undefined;
 
     const seedTypeObj = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
-
     if (!seedTypeObj || isNaN(acresNum) || isNaN(cropPrice) || isNaN(rate)) {
       console.error("Missing or invalid required values");
       return;
@@ -162,11 +155,13 @@ export default function CombinedCalculator() {
       className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
       ref={resultRef}
     >
-      <div className="flex items-center gap-4 mb-6">
-        <img src="/yms-logo.png" alt="YMS Logo" className="h-14 w-auto" />
-        <div>
-          <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-          <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <img src="/yms-logo.png" alt="YMS Logo" className="h-16 w-auto" />
+          <div>
+            <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
+            <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
+          </div>
         </div>
       </div>
 
@@ -208,7 +203,7 @@ export default function CombinedCalculator() {
         </button>
       </div>
 
-      {(seedTreatmentResults.length || foliarResults.length) && (
+      {(seedTreatmentResults.length || foliarResults.length) > 0 && (
         <ResultsDisplay
           seedTreatmentResults={seedTreatmentResults}
           inFurrowFoliarResults={foliarResults}
