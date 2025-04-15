@@ -1,194 +1,91 @@
-// src/components/CalculatorForm.tsx
+// src/components/ResultsDisplay.tsx
 import React from "react";
-import type { Product, SeedType } from "@/utils/calculations";
+import type { ProductCalculation } from "@/utils/calculations";
 
-interface CalculatorFormProps {
-  selectedSeedType: string;
-  setSelectedSeedType: (val: string) => void;
-  acres: string;
-  setAcres: (val: string) => void;
-  seedingRate: string;
-  setSeedingRate: (val: string) => void;
-  seedingRateUnit: string;
-  setSeedingRateUnit: (val: string) => void;
-  overrideSeeds: string;
-  setOverrideSeeds: (val: string) => void;
-  marketPrice: string;
-  setMarketPrice: (val: string) => void;
+interface ResultsDisplayProps {
+  seedTreatmentResults: ProductCalculation[];
+  inFurrowFoliarResults: ProductCalculation[];
+  totalUndiscountedCost: number;
+  totalDiscountedCost: number;
+  totalCostPerAcre: number;
+  breakevenYield: number | null;
+  roi2: number | null;
+  roi3: number | null;
+  roi4: number | null;
+  roi5: number | null;
   cropPriceUnit: string;
-  setCropPriceUnit: (val: string) => void;
-  dealerDiscount: string;
-  setDealerDiscount: (val: string) => void;
-  growerDiscount: string;
-  setGrowerDiscount: (val: string) => void;
-  seedTreatments: string[];
-  setSeedTreatments: (val: string[]) => void;
-  inFurrowFoliarProducts: { name: string; applicationType: string }[];
-  setInFurrowFoliarProducts: (
-    val: { name: string; applicationType: string }[]
-  ) => void;
-productsSeedTreatment: Product[];
-productsInFurrow: Product[];
-seedTypes: SeedType[];
-  onSubmit: (e: React.FormEvent) => void;
 }
 
-const CalculatorForm: React.FC<CalculatorFormProps> = ({
-  selectedSeedType,
-  setSelectedSeedType,
-  acres,
-  setAcres,
-  seedingRate,
-  setSeedingRate,
-  seedingRateUnit,
-  setSeedingRateUnit,
-  overrideSeeds,
-  setOverrideSeeds,
-  marketPrice,
-  setMarketPrice,
+export default function ResultsDisplay({
+  seedTreatmentResults,
+  inFurrowFoliarResults,
+  totalUndiscountedCost,
+  totalDiscountedCost,
+  totalCostPerAcre,
+  breakevenYield,
+  roi2,
+  roi3,
+  roi4,
+  roi5,
   cropPriceUnit,
-  setCropPriceUnit,
-  dealerDiscount,
-  setDealerDiscount,
-  growerDiscount,
-  setGrowerDiscount,
-  seedTreatments,
-  setSeedTreatments,
-  inFurrowFoliarProducts,
-  setInFurrowFoliarProducts,
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrow,
-  onSubmit,
-}) => {
-  const selectedSeed = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
-
+}: ResultsDisplayProps) {
   return (
-    <form onSubmit={onSubmit} className="bg-zinc-800 p-6 rounded-md shadow-md grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Title & Subtext */}
-      <div className="md:col-span-2 text-center mb-2">
-        <h2 className="text-2xl font-semibold text-white">YMS Combined Calculator</h2>
-        <p className="text-yellow-400 font-medium">Biological Program Calculator</p>
-      </div>
-
-      {/* Top Inputs */}
-      <div>
-        <label className="block text-white">Crop Type</label>
-        <select value={selectedSeedType} onChange={(e) => setSelectedSeedType(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded">
-          <option value="">-- Select Crop --</option>
-          {seedTypes.map((s, idx) => (
-            <option key={idx} value={s["Seed Type"]}>{s["Seed Type"]}</option>
+    <div className="space-y-12 text-white">
+      {seedTreatmentResults.length > 0 && (
+        <>
+          <h2 className="text-xl font-bold text-yellow-400 mt-8">Seed Treatment Costs</h2>
+          {seedTreatmentResults.map((result, idx) => (
+            <div key={idx} className="grid grid-cols-2 gap-4 bg-zinc-900 border border-zinc-700 p-6 rounded-md">
+              <h3 className="col-span-2 text-lg font-bold text-yellow-400">{result.productName}</h3>
+              <div><span className="font-semibold text-yellow-400">Total Number of Seeds to be Treated</span><br />{result.totalSeeds?.toLocaleString()}</div>
+              <div><span className="font-semibold text-yellow-400">Total Weight of Seeds to be Treated</span><br />{result.totalSeedWeight?.toLocaleString()} lbs</div>
+              <div><span className="font-semibold text-yellow-400">Total Number of Units to be Treated</span><br />{result.totalUnits?.toLocaleString()}</div>
+              <div><span className="font-semibold text-yellow-400">Number of Seeds per Unit</span><br />{result.seedsPerUnit?.toLocaleString()}</div>
+              <div><span className="font-semibold text-yellow-400">Application Rate</span><br />{result.applicationRate?.toFixed(2)} oz per unit of seed</div>
+              <div><span className="font-semibold text-yellow-400">Total Amount of Product Needed</span><br />{result.totalProductNeeded?.toFixed(2)} oz</div>
+              <div><span className="font-semibold text-yellow-400">Total Number of Product Packages</span><br />{result.packagesNeeded} {result.productPackageString?.split(" - ")[1]}</div>
+              <div><span className="font-semibold text-yellow-400">Product Cost per Package</span><br />${result.originalTotalCostToGrower > 0 ? (result.originalTotalCostToGrower / result.packagesNeeded).toFixed(2) : "0.00"}</div>
+              <div><span className="font-semibold text-yellow-400">Total Cost to the Grower</span><br />${result.originalTotalCostToGrower.toFixed(2)}</div>
+              <div><span className="font-semibold text-yellow-400">Product Cost per Ounce</span><br />${result.costPerUnit?.toFixed(2)}</div>
+              <div><span className="font-semibold text-yellow-400">Total Discounted Cost to Grower</span><br />${result.discountedTotalCostToGrower.toFixed(2)}</div>
+              <div><span className="font-semibold text-yellow-400">Product Cost per Unit of Treated Seed</span><br />${result.costPerUnitOfSeed?.toFixed(2)}</div>
+              <div><span className="font-semibold text-yellow-400">Product Cost per Acre</span><br />${result.individualCostPerAcre.toFixed(2)}</div>
+            </div>
           ))}
-        </select>
-      </div>
+        </>
+      )}
 
-      <div>
-        <label className="block text-white">Number of Acres</label>
-        <input value={acres} onChange={(e) => setAcres(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded" />
-      </div>
-
-      <div>
-        <label className="block text-white">Seeding Rate</label>
-        <input value={seedingRate} onChange={(e) => setSeedingRate(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded" />
-      </div>
-
-      <div>
-        <label className="block text-white">Rate Unit</label>
-        <select value={seedingRateUnit} onChange={(e) => setSeedingRateUnit(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded">
-          <option value="seeds/acre">seeds/acre</option>
-          <option value="lbs/acre">lbs/acre</option>
-          <option value="bu/acre">bu/acre</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-white">Market Price for Crop</label>
-        <input value={marketPrice} onChange={(e) => setMarketPrice(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded" />
-      </div>
-
-      <div>
-        <label className="block text-white">Crop Price Unit</label>
-        <select value={cropPriceUnit} onChange={(e) => setCropPriceUnit(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded">
-          <option value="bu">$/bu</option>
-          <option value="lb">$/lb</option>
-          <option value="cwt">$/cwt</option>
-          <option value="ton">$/ton</option>
-        </select>
-      </div>
-
-      {/* Seeds per Pound override (FULL WIDTH) */}
-      <div className="md:col-span-2">
-        <label className="block text-white">Seeds per Pound (Optional)</label>
-        <input value={overrideSeeds} onChange={(e) => setOverrideSeeds(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded" />
-        {selectedSeed && (
-          <p className="text-sm text-gray-400 mt-1">Default: {parseFloat(selectedSeed["Seeds/lb"]).toLocaleString()} seeds/lb</p>
-        )}
-      </div>
-
-      {/* Discounts side-by-side */}
-      <div>
-        <label className="block text-white">Dealer Discount (%) (Optional)</label>
-        <input value={dealerDiscount} onChange={(e) => setDealerDiscount(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded" />
-      </div>
-      <div>
-        <label className="block text-white">Grower Discount (%) (Optional)</label>
-        <input value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} className="w-full bg-zinc-700 text-white p-2 rounded" />
-      </div>
-
-      {/* Seed Treatments */}
-      {[0, 1].map((index) => (
-        <div key={index}>
-          <label className="block text-white">Seed Treatment Product {index + 1} (Optional)</label>
-          <select value={seedTreatments[index]} onChange={(e) => {
-            const updated = [...seedTreatments];
-            updated[index] = e.target.value;
-            setSeedTreatments(updated);
-          }} className="w-full bg-zinc-700 text-white p-2 rounded">
-            <option value="">-- Select Product --</option>
-            {productsSeedTreatment.map((p, i) => (
-              <option key={i} value={p["Product Name"]}>{p["Product Name"]}</option>
-            ))}
-          </select>
+      {inFurrowFoliarResults.length > 0 && (
+        <div>
+          <h2 className="text-xl font-bold text-yellow-400 mt-10">Individual Product Costs</h2>
+          {inFurrowFoliarResults.map((product, idx) => (
+            <div key={idx} className="grid grid-cols-2 gap-4 bg-zinc-900 border border-zinc-700 p-6 rounded-md mt-4">
+              <h3 className="col-span-2 text-lg font-bold text-yellow-400">{product.productName}</h3>
+              <div><span className="font-semibold text-yellow-400">Total Product Units to Order</span><br />{product.packagesNeeded} – {product.productPackageString}</div>
+              <div><span className="font-semibold text-yellow-400">Product Cost per Package</span><br />${(product.originalTotalCostToGrower / product.packagesNeeded).toFixed(2)}</div>
+              <div><span className="font-semibold text-yellow-400">Total Cost to Grower (MSRP)</span><br />${product.originalTotalCostToGrower.toFixed(2)}</div>
+              <div><span className="font-semibold text-yellow-400">Total Discounted Cost to Grower</span><br />${product.discountedTotalCostToGrower.toFixed(2)}</div>
+              <div><span className="font-semibold text-yellow-400">Individual Cost of Product per Acre</span><br />${product.individualCostPerAcre.toFixed(2)}</div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
 
-      {/* In-Furrow / Foliar Products */}
-      {inFurrowFoliarProducts.map((product, index) => (
-        <div className="md:col-span-2 flex gap-2" key={index}>
-          <div className="w-2/3">
-            <label className="block text-white">In-Furrow/Foliar Product {index + 1} (Optional)</label>
-            <select value={product.name} onChange={(e) => {
-              const updated = [...inFurrowFoliarProducts];
-              updated[index].name = e.target.value;
-              setInFurrowFoliarProducts(updated);
-            }} className="w-full bg-zinc-700 text-white p-2 rounded">
-              <option value="">-- Select Product --</option>
-              {productsInFurrow.map((p, i) => (
-                <option key={i} value={p["Product Name"]}>{p["Product Name"]}</option>
-              ))}
-            </select>
-          </div>
-          <div className="w-1/3">
-            <label className="block text-white">Type</label>
-            <select value={product.applicationType} onChange={(e) => {
-              const updated = [...inFurrowFoliarProducts];
-              updated[index].applicationType = e.target.value;
-              setInFurrowFoliarProducts(updated);
-            }} className="w-full bg-zinc-700 text-white p-2 rounded">
-              <option value="">-- Type --</option>
-              <option value="In-Furrow">In-Furrow</option>
-              <option value="Foliar">Foliar</option>
-            </select>
-          </div>
-        </div>
-      ))}
-
-      {/* Submit Button */}
-      <div className="md:col-span-2 text-center mt-4">
-        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full">Submit</button>
+      <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-md">
+        <h3 className="text-lg font-bold text-yellow-400">Total YMS Biological Program Cost</h3>
+        <p>Undiscounted Total Cost = ${totalUndiscountedCost.toFixed(2)}</p>
+        <p>Total Discounted Total Cost = ${totalDiscountedCost.toFixed(2)}</p>
+        <p>Total Program Cost per Acre = ${totalCostPerAcre.toFixed(2)}</p>
       </div>
-    </form>
+
+      <div className="bg-zinc-900 border border-zinc-700 p-6 rounded-md">
+        <h3 className="text-lg font-bold text-yellow-400">Breakeven ROI Calculation</h3>
+        <p>Breakeven Yield per Acre = {breakevenYield?.toFixed(2)} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 2:1 Investment = {roi2?.toFixed(2)} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 3:1 Investment = {roi3?.toFixed(2)} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 4:1 Investment = {roi4?.toFixed(2)} {cropPriceUnit}/acre</p>
+        <p>ROI Yield for 5:1 Investment = {roi5?.toFixed(2)} {cropPriceUnit}/acre</p>
+      </div>
+    </div>
   );
-};
-
-export default CalculatorForm;
+}
