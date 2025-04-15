@@ -164,7 +164,7 @@ export default function CombinedCalculator() {
     >
       <div className="text-center mb-6">
         <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-zinc-400">YMS Combined Calculat</p>
+        <p className="text-3xl font-bold text-[#D2B48C]">Biological Program Calculator</p>
       </div>
 
       <CalculatorForm
