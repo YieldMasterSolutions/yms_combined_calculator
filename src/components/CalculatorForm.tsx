@@ -60,8 +60,7 @@ export default function CalculatorForm({
   onSubmit,
 }: CalculatorFormProps) {
   const defaultSeedsPerLb =
-    seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] ||
-    "";
+    seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] || "";
 
   const handleProductChange = (
     index: number,
@@ -86,14 +85,16 @@ export default function CalculatorForm({
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-6">
       <div className="text-center">
-        <h2 className="text-xl font-bold text-white mb-2">Biological Program Calculator</h2>
+        <h2 className="text-3xl font-bold text-yellow-400 mb-2">
+          Biological Program Calculator
+        </h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label>Crop Type</label>
+          <label className="text-yellow-400 font-bold">Crop Type</label>
           <select
             value={selectedSeedType}
             onChange={(e) => setSelectedSeedType(e.target.value)}
@@ -109,7 +110,7 @@ export default function CalculatorForm({
         </div>
 
         <div>
-          <label>Number of Acres</label>
+          <label className="text-yellow-400 font-bold">Number of Acres</label>
           <input
             type="number"
             value={acres}
@@ -119,7 +120,7 @@ export default function CalculatorForm({
         </div>
 
         <div>
-          <label>Seeding Rate</label>
+          <label className="text-yellow-400 font-bold">Seeding Rate</label>
           <input
             type="number"
             value={seedingRate}
@@ -129,7 +130,7 @@ export default function CalculatorForm({
         </div>
 
         <div>
-          <label>Rate Unit</label>
+          <label className="text-yellow-400 font-bold">Rate Unit</label>
           <select
             value={seedingRateUnit}
             onChange={(e) => setSeedingRateUnit(e.target.value)}
@@ -142,7 +143,7 @@ export default function CalculatorForm({
         </div>
 
         <div>
-          <label>Market Price for Crop</label>
+          <label className="text-yellow-400 font-bold">Market Price for Crop</label>
           <input
             type="number"
             value={marketPrice}
@@ -152,7 +153,7 @@ export default function CalculatorForm({
         </div>
 
         <div>
-          <label>Crop Price Unit</label>
+          <label className="text-yellow-400 font-bold">Crop Price Unit</label>
           <select
             value={cropPriceUnit}
             onChange={(e) => setCropPriceUnit(e.target.value)}
@@ -166,7 +167,9 @@ export default function CalculatorForm({
         </div>
 
         <div className="md:col-span-2">
-          <label>Seeds per Pound Override (Optional)</label>
+          <label className="text-yellow-400 font-bold">
+            Seeds per Pound Override <span className="text-sm text-white">(Optional)</span>
+          </label>
           <input
             type="number"
             value={overrideSeeds}
@@ -181,7 +184,9 @@ export default function CalculatorForm({
         </div>
 
         <div>
-          <label>Dealer Discount (%) (Optional)</label>
+          <label className="text-yellow-400 font-bold">
+            Dealer Discount (%) <span className="text-sm text-white">(Optional)</span>
+          </label>
           <input
             type="number"
             value={dealerDiscount}
@@ -191,7 +196,9 @@ export default function CalculatorForm({
         </div>
 
         <div>
-          <label>Grower Discount (%) (Optional)</label>
+          <label className="text-yellow-400 font-bold">
+            Grower Discount (%) <span className="text-sm text-white">(Optional)</span>
+          </label>
           <input
             type="number"
             value={growerDiscount}
@@ -199,56 +206,69 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
+      </div>
 
-        {seedTreatments.map((val, i) => (
-          <div key={i} className="col-span-1">
-            <label>Seed Treatment Product {i + 1} (Optional)</label>
-            <select
-              value={val}
-              onChange={(e) => handleProductChange(i, e.target.value, "seed")}
-              className="w-full p-2 bg-zinc-800 text-white rounded"
-            >
-              <option value="">-- Select Product --</option>
-              {productsSeedTreatment.map((product, idx) => (
-                <option key={idx} value={product["Product Name"]}>
-                  {product["Product Name"]}
-                </option>
-              ))}
-            </select>
-          </div>
-        ))}
+      {/* 🧪 Product Section */}
+      <div className="pt-2">
+        <h3 className="text-lg font-bold text-yellow-400 mt-6 mb-2">
+          Product Inputs
+        </h3>
 
-        {inFurrowFoliarProducts.map((item, i) => (
-          <div key={i} className="flex gap-2">
-            <div className="flex-grow">
-              <label>In-Furrow/Foliar Product {i + 1} (Optional)</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {seedTreatments.map((val, i) => (
+            <div key={i}>
+              <label className="text-yellow-400 font-bold">
+                Seed Treatment Product {i + 1} <span className="text-sm text-white">(Optional)</span>
+              </label>
               <select
-                value={item.name}
-                onChange={(e) => handleProductChange(i, e.target.value, "foliar")}
+                value={val}
+                onChange={(e) => handleProductChange(i, e.target.value, "seed")}
                 className="w-full p-2 bg-zinc-800 text-white rounded"
               >
                 <option value="">-- Select Product --</option>
-                {productsInFurrow.map((product, idx) => (
+                {productsSeedTreatment.map((product, idx) => (
                   <option key={idx} value={product["Product Name"]}>
                     {product["Product Name"]}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="w-32">
-              <label>&nbsp;</label>
-              <select
-                value={item.applicationType}
-                onChange={(e) => handleAppTypeChange(i, e.target.value)}
-                className="w-full p-2 bg-zinc-800 text-white rounded"
-              >
-                <option value="">-- Type --</option>
-                <option value="In-Furrow">In-Furrow</option>
-                <option value="Foliar">Foliar</option>
-              </select>
+          ))}
+
+          {inFurrowFoliarProducts.map((item, i) => (
+            <div key={i} className="flex gap-2">
+              <div className="flex-grow">
+                <label className="text-yellow-400 font-bold">
+                  In-Furrow/Foliar Product {i + 1} <span className="text-sm text-white">(Optional)</span>
+                </label>
+                <select
+                  value={item.name}
+                  onChange={(e) => handleProductChange(i, e.target.value, "foliar")}
+                  className="w-full p-2 bg-zinc-800 text-white rounded"
+                >
+                  <option value="">-- Select Product --</option>
+                  {productsInFurrow.map((product, idx) => (
+                    <option key={idx} value={product["Product Name"]}>
+                      {product["Product Name"]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="w-32">
+                <label className="text-yellow-400 font-bold">&nbsp;</label>
+                <select
+                  value={item.applicationType}
+                  onChange={(e) => handleAppTypeChange(i, e.target.value)}
+                  className="w-full p-2 bg-zinc-800 text-white rounded"
+                >
+                  <option value="">-- Type --</option>
+                  <option value="In-Furrow">In-Furrow</option>
+                  <option value="Foliar">Foliar</option>
+                </select>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </form>
   );
