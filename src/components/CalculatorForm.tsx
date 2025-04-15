@@ -1,5 +1,6 @@
 // src/components/CalculatorForm.tsx
 import React from "react";
+import type { Product, SeedType } from "@/utils/calculations";
 
 interface CalculatorFormProps {
   selectedSeedType: string;
