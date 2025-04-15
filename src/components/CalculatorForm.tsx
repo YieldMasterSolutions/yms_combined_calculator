@@ -26,9 +26,9 @@ interface CalculatorFormProps {
   setInFurrowFoliarProducts: (
     val: { name: string; applicationType: string }[]
   ) => void;
-  seedTypes: any[];
-  productsSeedTreatment: any[];
-  productsInFurrow: any[];
+productsSeedTreatment: Product[];
+productsInFurrow: Product[];
+seedTypes: SeedType[];
   onSubmit: (e: React.FormEvent) => void;
 }
 
