@@ -45,24 +45,24 @@ export default function ResultsDisplay({
           <h2 className="text-2xl font-bold text-blue-400">Seed Treatment Calculations</h2>
 
           {/* Seeding Info (1 card only) */}
-          <div className="grid grid-cols-2 gap-4 bg-zinc-900 border rounded-md p-4">
-            <div>
-              <p className="text-yellow-400 font-bold">Total Number of Seeds to be Treated</p>
-              <p>{formatNumber(seedTreatmentResults[0].totalSeeds || 0)}</p>
-            </div>
-            <div>
-              <p className="text-yellow-400 font-bold">Total Weight of Seeds to be Treated</p>
-              <p>{formatNumber(seedTreatmentResults[0].totalSeedWeight || 0)} lbs</p>
-            </div>
-            <div>
-              <p className="text-yellow-400 font-bold">Total Number of Units to be Treated</p>
-              <p>{formatNumber(seedTreatmentResults[0].totalUnits || 0)}</p>
-            </div>
-            <div>
-              <p className="text-yellow-400 font-bold">Number of Seeds per Unit</p>
-              <p>{formatNumber(seedTreatmentResults[0].seedsPerUnit || 0)}</p>
-            </div>
-          </div>
+<div className="grid grid-cols-2 gap-4 bg-zinc-900 border rounded-md p-4">
+  <div>
+    <p className="text-yellow-400 font-bold">Total Number of Seeds to be Treated</p>
+    <p>{formatNumber(seedTreatmentResults[0].totalSeeds || 0)}</p>
+  </div>
+  <div>
+    <p className="text-yellow-400 font-bold">Total Weight of Seeds to be Treated</p>
+    <p>{formatNumber(seedTreatmentResults[0].totalSeedWeight || 0)} lbs</p>
+  </div>
+  <div>
+    <p className="text-yellow-400 font-bold">Number of Seeds per Unit</p>
+    <p>{formatNumber(seedTreatmentResults[0].seedsPerUnit || 0)}</p>
+  </div>
+  <div>
+    <p className="text-yellow-400 font-bold">Total Number of Units to be Treated</p>
+    <p>{formatNumber(seedTreatmentResults[0].totalUnits || 0)}</p>
+  </div>
+</div>
 
           <h2 className="text-2xl font-bold text-blue-400">Seed Treatment Costs</h2>
           {seedTreatmentResults.map((result, i) => (
