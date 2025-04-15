@@ -2,6 +2,7 @@
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
+import Image from "next/image";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
@@ -42,14 +43,7 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  // ✅ Fix: allow number | null for ROI values
-  const [roi, setRoi] = useState<{
-    breakeven: number | null;
-    roi2: number | null;
-    roi3: number | null;
-    roi4: number | null;
-    roi5: number | null;
-  }>({
+  const [roi, setRoi] = useState({
     breakeven: null,
     roi2: null,
     roi3: null,
@@ -164,7 +158,13 @@ export default function CombinedCalculator() {
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <img src="/yms-logo.png" alt="YMS Logo" className="h-16 w-auto" />
+          <Image
+            src="/yms-logo.png"
+            alt="YMS Logo"
+            width={100}
+            height={64}
+            priority
+          />
           <div>
             <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
             <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
