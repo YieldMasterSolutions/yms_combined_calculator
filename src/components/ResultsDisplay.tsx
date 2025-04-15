@@ -13,7 +13,7 @@ interface ROI {
 
 interface ResultsDisplayProps {
   seedTreatmentResults: ProductCalculation[];
-  foliarResults: ProductCalculation[];
+  inFurrowFoliarResults: ProductCalculation[]; // ✅ Correct name
   totalProgramCost: number;
   totalDiscountedCost: number;
   totalCostPerAcre: number;
@@ -27,7 +27,7 @@ const formatYield = (n: number) => formatNumber(n, 2);
 
 export default function ResultsDisplay({
   seedTreatmentResults,
-  foliarResults,
+  inFurrowFoliarResults,
   totalProgramCost,
   totalDiscountedCost,
   totalCostPerAcre,
@@ -63,6 +63,7 @@ export default function ResultsDisplay({
             </div>
           </div>
 
+          {/* Seed Treatment Cost Cards */}
           <h2 className="text-xl font-bold text-yellow-400">Seed Treatment Costs</h2>
           {seedTreatmentResults.map((result, i) => (
             <div key={i} className="bg-zinc-900 border rounded-md p-4">
@@ -107,11 +108,11 @@ export default function ResultsDisplay({
       )}
 
       {/* In-Furrow/Foliar Products */}
-      {foliarResults.length > 0 && (
+      {inFurrowFoliarResults.length > 0 && (
         <>
           <h2 className="text-xl font-bold text-yellow-400">In-Furrow / Foliar Product Costs</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {foliarResults.map((product, i) => (
+            {inFurrowFoliarResults.map((product, i) => (
               <div key={i} className="bg-zinc-900 border rounded-md p-4">
                 <h3 className="text-yellow-400 font-bold mb-2">{product.productName}</h3>
                 <div className="grid grid-cols-2 gap-4">
