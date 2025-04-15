@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import type { ProductCalculation } from "../utils/calculations";
-import { formatNumber, formatCurrency, formatYield } from "../utils/formatters";
+import { formatNumber } from "../utils/formatNumber"; // ✅ Corrected import
 
 interface ROI {
   breakeven: number;
@@ -20,6 +20,10 @@ interface ResultsDisplayProps {
   roi: ROI;
   cropPriceUnit: string;
 }
+
+// ✅ Helper formatters to replace missing imports
+const formatCurrency = (n: number) => `$${formatNumber(n, 2)}`;
+const formatYield = (n: number) => formatNumber(n, 2);
 
 export default function ResultsDisplay({
   seedTreatmentResults,
