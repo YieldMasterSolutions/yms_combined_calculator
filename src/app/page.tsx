@@ -163,20 +163,26 @@ export default function CombinedCalculator() {
       ref={resultRef}
     >
       
-<div className="flex flex-col items-center mb-6">
-  <Image
-    src="/yms_combined_calculator/yms-logo.png"
-    alt="YMS Logo"
-    width={120} // You can adjust size here
-    height={120}
-    priority
-  />
-  <h1 className="text-5xl font-bold text-yellow-400 tracking-tight mt-2">
-    YieldMaster Solutions
-  </h1>
-  <p className="text-2xl font-semibold text-[#D2B48C]">
-    Biological Program Calculator
-  </p>
+<div className="flex items-center justify-between mb-6">
+  {/* Left-aligned logo */}
+  <div className="flex-shrink-0">
+    <Image
+      src="/yms_combined_calculator/yms-logo.png"
+      alt="YMS Logo"
+      width={160}  // Adjust size as needed
+      height={160}
+      priority
+    />
+  </div>
+
+  {/* Centered title */}
+  <div className="flex-grow text-center">
+    <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
+    <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
+  </div>
+
+  {/* Right spacer to keep center alignment balanced */}
+  <div className="w-[160px]" />
 </div>
 
       <CalculatorForm
