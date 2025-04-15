@@ -39,6 +39,7 @@ export interface ProductCalculation {
 }
 
 // ✅ SEED TREATMENT CALCULATIONS
+
 export function calculateSeedTreatmentData(
   acres: number,
   seedingRate: number,
@@ -61,7 +62,7 @@ export function calculateSeedTreatmentData(
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
       totalSeedWeight = totalSeeds / seedsPerLb;
-      totalUnits = totalSeedWeight / lbsPerUnit; // ✅ corrected
+      totalUnits = totalSeeds / seedsPerUnit;
       break;
     case "lbs/acre":
       totalSeedWeight = seedingRate * acres;
@@ -86,15 +87,18 @@ export function calculateSeedTreatmentData(
   const packageSize = product["Package Size"];
   const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
-  const originalTotalCostToGrower = packagesNeeded * costPerPackage;
 
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
+  const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
   const productCostPerAcre = (totalProductNeeded / acres) * costPerUnit;
   const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
 
-  const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Product Packaging"]}`;
+  // ✅ Fix for missing Package Units
+  const packageUnits = product["Package Units"] || "units";
+  const productPackaging = product["Product Packaging"] || "";
+  const productPackageString = `${packageSize} ${packageUnits} - ${productPackaging}`;
 
   return {
     productName: product["Product Name"],

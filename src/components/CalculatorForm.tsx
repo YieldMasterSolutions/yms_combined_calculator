@@ -1,3 +1,4 @@
+// src/components/CalculatorForm.tsx
 import React from "react";
 import type { Product, SeedType } from "../utils/calculations";
 
@@ -21,15 +22,13 @@ interface CalculatorFormProps {
   growerDiscount: string;
   setGrowerDiscount: (value: string) => void;
   seedTreatments: string[];
-  setSeedTreatments: (value: string[]) => void;
+  setSeedTreatments: (values: string[]) => void;
   inFurrowFoliarProducts: { name: string; applicationType: string }[];
-  setInFurrowFoliarProducts: (
-    value: { name: string; applicationType: string }[]
-  ) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  setInFurrowFoliarProducts: (values: { name: string; applicationType: string }[]) => void;
   seedTypes: SeedType[];
   productsSeedTreatment: Product[];
   productsInFurrow: Product[];
+  onSubmit: (e: React.FormEvent) => void;
 }
 
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
@@ -55,19 +54,17 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setSeedTreatments,
   inFurrowFoliarProducts,
   setInFurrowFoliarProducts,
-  onSubmit,
   seedTypes,
   productsSeedTreatment,
   productsInFurrow,
+  onSubmit,
 }) => {
-  const selectedSeed = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
-  const defaultSeedsPerPound = selectedSeed ? Number(selectedSeed["Seeds/lb"]) : null;
+  const selectedSeedObj = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
+  const defaultSeedsPerPound = selectedSeedObj ? selectedSeedObj["Seeds/lb"] : "";
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="grid grid-cols-1 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700"
-    >
+    <form onSubmit={onSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
+      {/* Crop and Acreage Inputs */}
       <div>
         <label className="block mb-1">Crop Type</label>
         <select
@@ -85,7 +82,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <label className="block mb-1">Number of Acres</label>
+        <label className="block mb-1">Acres</label>
         <input
           type="number"
           value={acres}
@@ -94,6 +91,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         />
       </div>
 
+      {/* Seeding Rate and Unit */}
       <div>
         <label className="block mb-1">Seeding Rate</label>
         <input
@@ -105,7 +103,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <label className="block mb-1">Seeding Rate Units</label>
+        <label className="block mb-1">Rate Unit</label>
         <select
           value={seedingRateUnit}
           onChange={(e) => setSeedingRateUnit(e.target.value)}
@@ -117,41 +115,45 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </select>
       </div>
 
+      {/* Market Price and Unit */}
       <div>
-        <label className="block mb-1">Seeds per Pound Override (Optional)</label>
+        <label className="block mb-1">Market Price for Crop</label>
+        <input
+          type="number"
+          value={marketPrice}
+          onChange={(e) => setMarketPrice(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1">Crop Price Unit</label>
+        <select
+          value={cropPriceUnit}
+          onChange={(e) => setCropPriceUnit(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        >
+          <option value="bu">$/bu</option>
+          <option value="lb">$/lb</option>
+          <option value="cwt">$/cwt</option>
+          <option value="ton">$/ton</option>
+        </select>
+      </div>
+
+      {/* Optional Inputs */}
+      <div>
+        <label className="block mb-1">Seeds per Pound (Optional)</label>
         <input
           type="number"
           value={overrideSeeds}
           onChange={(e) => setOverrideSeeds(e.target.value)}
           className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
         />
-        {defaultSeedsPerPound && (
-          <p className="text-sm text-gray-400 mt-1">
-            Default: {Number(defaultSeedsPerPound).toLocaleString()} seeds/lb
+        {selectedSeedType && (
+          <p className="text-sm text-zinc-400 mt-1">
+            Default: {defaultSeedsPerPound.toLocaleString()} seeds/lb
           </p>
         )}
-      </div>
-
-      <div>
-        <label className="block mb-1">Market Price for Crop</label>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            value={marketPrice}
-            onChange={(e) => setMarketPrice(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-          <select
-            value={cropPriceUnit}
-            onChange={(e) => setCropPriceUnit(e.target.value)}
-            className="w-40 p-2 bg-gray-800 border border-gray-700 rounded"
-          >
-            <option value="bu">$/bu</option>
-            <option value="lb">$/lb</option>
-            <option value="cwt">$/cwt</option>
-            <option value="ton">$/ton</option>
-          </select>
-        </div>
       </div>
 
       <div>
@@ -174,11 +176,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         />
       </div>
 
-      {seedTreatments.map((treatment, index) => (
+      {/* Seed Treatment Inputs */}
+      {seedTreatments.map((product, index) => (
         <div key={index}>
           <label className="block mb-1">Seed Treatment Product {index + 1} (Optional)</label>
           <select
-            value={treatment}
+            value={product}
             onChange={(e) => {
               const updated = [...seedTreatments];
               updated[index] = e.target.value;
@@ -189,17 +192,20 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <option value="">-- Select Product --</option>
             {productsSeedTreatment.map((p, i) => (
               <option key={i} value={p["Product Name"]}>
-                {`${p["Product Name"]} - ${p["Package Size"]} ${p["Package Units"]}`}
+                {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]}`}
               </option>
             ))}
           </select>
         </div>
       ))}
 
+      {/* In-Furrow / Foliar Product Inputs */}
       {inFurrowFoliarProducts.map((product, index) => (
         <div key={index}>
-          <label className="block mb-1">In-Furrow/Foliar Product {index + 1} (Optional)</label>
-          <div className="flex gap-2">
+          <label className="block mb-1">
+            In-Furrow/Foliar Product {index + 1} (Optional)
+          </label>
+          <div className="flex space-x-2">
             <select
               value={product.name}
               onChange={(e) => {
@@ -207,12 +213,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 updated[index].name = e.target.value;
                 setInFurrowFoliarProducts(updated);
               }}
-              className="flex-1 p-2 bg-gray-800 border border-gray-700 rounded"
+              className="w-2/3 p-2 bg-gray-800 border border-gray-700 rounded"
             >
               <option value="">-- Select Product --</option>
               {productsInFurrow.map((p, i) => (
                 <option key={i} value={p["Product Name"]}>
-                  {`${p["Product Name"]} - ${p["Package Size"]} ${p["Package Units"]}`}
+                  {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]}`}
                 </option>
               ))}
             </select>
@@ -223,9 +229,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 updated[index].applicationType = e.target.value;
                 setInFurrowFoliarProducts(updated);
               }}
-              className="w-32 p-2 bg-gray-800 border border-gray-700 rounded"
+              className="w-1/3 p-2 bg-gray-800 border border-gray-700 rounded"
             >
-              <option value="">Type</option>
+              <option value="">-- Type --</option>
               <option value="In-Furrow">In-Furrow</option>
               <option value="Foliar">Foliar</option>
             </select>
@@ -233,7 +239,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       ))}
 
-      <div className="text-center mt-4">
+      <div className="col-span-1 md:col-span-2 text-center mt-4">
+        <button type="submit" className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full text-lg">
+          Submit
+        </button>
       </div>
     </form>
   );
