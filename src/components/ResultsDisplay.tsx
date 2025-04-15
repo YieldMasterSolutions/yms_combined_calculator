@@ -1,49 +1,50 @@
 "use client";
 import React from "react";
 import type { ProductCalculation } from "../utils/calculations";
-import { formatNumber } from "../utils/formatNumber"; // ✅ Corrected import
+import { formatNumber } from "../utils/formatNumber";
 
-interface ROI {
-  breakeven: number;
-  roi2: number;
-  roi3: number;
-  roi4: number;
-  roi5: number;
-}
+// ✅ Local helpers for formatting
+const formatCurrency = (n: number) => `$${formatNumber(n, 2)}`;
+const formatYield = (n: number) => formatNumber(n, 2);
 
 interface ResultsDisplayProps {
   seedTreatmentResults: ProductCalculation[];
-  inFurrowFoliarResults: ProductCalculation[]; // ✅ Correct name
-  totalProgramCost: number;
+  inFurrowFoliarResults: ProductCalculation[];
+  totalUndiscountedCost: number;
   totalDiscountedCost: number;
   totalCostPerAcre: number;
-  roi: ROI;
+  breakevenYield: number | null;
+  roi2: number | null;
+  roi3: number | null;
+  roi4: number | null;
+  roi5: number | null;
   cropPriceUnit: string;
 }
-
-// ✅ Helper formatters to replace missing imports
-const formatCurrency = (n: number) => `$${formatNumber(n, 2)}`;
-const formatYield = (n: number) => formatNumber(n, 2);
 
 export default function ResultsDisplay({
   seedTreatmentResults,
   inFurrowFoliarResults,
-  totalProgramCost,
+  totalUndiscountedCost,
   totalDiscountedCost,
   totalCostPerAcre,
-  roi,
+  breakevenYield,
+  roi2,
+  roi3,
+  roi4,
+  roi5,
   cropPriceUnit,
 }: ResultsDisplayProps) {
-  const formatYieldUnit = (value: number) => `${formatYield(value)} ${cropPriceUnit}/acre`;
+  const formatYieldUnit = (value: number | null) =>
+    value !== null ? `${formatYield(value)} ${cropPriceUnit}/acre` : "-";
 
   return (
     <div className="space-y-6 mt-8 text-white">
-      {/* Seed Treatment Calculations */}
+      {/* 🟨 Seed Treatment Section */}
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-xl font-bold text-yellow-400">Seed Treatment Calculations</h2>
 
-          {/* Seeding Information Card */}
+          {/* Seeding Info (1 card only) */}
           <div className="grid grid-cols-2 gap-4 bg-zinc-900 border rounded-md p-4">
             <div>
               <p className="text-yellow-400 font-bold">Total Number of Seeds to be Treated</p>
@@ -63,7 +64,7 @@ export default function ResultsDisplay({
             </div>
           </div>
 
-          {/* Seed Treatment Cost Cards */}
+          {/* Individual Product Cost Cards */}
           <h2 className="text-xl font-bold text-yellow-400">Seed Treatment Costs</h2>
           {seedTreatmentResults.map((result, i) => (
             <div key={i} className="bg-zinc-900 border rounded-md p-4">
@@ -79,7 +80,9 @@ export default function ResultsDisplay({
                 </div>
                 <div>
                   <p className="text-yellow-400 font-bold">Total Product Units to Order</p>
-                  <p>{result.packagesNeeded} – {result.productPackageString}</p>
+                  <p>
+                    {result.packagesNeeded} – {result.productPackageString}
+                  </p>
                 </div>
                 <div>
                   <p className="text-yellow-400 font-bold">Product Cost per Ounce</p>
@@ -107,7 +110,7 @@ export default function ResultsDisplay({
         </>
       )}
 
-      {/* In-Furrow/Foliar Products */}
+      {/* 🟩 In-Furrow/Foliar Products */}
       {inFurrowFoliarResults.length > 0 && (
         <>
           <h2 className="text-xl font-bold text-yellow-400">In-Furrow / Foliar Product Costs</h2>
@@ -143,21 +146,21 @@ export default function ResultsDisplay({
         </>
       )}
 
-      {/* Program Cost + ROI Calculations (Side-by-side) */}
+      {/* 🧾 Program Cost + ROI Side-by-Side */}
       <div className="grid md:grid-cols-2 gap-4 mt-6">
         <div className="bg-zinc-900 border rounded-md p-4">
           <h2 className="text-xl font-bold text-yellow-400">Total YMS Biological Program Cost</h2>
-          <p>Undiscounted Total Cost = {formatCurrency(totalProgramCost)}</p>
+          <p>Undiscounted Total Cost = {formatCurrency(totalUndiscountedCost)}</p>
           <p>Total Discounted Cost = {formatCurrency(totalDiscountedCost)}</p>
           <p>Total Program Cost per Acre = {formatCurrency(totalCostPerAcre)}</p>
         </div>
         <div className="bg-zinc-900 border rounded-md p-4">
           <h2 className="text-xl font-bold text-yellow-400">Breakeven ROI Calculation</h2>
-          <p>Breakeven Yield per Acre = {formatYieldUnit(roi.breakeven)}</p>
-          <p>ROI Yield for 2:1 Investment = {formatYieldUnit(roi.roi2)}</p>
-          <p>ROI Yield for 3:1 Investment = {formatYieldUnit(roi.roi3)}</p>
-          <p>ROI Yield for 4:1 Investment = {formatYieldUnit(roi.roi4)}</p>
-          <p>ROI Yield for 5:1 Investment = {formatYieldUnit(roi.roi5)}</p>
+          <p>Breakeven Yield per Acre = {formatYieldUnit(breakevenYield)}</p>
+          <p>ROI Yield for 2:1 Investment = {formatYieldUnit(roi2)}</p>
+          <p>ROI Yield for 3:1 Investment = {formatYieldUnit(roi3)}</p>
+          <p>ROI Yield for 4:1 Investment = {formatYieldUnit(roi4)}</p>
+          <p>ROI Yield for 5:1 Investment = {formatYieldUnit(roi5)}</p>
         </div>
       </div>
     </div>
