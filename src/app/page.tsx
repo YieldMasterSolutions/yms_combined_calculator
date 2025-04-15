@@ -42,7 +42,14 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  const [roi, setRoi] = useState({
+  // ✅ Fix: allow number | null for ROI values
+  const [roi, setRoi] = useState<{
+    breakeven: number | null;
+    roi2: number | null;
+    roi3: number | null;
+    roi4: number | null;
+    roi5: number | null;
+  }>({
     breakeven: null,
     roi2: null,
     roi3: null,
