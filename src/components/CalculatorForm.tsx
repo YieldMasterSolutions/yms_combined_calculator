@@ -234,12 +234,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       ))}
 
       <div className="text-center mt-4">
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-full text-lg"
-        >
-          Submit
-        </button>
       </div>
     </form>
   );
