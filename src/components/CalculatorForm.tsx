@@ -1,34 +1,33 @@
 "use client";
 import React from "react";
+import type { Product, SeedType } from "../utils/calculations";
 
 interface CalculatorFormProps {
   selectedSeedType: string;
-  setSelectedSeedType: (val: string) => void;
+  setSelectedSeedType: (value: string) => void;
   acres: string;
-  setAcres: (val: string) => void;
+  setAcres: (value: string) => void;
   seedingRate: string;
-  setSeedingRate: (val: string) => void;
+  setSeedingRate: (value: string) => void;
   seedingRateUnit: string;
-  setSeedingRateUnit: (val: string) => void;
+  setSeedingRateUnit: (value: string) => void;
   overrideSeeds: string;
-  setOverrideSeeds: (val: string) => void;
+  setOverrideSeeds: (value: string) => void;
   marketPrice: string;
-  setMarketPrice: (val: string) => void;
+  setMarketPrice: (value: string) => void;
   cropPriceUnit: string;
-  setCropPriceUnit: (val: string) => void;
+  setCropPriceUnit: (value: string) => void;
   dealerDiscount: string;
-  setDealerDiscount: (val: string) => void;
+  setDealerDiscount: (value: string) => void;
   growerDiscount: string;
-  setGrowerDiscount: (val: string) => void;
+  setGrowerDiscount: (value: string) => void;
   seedTreatments: string[];
-  setSeedTreatments: (val: string[]) => void;
+  setSeedTreatments: (value: string[]) => void;
   inFurrowFoliarProducts: { name: string; applicationType: string }[];
-  setInFurrowFoliarProducts: (
-    val: { name: string; applicationType: string }[]
-  ) => void;
-  productsSeedTreatment: any[];
-  productsInFurrow: any[];
-  seedTypes: any[];
+  setInFurrowFoliarProducts: (value: { name: string; applicationType: string }[]) => void;
+  productsSeedTreatment: Product[];
+  productsInFurrow: Product[];
+  seedTypes: SeedType[];
   onSubmit: (e: React.FormEvent) => void;
 }
 
