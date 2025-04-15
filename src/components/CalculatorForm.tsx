@@ -86,12 +86,7 @@ export default function CalculatorForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-yellow-400 mb-2">
-          Biological Program Calculator
-        </h2>
-      </div>
-
+    
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="text-yellow-400 font-bold">Crop Type</label>
