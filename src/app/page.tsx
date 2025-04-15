@@ -43,20 +43,20 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-const [roi, setRoi] = useState<{
-  breakeven: number | null;
-  roi2: number | null;
-  roi3: number | null;
-  roi4: number | null;
-  roi5: number | null;
-}>({
-  breakeven: null,
-  roi2: null,
-  roi3: null,
-  roi4: null,
-  roi5: null,
-});
-  
+  const [roi, setRoi] = useState<{
+    breakeven: number | null;
+    roi2: number | null;
+    roi3: number | null;
+    roi4: number | null;
+    roi5: number | null;
+  }>({
+    breakeven: null,
+    roi2: null,
+    roi3: null,
+    roi4: null,
+    roi5: null,
+  });
+
   const resultRef = useRef<HTMLDivElement>(null);
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -165,9 +165,9 @@ const [roi, setRoi] = useState<{
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <Image
-            src="/yms-logo.png"
+            src="/yms_combined_calculator/yms-logo.png"
             alt="YMS Logo"
-            width={100}
+            width={64}
             height={64}
             priority
           />
