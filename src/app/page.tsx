@@ -162,21 +162,22 @@ export default function CombinedCalculator() {
       className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
       ref={resultRef}
     >
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <Image
-            src="/yms_combined_calculator/yms-logo.png"
-            alt="YMS Logo"
-            width={64}
-            height={64}
-            priority
-          />
-          <div>
-            <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-            <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
-          </div>
-        </div>
-      </div>
+      
+<div className="flex flex-col items-center mb-6">
+  <Image
+    src="/yms_combined_calculator/yms-logo.png"
+    alt="YMS Logo"
+    width={120} // You can adjust size here
+    height={120}
+    priority
+  />
+  <h1 className="text-5xl font-bold text-yellow-400 tracking-tight mt-2">
+    YieldMaster Solutions
+  </h1>
+  <p className="text-2xl font-semibold text-[#D2B48C]">
+    Biological Program Calculator
+  </p>
+</div>
 
       <CalculatorForm
         selectedSeedType={selectedSeedType}
