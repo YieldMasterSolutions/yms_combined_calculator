@@ -49,14 +49,19 @@ export function calculateSeedTreatmentData(
   dealerDiscount: number = 0,
   growerDiscount: number = 0
 ): ProductCalculation {
-  const isCorn = seedType["Seed Type"].toLowerCase() === "corn";
-  const isSoybean = seedType["Seed Type"].toLowerCase() === "soybeans";
-
+  const crop = seedType["Seed Type"].toLowerCase();
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
-  const calculatedSeedsPerUnit = seedsPerLb / lbsPerUnit;
-  const seedsPerUnit = isCorn ? 80000 : isSoybean ? 140000 : calculatedSeedsPerUnit;
+  // ✅ Calculate seedsPerUnit correctly
+  let seedsPerUnit: number;
+  if (crop === "corn") {
+    seedsPerUnit = 80000;
+  } else if (crop === "soybeans") {
+    seedsPerUnit = 140000;
+  } else {
+    seedsPerUnit = seedsPerLb / lbsPerUnit;
+  }
 
   let totalSeeds = 0;
   let totalSeedWeight = 0;
@@ -66,9 +71,7 @@ export function calculateSeedTreatmentData(
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
       totalSeedWeight = totalSeeds / seedsPerLb;
-      totalUnits = isCorn || isSoybean
-        ? totalSeeds / seedsPerUnit
-        : totalSeedWeight / lbsPerUnit;
+      totalUnits = totalSeeds / seedsPerUnit;
       break;
     case "lbs/acre":
       totalSeedWeight = seedingRate * acres;
@@ -122,7 +125,6 @@ export function calculateSeedTreatmentData(
     costPerUnitOfSeed,
   };
 }
-
 // ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
   acres: number,
