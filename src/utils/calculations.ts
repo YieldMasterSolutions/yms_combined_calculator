@@ -39,6 +39,7 @@ export interface ProductCalculation {
 }
 
 // ✅ SEED TREATMENT CALCULATIONS
+// ✅ SEED TREATMENT CALCULATIONS
 export function calculateSeedTreatmentData(
   acres: number,
   seedingRate: number,
@@ -53,12 +54,14 @@ export function calculateSeedTreatmentData(
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
-  // ✅ Calculate seedsPerUnit correctly
+  // ✅ Corrected logic for seedsPerUnit
   let seedsPerUnit: number;
   if (crop === "corn") {
     seedsPerUnit = 80000;
   } else if (crop === "soybeans") {
     seedsPerUnit = 140000;
+  } else if (overrideSeedsPerLb) {
+    seedsPerUnit = parseFloat(seedType["Seeds/Unit"]); // ← use static unit value when override is used
   } else {
     seedsPerUnit = seedsPerLb * lbsPerUnit;
   }
@@ -125,7 +128,6 @@ export function calculateSeedTreatmentData(
     costPerUnitOfSeed,
   };
 }
-
 // ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
   acres: number,
