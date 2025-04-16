@@ -115,47 +115,6 @@ export function calculateSeedTreatmentData(
     costPerUnitOfSeed,
   };
 }
-
-  const totalProductNeeded = applicationRate * totalUnits;
-
-  const costPerUnit = product["Product Cost per oz"]
-    ? parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""))
-    : 0;
-
-  const packageSize = product["Package Size"];
-  const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
-  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
-
-  const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
-  const originalTotalCostToGrower = packagesNeeded * costPerPackage;
-  const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
-
-  const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
-  const individualCostPerAcre = discountedTotalCostToGrower / acres;
-
-  const packageUnits = product["Package Units"] || "units";
-  const productPackaging = product["Product Packaging"] || "";
-  const productPackageString = `${packageSize} ${packageUnits} - ${productPackaging}`;
-
-  return {
-    productName: product["Product Name"],
-    packagesNeeded,
-    productPackageString,
-    originalTotalCostToGrower,
-    discountedTotalCostToGrower,
-    individualCostPerAcre,
-    applicationRate,
-    costPerUnit,
-    totalProductNeeded,
-    seedsPerUnit,
-    totalSeeds: Math.round(totalSeeds),
-    totalSeedWeight: Math.round(totalSeedWeight),
-    totalUnits: Math.round(totalUnits),
-    costPerUnitOfSeed,
-  };
-}
-
-
 // ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
   acres: number,
