@@ -39,6 +39,7 @@ export interface ProductCalculation {
 }
 
 // ✅ SEED TREATMENT CALCULATIONS
+
 export function calculateSeedTreatmentData(
   acres: number,
   seedingRate: number,
@@ -49,9 +50,14 @@ export function calculateSeedTreatmentData(
   dealerDiscount: number = 0,
   growerDiscount: number = 0
 ): ProductCalculation {
-  const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
+  const defaultSeedsPerLb = parseFloat(seedType["Seeds/lb"]);
+  const defaultSeedsPerUnit = parseFloat(seedType["Seeds/Unit"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
-  const seedsPerUnit = seedsPerLb / lbsPerUnit;
+
+  const seedsPerLb = overrideSeedsPerLb || defaultSeedsPerLb;
+  const seedsPerUnit = overrideSeedsPerLb
+    ? seedsPerLb / lbsPerUnit
+    : defaultSeedsPerUnit;
 
   let totalSeeds = 0;
   let totalSeedWeight = 0;
@@ -61,7 +67,7 @@ export function calculateSeedTreatmentData(
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
       totalSeedWeight = totalSeeds / seedsPerLb;
-      totalUnits = totalSeedWeight / lbsPerUnit;
+      totalUnits = totalSeeds / seedsPerUnit;
       break;
     case "lbs/acre":
       totalSeedWeight = seedingRate * acres;
@@ -115,6 +121,7 @@ export function calculateSeedTreatmentData(
     costPerUnitOfSeed,
   };
 }
+
 // ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
   acres: number,
