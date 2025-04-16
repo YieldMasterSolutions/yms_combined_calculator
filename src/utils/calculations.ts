@@ -39,7 +39,6 @@ export interface ProductCalculation {
 }
 
 // ✅ SEED TREATMENT CALCULATIONS
-
 export function calculateSeedTreatmentData(
   acres: number,
   seedingRate: number,
@@ -50,30 +49,39 @@ export function calculateSeedTreatmentData(
   dealerDiscount: number = 0,
   growerDiscount: number = 0
 ): ProductCalculation {
+  const isCorn = seedType["Seed Type"].toLowerCase() === "corn";
+  const isSoybean = seedType["Seed Type"].toLowerCase() === "soybeans";
+
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
-  const seedsPerUnit = seedsPerLb * lbsPerUnit; // ✅ FIXED
+
+  const calculatedSeedsPerUnit = seedsPerLb / lbsPerUnit;
+  const seedsPerUnit = isCorn ? 80000 : isSoybean ? 140000 : calculatedSeedsPerUnit;
 
   let totalSeeds = 0;
   let totalSeedWeight = 0;
+  let totalUnits = 0;
 
   switch (seedingRateUnit) {
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
       totalSeedWeight = totalSeeds / seedsPerLb;
+      totalUnits = isCorn || isSoybean
+        ? totalSeeds / seedsPerUnit
+        : totalSeedWeight / lbsPerUnit;
       break;
     case "lbs/acre":
       totalSeedWeight = seedingRate * acres;
       totalSeeds = totalSeedWeight * seedsPerLb;
+      totalUnits = totalSeedWeight / lbsPerUnit;
       break;
     case "bu/acre":
       const lbsPerBushel = 60;
       totalSeedWeight = seedingRate * acres * lbsPerBushel;
       totalSeeds = totalSeedWeight * seedsPerLb;
+      totalUnits = totalSeedWeight / lbsPerUnit;
       break;
   }
-
-  const totalUnits = totalSeedWeight / lbsPerUnit;
 
   const applicationRate = product["Application Rate in Ounces"] || 0;
   const totalProductNeeded = applicationRate * totalUnits;
