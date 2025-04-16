@@ -38,7 +38,6 @@ export interface ProductCalculation {
   costPerUnitOfSeed?: number;
 }
 
-// ✅ SEED TREATMENT CALCULATIONS
 export function calculateSeedTreatmentData(
   acres: number,
   seedingRate: number,
@@ -53,7 +52,7 @@ export function calculateSeedTreatmentData(
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
-  // ✅ Calculate seedsPerUnit correctly
+  // ✅ Determine correct seeds per unit
   let seedsPerUnit: number;
   if (crop === "corn") {
     seedsPerUnit = 80000;
@@ -67,6 +66,7 @@ export function calculateSeedTreatmentData(
   let totalSeedWeight = 0;
   let totalUnits = 0;
 
+  // ✅ Handle seeding rate type conversions
   switch (seedingRateUnit) {
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
@@ -89,7 +89,7 @@ export function calculateSeedTreatmentData(
   const applicationRate = product["Application Rate in Ounces"] || 0;
   const totalProductNeeded = applicationRate * totalUnits;
 
-  const costPerUnit = product["Product Cost per oz"]
+  const costPerOunce = product["Product Cost per oz"]
     ? parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""))
     : 0;
 
@@ -101,10 +101,8 @@ export function calculateSeedTreatmentData(
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
-  const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
-
-  // ✅ Corrected per-acre calculation for seed treatments (based on cost/unit * total units / acres)
-  const individualCostPerAcre = (applicationRate * costPerUnit * totalUnits) / acres;
+  const costPerUnitOfSeed = (costPerOunce * totalProductNeeded) / totalUnits;
+  const individualCostPerAcre = discountedTotalCostToGrower / acres;
 
   const packageUnits = product["Package Units"] || "units";
   const productPackaging = product["Product Packaging"] || "";
@@ -118,7 +116,7 @@ export function calculateSeedTreatmentData(
     discountedTotalCostToGrower,
     individualCostPerAcre,
     applicationRate,
-    costPerUnit,
+    costPerUnit: costPerOunce,
     totalProductNeeded,
     seedsPerUnit: Math.round(seedsPerUnit),
     totalSeeds: Math.round(totalSeeds),
@@ -127,9 +125,6 @@ export function calculateSeedTreatmentData(
     costPerUnitOfSeed,
   };
 }
-
-
-
 
 // ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
