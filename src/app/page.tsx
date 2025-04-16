@@ -143,20 +143,44 @@ export default function CombinedCalculator() {
     );
   };
 
-  const downloadPDF = () => {
-    if (!resultRef.current) return;
-    html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "pt", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const margin = 20;
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-      pdf.save("YieldMaster_CombinedCalculation.pdf");
-    });
-  };
+const downloadPDF = () => {
+  if (!resultRef.current) return;
 
+  html2canvas(resultRef.current, {
+    scale: 2,
+    useCORS: true,
+    scrollY: -window.scrollY,
+    backgroundColor: "#111", // match your dark theme background
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "pt", "a4");
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const margin = 20;
+    const imgWidth = pageWidth - margin * 2;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = margin;
+
+    // Add first page
+    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight - margin * 2;
+
+    // Add remaining pages if content overflows
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight + margin * 2;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight - margin * 2;
+    }
+
+    pdf.save("YieldMaster_CombinedCalculation.pdf");
+  });
+};
+  
   return (
     <div
       className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
