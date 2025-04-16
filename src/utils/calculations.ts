@@ -60,7 +60,7 @@ export function calculateSeedTreatmentData(
   } else if (crop === "soybeans") {
     seedsPerUnit = 140000;
   } else {
-    seedsPerUnit = seedsPerLb / lbsPerUnit;
+    seedsPerUnit = seedsPerLb * lbsPerUnit;
   }
 
   let totalSeeds = 0;
