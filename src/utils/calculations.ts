@@ -134,35 +134,33 @@ export function calculateProductData(
 ): ProductCalculation {
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
+  let unitLabel = "";
 
   if (product["Application Rate in Fluid Ounces"]) {
     applicationRate = product["Application Rate in Fluid Ounces"];
-    if (product["Product Cost per fl oz"]) {
-      costPerUnit = parseFloat(product["Product Cost per fl oz"].replace(/[^\d.-]/g, ""));
-    } else if (product["Product Cost per oz"]) {
-      costPerUnit = parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""));
-    }
+    unitLabel = "fl oz";
+    costPerUnit = parseFloat(product["Product Cost per fl oz"]?.replace(/[^\d.-]/g, "") || "0");
+  } else if (product["Application Rate in Ounces"]) {
+    applicationRate = product["Application Rate in Ounces"];
+    unitLabel = "oz";
+    costPerUnit = parseFloat(product["Product Cost per oz"]?.replace(/[^\d.-]/g, "") || "0");
   } else if (product["Application Rate in Grams"]) {
     applicationRate = product["Application Rate in Grams"];
-    if (product["Product Cost per gram"]) {
-      costPerUnit = parseFloat(product["Product Cost per gram"].replace(/[^\d.-]/g, ""));
-    }
+    unitLabel = "grams";
+    costPerUnit = parseFloat(product["Product Cost per gram"]?.replace(/[^\d.-]/g, "") || "0");
   }
 
   const packageSize = product["Package Size"];
   const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
+  const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Product Packaging"]}`;
 
-  const requiredTotal = acres * (applicationRate || 0);
-  const packagesNeeded = Math.ceil(requiredTotal / packageSize);
+  const totalProductNeeded = (applicationRate || 0) * acres;
+  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
+
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
-
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
-
-  const originalIndividualCostPerAcre = (applicationRate || 0) * (costPerUnit || 0);
-  const discountedIndividualCostPerAcre = originalIndividualCostPerAcre * discountFactor;
-
-  const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Product Packaging"]}`;
+  const discountedIndividualCostPerAcre = (applicationRate || 0) * (costPerUnit || 0) * discountFactor;
 
   return {
     productName: product["Product Name"],
@@ -171,6 +169,11 @@ export function calculateProductData(
     originalTotalCostToGrower,
     discountedTotalCostToGrower,
     individualCostPerAcre: discountedIndividualCostPerAcre,
+    applicationRate,
+    costPerUnit,
+    totalProductNeeded,
+  };
+}
   };
 }
 

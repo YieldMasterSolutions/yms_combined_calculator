@@ -107,33 +107,42 @@ export default function ResultsDisplay({
         </>
       )}
 
-      {inFurrowFoliarResults.length > 0 && (
-        <>
-          <h2 className="text-2xl font-bold text-blue-400">In-Furrow / Foliar Product Costs</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {inFurrowFoliarResults.map((product, i) => (
-              <div key={i} className="bg-zinc-900 border rounded-md p-4">
-                <h3 className="text-yellow-400 font-bold mb-2">{product.productName}</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className={boxClass}>
-                    <p className="text-yellow-400 font-bold">Number of Units to Order</p>
-                    <p>{product.packagesNeeded} – {product.productPackageString}</p>
-                  </div>
-                  <div className={boxClass}>
-                    <p className="text-yellow-400 font-bold">Total Cost to Grower (MSRP)</p>
-                    <p>{formatCurrency(product.originalTotalCostToGrower)}</p>
-                  </div>
-                  <div className={boxClass}>
-                    <p className="text-yellow-400 font-bold">Total Discounted Cost to Grower</p>
-                    <p>{formatCurrency(product.discountedTotalCostToGrower)}</p>
-                  </div>
-                  <div className={boxClass}>
-                    <p className="text-yellow-400 font-bold">Product Cost per Acre</p>
-                    <p>{formatCurrency(product.individualCostPerAcre)}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+{inFurrowFoliarResults.map((product, i) => (
+  <div key={i} className="bg-zinc-900 border rounded-md p-4">
+    <h3 className="text-yellow-400 font-bold mb-2">{product.productName}</h3>
+    <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col justify-center min-h-[48px]">
+        <p className="text-yellow-400 font-bold">Application Rate</p>
+        <p>{product.applicationRate} oz/acre</p>
+      </div>
+      <div className="flex flex-col justify-center min-h-[48px]">
+        <p className="text-yellow-400 font-bold">Total Amount of Product Needed</p>
+        <p>{formatNumber(product.totalProductNeeded)} oz</p>
+      </div>
+      <div className="flex flex-col justify-center min-h-[48px]">
+        <p className="text-yellow-400 font-bold">Total Product Units to Order</p>
+        <p>{formatNumber(product.packagesNeeded)} – {product.productPackageString}</p>
+      </div>
+      <div className="flex flex-col justify-center min-h-[48px]">
+        <p className="text-yellow-400 font-bold">Product Cost per Ounce</p>
+        <p>{formatCurrency(product.costPerUnit)}</p>
+      </div>
+      <div className="flex flex-col justify-center min-h-[48px]">
+        <p className="text-yellow-400 font-bold">Total Cost to Grower (MSRP)</p>
+        <p>{formatCurrency(product.originalTotalCostToGrower)}</p>
+      </div>
+      <div className="flex flex-col justify-center min-h-[48px]">
+        <p className="text-yellow-400 font-bold">Total Discounted Cost to Grower</p>
+        <p>{formatCurrency(product.discountedTotalCostToGrower)}</p>
+      </div>
+      <div className="flex flex-col justify-center min-h-[48px]">
+        <p className="text-yellow-400 font-bold">Individual Cost per Acre</p>
+        <p>{formatCurrency(product.individualCostPerAcre)}</p>
+      </div>
+    </div>
+  </div>
+))}
+
           </div>
         </>
       )}
