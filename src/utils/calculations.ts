@@ -194,3 +194,25 @@ export function calculateAllFoliarProductCosts(
 
   return { productsData, totalCostPerAcre, totalUndiscountedCost, totalDiscountedCost };
 }
+// ✅ Utility function for calculating seedsPerUnit dynamically
+export function getCalculatedSeedsPerUnit(
+  seedType: SeedType,
+  overrideSeedsPerLb?: number
+): number {
+  const crop = seedType["Seed Type"].toLowerCase();
+  const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
+  const lbsPerUnit = seedType["Lbs/Unit"];
+
+  if (crop === "corn") return 80000;
+  if (crop === "soybeans") return 140000;
+
+  return seedsPerLb * lbsPerUnit;
+}
+
+// ✅ Utility function for returning default seedsPerUnit without override
+export function getDefaultSeedsPerUnit(seedType: SeedType): number {
+  const seedsPerLb = parseFloat(seedType["Seeds/lb"]);
+  const lbsPerUnit = seedType["Lbs/Unit"];
+  return seedsPerLb * lbsPerUnit;
+}
+
