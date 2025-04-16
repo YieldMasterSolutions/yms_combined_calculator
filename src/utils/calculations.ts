@@ -50,14 +50,9 @@ export function calculateSeedTreatmentData(
   dealerDiscount: number = 0,
   growerDiscount: number = 0
 ): ProductCalculation {
-  const defaultSeedsPerLb = parseFloat(seedType["Seeds/lb"]);
-  const defaultSeedsPerUnit = parseFloat(seedType["Seeds/Unit"]);
+  const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
-
-  const seedsPerLb = overrideSeedsPerLb || defaultSeedsPerLb;
-  const seedsPerUnit = overrideSeedsPerLb
-    ? seedsPerLb / lbsPerUnit
-    : defaultSeedsPerUnit;
+  const seedsPerUnit = seedsPerLb * lbsPerUnit;
 
   let totalSeeds = 0;
   let totalSeedWeight = 0;
@@ -67,20 +62,19 @@ export function calculateSeedTreatmentData(
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
       totalSeedWeight = totalSeeds / seedsPerLb;
-      totalUnits = totalSeeds / seedsPerUnit;
       break;
     case "lbs/acre":
       totalSeedWeight = seedingRate * acres;
       totalSeeds = totalSeedWeight * seedsPerLb;
-      totalUnits = totalSeedWeight / lbsPerUnit;
       break;
     case "bu/acre":
       const lbsPerBushel = 60;
       totalSeedWeight = seedingRate * acres * lbsPerBushel;
       totalSeeds = totalSeedWeight * seedsPerLb;
-      totalUnits = totalSeedWeight / lbsPerUnit;
       break;
   }
+
+  totalUnits = totalSeedWeight / lbsPerUnit;
 
   const applicationRate = product["Application Rate in Ounces"] || 0;
   const totalProductNeeded = applicationRate * totalUnits;
