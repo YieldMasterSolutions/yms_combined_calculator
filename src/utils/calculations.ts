@@ -50,8 +50,8 @@ export function calculateSeedTreatmentData(
   growerDiscount: number = 0
 ): ProductCalculation {
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
-  const seedsPerUnit = parseFloat(seedType["Seeds/Unit"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
+  const seedsPerUnit = seedsPerLb / lbsPerUnit;
 
   let totalSeeds = 0;
   let totalSeedWeight = 0;
@@ -61,7 +61,7 @@ export function calculateSeedTreatmentData(
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
       totalSeedWeight = totalSeeds / seedsPerLb;
-      totalUnits = totalSeeds / seedsPerUnit;
+      totalUnits = totalSeedWeight / lbsPerUnit;
       break;
     case "lbs/acre":
       totalSeedWeight = seedingRate * acres;
@@ -76,26 +76,45 @@ export function calculateSeedTreatmentData(
       break;
   }
 
-  const applicationRate = product["Application Rate in Ounces"];
-  if (!applicationRate || applicationRate <= 0) {
-    console.warn("Missing or zero Application Rate in Ounces for product:", product["Product Name"]);
-    return {
-      productName: product["Product Name"],
-      packagesNeeded: 0,
-      productPackageString: "Invalid product setup",
-      originalTotalCostToGrower: 0,
-      discountedTotalCostToGrower: 0,
-      individualCostPerAcre: 0,
-      applicationRate: 0,
-      costPerUnit: 0,
-      totalProductNeeded: 0,
-      seedsPerUnit,
-      totalSeeds: Math.round(totalSeeds),
-      totalSeedWeight: Math.round(totalSeedWeight),
-      totalUnits: Math.round(totalUnits),
-      costPerUnitOfSeed: 0,
-    };
-  }
+  const applicationRate = product["Application Rate in Ounces"] || 0;
+  const totalProductNeeded = applicationRate * totalUnits;
+
+  const costPerUnit = product["Product Cost per oz"]
+    ? parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""))
+    : 0;
+
+  const packageSize = product["Package Size"];
+  const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
+  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
+
+  const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
+  const originalTotalCostToGrower = packagesNeeded * costPerPackage;
+  const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
+
+  const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
+  const individualCostPerAcre = discountedTotalCostToGrower / acres;
+
+  const packageUnits = product["Package Units"] || "units";
+  const productPackaging = product["Product Packaging"] || "";
+  const productPackageString = `${packageSize} ${packageUnits} - ${productPackaging}`;
+
+  return {
+    productName: product["Product Name"],
+    packagesNeeded,
+    productPackageString,
+    originalTotalCostToGrower,
+    discountedTotalCostToGrower,
+    individualCostPerAcre,
+    applicationRate,
+    costPerUnit,
+    totalProductNeeded,
+    seedsPerUnit: Math.round(seedsPerUnit),
+    totalSeeds: Math.round(totalSeeds),
+    totalSeedWeight: Math.round(totalSeedWeight),
+    totalUnits: Math.round(totalUnits),
+    costPerUnitOfSeed,
+  };
+}
 
   const totalProductNeeded = applicationRate * totalUnits;
 
