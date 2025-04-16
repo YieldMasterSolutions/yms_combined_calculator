@@ -125,6 +125,7 @@ export function calculateSeedTreatmentData(
     costPerUnitOfSeed,
   };
 }
+
 // ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
   acres: number,
@@ -134,19 +135,15 @@ export function calculateProductData(
 ): ProductCalculation {
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
-  let unitLabel = "";
 
   if (product["Application Rate in Fluid Ounces"]) {
     applicationRate = product["Application Rate in Fluid Ounces"];
-    unitLabel = "fl oz";
     costPerUnit = parseFloat(product["Product Cost per fl oz"]?.replace(/[^\d.-]/g, "") || "0");
   } else if (product["Application Rate in Ounces"]) {
     applicationRate = product["Application Rate in Ounces"];
-    unitLabel = "oz";
     costPerUnit = parseFloat(product["Product Cost per oz"]?.replace(/[^\d.-]/g, "") || "0");
   } else if (product["Application Rate in Grams"]) {
     applicationRate = product["Application Rate in Grams"];
-    unitLabel = "grams";
     costPerUnit = parseFloat(product["Product Cost per gram"]?.replace(/[^\d.-]/g, "") || "0");
   }
 
@@ -172,8 +169,6 @@ export function calculateProductData(
     applicationRate,
     costPerUnit,
     totalProductNeeded,
-  };
-}
   };
 }
 
