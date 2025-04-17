@@ -52,7 +52,6 @@ export function calculateSeedTreatmentData(
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
-  // ✅ Calculate seedsPerUnit correctly
   let seedsPerUnit: number;
   if (crop === "corn") {
     seedsPerUnit = 80000;
@@ -100,9 +99,9 @@ export function calculateSeedTreatmentData(
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
-  // ✅ Corrected cost formulas
-  const costPerUnitOfSeed = costPerUnit * applicationRate;
-  const individualCostPerAcre = (costPerUnit * totalProductNeeded) / acres;
+  // ✅ Discounted cost per unit of treated seed and per acre
+  const costPerUnitOfSeed = (costPerUnit * applicationRate) * discountFactor;
+  const individualCostPerAcre = discountedTotalCostToGrower / acres;
 
   const packageUnits = product["Package Units"] || "units";
   const productPackaging = product["Product Packaging"] || "";
