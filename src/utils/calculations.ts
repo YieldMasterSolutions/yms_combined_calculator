@@ -100,10 +100,9 @@ export function calculateSeedTreatmentData(
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
-  const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
-
-  // ✅ Corrected per-acre cost logic
-  const individualCostPerAcre = totalProductNeeded * costPerUnit;
+  // ✅ Corrected cost formulas
+  const costPerUnitOfSeed = costPerUnit * applicationRate;
+  const individualCostPerAcre = (costPerUnit * totalProductNeeded) / acres;
 
   const packageUnits = product["Package Units"] || "units";
   const productPackaging = product["Product Packaging"] || "";
