@@ -52,7 +52,7 @@ export function calculateSeedTreatmentData(
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
-  // ✅ Determine correct seeds per unit
+  // ✅ Calculate seedsPerUnit correctly
   let seedsPerUnit: number;
   if (crop === "corn") {
     seedsPerUnit = 80000;
@@ -66,7 +66,6 @@ export function calculateSeedTreatmentData(
   let totalSeedWeight = 0;
   let totalUnits = 0;
 
-  // ✅ Handle seeding rate type conversions
   switch (seedingRateUnit) {
     case "seeds/acre":
       totalSeeds = seedingRate * acres;
@@ -89,7 +88,7 @@ export function calculateSeedTreatmentData(
   const applicationRate = product["Application Rate in Ounces"] || 0;
   const totalProductNeeded = applicationRate * totalUnits;
 
-  const costPerOunce = product["Product Cost per oz"]
+  const costPerUnit = product["Product Cost per oz"]
     ? parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""))
     : 0;
 
@@ -101,8 +100,10 @@ export function calculateSeedTreatmentData(
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
-  const costPerUnitOfSeed = (costPerOunce * totalProductNeeded) / totalUnits;
-  const individualCostPerAcre = discountedTotalCostToGrower / acres;
+  const costPerUnitOfSeed = discountedTotalCostToGrower / totalUnits;
+
+  // ✅ Corrected per-acre cost logic
+  const individualCostPerAcre = totalProductNeeded * costPerUnit;
 
   const packageUnits = product["Package Units"] || "units";
   const productPackaging = product["Product Packaging"] || "";
@@ -116,7 +117,7 @@ export function calculateSeedTreatmentData(
     discountedTotalCostToGrower,
     individualCostPerAcre,
     applicationRate,
-    costPerUnit: costPerOunce,
+    costPerUnit,
     totalProductNeeded,
     seedsPerUnit: Math.round(seedsPerUnit),
     totalSeeds: Math.round(totalSeeds),
