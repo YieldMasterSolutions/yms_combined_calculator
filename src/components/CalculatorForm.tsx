@@ -142,30 +142,6 @@ export default function CalculatorForm({
           </select>
         </div>
 
-        <div>
-          <label className="text-yellow-400 font-bold">Market Price for Crop</label>
-          <input
-            type="number"
-            value={marketPrice}
-            onChange={(e) => setMarketPrice(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-
-        <div>
-          <label className="text-yellow-400 font-bold">Crop Price Unit</label>
-          <select
-            value={cropPriceUnit}
-            onChange={(e) => setCropPriceUnit(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="bu">$/bu</option>
-            <option value="lb">$/lb</option>
-            <option value="cwt">$/cwt</option>
-            <option value="ton">$/ton</option>
-          </select>
-        </div>
-
         <div className="md:col-span-2">
           <label className="text-yellow-400 font-bold">
             Seeds per Pound Override <span className="text-sm text-white">(Optional)</span>
@@ -205,6 +181,34 @@ export default function CalculatorForm({
             onChange={(e) => setGrowerDiscount(e.target.value)}
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
+        </div>
+
+        <div>
+          <label className="text-yellow-400 font-bold">
+            Market Price for Crop <span className="text-sm text-white">(Optional)</span>
+          </label>
+          <input
+            type="number"
+            value={marketPrice}
+            onChange={(e) => setMarketPrice(e.target.value)}
+            className="w-full p-2 bg-zinc-800 text-white rounded"
+          />
+        </div>
+
+        <div>
+          <label className="text-yellow-400 font-bold">
+            Crop Price Unit <span className="text-sm text-white">(Optional)</span>
+          </label>
+          <select
+            value={cropPriceUnit}
+            onChange={(e) => setCropPriceUnit(e.target.value)}
+            className="w-full p-2 bg-zinc-800 text-white rounded"
+          >
+            <option value="bu">$/bu</option>
+            <option value="lb">$/lb</option>
+            <option value="cwt">$/cwt</option>
+            <option value="ton">$/ton</option>
+          </select>
         </div>
       </div>
 
