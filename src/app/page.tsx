@@ -8,11 +8,7 @@ import Image from "next/image";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
-import {
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-} from "@/utils/data";
+import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
 import {
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
@@ -34,10 +30,10 @@ export default function CombinedCalculator() {
   const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
   const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
 
-  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>(
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState(
     Array(4).fill({ name: "", applicationType: "" })
   );
-  const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
+  const [foliarRateOverrides, setFoliarRateOverrides] = useState(["", "", "", ""]);
 
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -47,13 +43,7 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  const [roi, setRoi] = useState<{
-    breakeven: number | null;
-    roi2: number | null;
-    roi3: number | null;
-    roi4: number | null;
-    roi5: number | null;
-  }>({
+  const [roi, setRoi] = useState({
     breakeven: null,
     roi2: null,
     roi3: null,
@@ -132,7 +122,7 @@ export default function CombinedCalculator() {
     });
 
     setRoi(
-      !isNaN(cropPrice) && cropPrice > 0
+      cropPrice > 0
         ? {
             breakeven: totalPerAcre / cropPrice,
             roi2: (2 * totalPerAcre) / cropPrice,
@@ -193,13 +183,7 @@ export default function CombinedCalculator() {
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex-shrink-0">
-          <Image
-            src="/yms_combined_calculator/yms-logo.png"
-            alt="YMS Logo"
-            width={160}
-            height={160}
-            priority
-          />
+          <Image src="/yms_combined_calculator/yms-logo.png" alt="YMS Logo" width={160} height={160} priority />
         </div>
         <div className="flex-grow text-center">
           <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
@@ -241,7 +225,16 @@ export default function CombinedCalculator() {
         onSubmit={handleFormSubmit}
       />
 
-      {seedTreatmentResults.length > 0 || foliarResults.length > 0 ? (
+      <div className="text-center">
+        <button
+          onClick={handleFormSubmit}
+          className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg"
+        >
+          Calculate Combined Results
+        </button>
+      </div>
+
+      {(seedTreatmentResults.length || foliarResults.length) > 0 && (
         <ResultsDisplay
           seedTreatmentResults={seedTreatmentResults}
           inFurrowFoliarResults={foliarResults}
@@ -255,7 +248,7 @@ export default function CombinedCalculator() {
           roi5={roi.roi5}
           cropPriceUnit={cropPriceUnit}
         />
-      ) : null}
+      )}
 
       <div className="text-center">
         <button
