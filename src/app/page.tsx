@@ -28,12 +28,9 @@ export default function CombinedCalculator() {
   const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
   const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
 
-  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>([
-    { name: "", applicationType: "" },
-    { name: "", applicationType: "" },
-    { name: "", applicationType: "" },
-    { name: "", applicationType: "" },
-  ]);
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>(
+    Array(4).fill({ name: "", applicationType: "" })
+  );
   const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
 
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
@@ -45,11 +42,11 @@ export default function CombinedCalculator() {
   });
 
   const [roi, setRoi] = useState({
-    breakeven: null as number | null,
-    roi2: null as number | null,
-    roi3: null as number | null,
-    roi4: null as number | null,
-    roi5: null as number | null,
+    breakeven: null,
+    roi2: null,
+    roi3: null,
+    roi4: null,
+    roi5: null,
   });
 
   const resultRef = useRef<HTMLDivElement>(null);

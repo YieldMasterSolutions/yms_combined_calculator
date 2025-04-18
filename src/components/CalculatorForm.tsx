@@ -93,7 +93,7 @@ export default function CalculatorForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      {/* Crop Inputs Section */}
+      {/* Crop Inputs */}
       <h2 className="text-blue-400 text-xl font-bold mb-2">Crop Inputs</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
