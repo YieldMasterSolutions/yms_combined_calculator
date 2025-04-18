@@ -74,13 +74,13 @@ export default function CalculatorForm({
 
   const handleProductChange = (index: number, value: string, type: "seed" | "foliar") => {
     if (type === "seed") {
-      const newList = [...seedTreatments];
-      newList[index] = value;
-      setSeedTreatments(newList);
+      const updated = [...seedTreatments];
+      updated[index] = value;
+      setSeedTreatments(updated);
     } else {
-      const newList = [...inFurrowFoliarProducts];
-      newList[index].name = value;
-      setInFurrowFoliarProducts(newList);
+      const updated = [...inFurrowFoliarProducts];
+      updated[index].name = value;
+      setInFurrowFoliarProducts(updated);
     }
   };
 
@@ -97,9 +97,9 @@ export default function CalculatorForm({
   };
 
   const handleAppTypeChange = (index: number, value: string) => {
-    const newList = [...inFurrowFoliarProducts];
-    newList[index].applicationType = value;
-    setInFurrowFoliarProducts(newList);
+    const updated = [...inFurrowFoliarProducts];
+    updated[index].applicationType = value;
+    setInFurrowFoliarProducts(updated);
   };
 
   return (
@@ -121,6 +121,7 @@ export default function CalculatorForm({
             ))}
           </select>
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">Number of Acres</label>
           <input
@@ -130,6 +131,7 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">Seeding Rate</label>
           <input
@@ -139,6 +141,7 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">Rate Unit</label>
           <select
@@ -151,6 +154,7 @@ export default function CalculatorForm({
             <option value="bu/acre">bu/acre</option>
           </select>
         </div>
+
         <div className="md:col-span-2">
           <label className="text-yellow-400 font-bold">
             Seeds per Pound Override <span className="text-sm text-white">(Optional)</span>
@@ -162,11 +166,10 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
           {selectedSeedType && (
-            <p className="text-sm text-gray-400 mt-1">
-              Default: {defaultSeedsPerLb} seeds/lb
-            </p>
+            <p className="text-sm text-gray-400 mt-1">Default: {defaultSeedsPerLb} seeds/lb</p>
           )}
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">
             Dealer Discount (%) <span className="text-sm text-white">(Optional)</span>
@@ -178,6 +181,7 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">
             Grower Discount (%) <span className="text-sm text-white">(Optional)</span>
@@ -189,6 +193,7 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
+
         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-yellow-400 font-bold">Market Price for Crop <span className="text-white">(Optional)</span></label>
