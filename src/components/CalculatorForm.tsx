@@ -185,30 +185,33 @@ export default function CalculatorForm({
           />
         </div>
 
-        <div className="md:col-span-2">
-          <label className="text-yellow-400 font-bold">Market Price for Crop <span className="text-sm text-white">(Optional)</span></label>
-          <input
-            type="number"
-            value={marketPrice}
-            onChange={(e) => setMarketPrice(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
+       {/* Market Price and Crop Price Unit */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div>
+    <label className="text-yellow-400 font-bold">Market Price for Crop (Optional)</label>
+    <input
+      type="number"
+      step="any"
+      value={marketPrice}
+      onChange={(e) => setMarketPrice(e.target.value)}
+      className="w-full bg-zinc-800 text-white p-2 rounded"
+    />
+  </div>
 
-        <div className="md:col-span-2">
-          <label className="text-yellow-400 font-bold">Crop Price Unit</label>
-          <select
-            value={cropPriceUnit}
-            onChange={(e) => setCropPriceUnit(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="bu">$/bu</option>
-            <option value="lb">$/lb</option>
-            <option value="cwt">$/cwt</option>
-            <option value="ton">$/ton</option>
-          </select>
-        </div>
-      </div>
+  <div>
+    <label className="text-yellow-400 font-bold">Crop Price Unit</label>
+    <select
+      value={cropPriceUnit}
+      onChange={(e) => setCropPriceUnit(e.target.value)}
+      className="w-full bg-zinc-800 text-white p-2 rounded"
+    >
+      <option value="bu">$/bu</option>
+      <option value="lb">$/lb</option>
+      <option value="cwt">$/cwt</option>
+      <option value="ton">$/ton</option>
+    </select>
+  </div>
+</div>
 
       <h2 className="text-blue-400 text-xl font-bold mt-6 mb-2">Product Inputs</h2>
       <div className="grid grid-cols-1 gap-4">
