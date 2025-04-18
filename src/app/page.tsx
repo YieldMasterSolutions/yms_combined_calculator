@@ -1,4 +1,6 @@
+// src/app/page.tsx
 "use client";
+
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
@@ -6,7 +8,11 @@ import Image from "next/image";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
-import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "@/utils/data";
+import {
+  seedTypes,
+  productsSeedTreatment,
+  productsInFurrowFoliar,
+} from "@/utils/data";
 import {
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
@@ -27,10 +33,14 @@ export default function CombinedCalculator() {
 
   const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
   const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
-
-  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>(
-    Array(4).fill({ name: "", applicationType: "" })
-  );
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<
+    { name: string; applicationType: string }[]
+  >([
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+  ]);
   const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
 
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
@@ -41,7 +51,13 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  const [roi, setRoi] = useState({
+  const [roi, setRoi] = useState<{
+    breakeven: number | null;
+    roi2: number | null;
+    roi3: number | null;
+    roi4: number | null;
+    roi5: number | null;
+  }>({
     breakeven: null,
     roi2: null,
     roi3: null,
@@ -119,23 +135,23 @@ export default function CombinedCalculator() {
       costPerAcre: totalPerAcre,
     });
 
-    setRoi(
-      cropPrice > 0
-        ? {
-            breakeven: totalPerAcre / cropPrice,
-            roi2: (2 * totalPerAcre) / cropPrice,
-            roi3: (3 * totalPerAcre) / cropPrice,
-            roi4: (4 * totalPerAcre) / cropPrice,
-            roi5: (5 * totalPerAcre) / cropPrice,
-          }
-        : {
-            breakeven: null,
-            roi2: null,
-            roi3: null,
-            roi4: null,
-            roi5: null,
-          }
-    );
+    const roiState = cropPrice > 0
+      ? {
+          breakeven: totalPerAcre / cropPrice,
+          roi2: (2 * totalPerAcre) / cropPrice,
+          roi3: (3 * totalPerAcre) / cropPrice,
+          roi4: (4 * totalPerAcre) / cropPrice,
+          roi5: (5 * totalPerAcre) / cropPrice,
+        }
+      : {
+          breakeven: null,
+          roi2: null,
+          roi3: null,
+          roi4: null,
+          roi5: null,
+        };
+
+    setRoi(roiState);
   };
 
   const downloadPDF = () => {
@@ -149,6 +165,7 @@ export default function CombinedCalculator() {
     }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "pt", "a4");
+
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -180,11 +197,17 @@ export default function CombinedCalculator() {
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex-shrink-0">
-          <Image src="/yms_combined_calculator/yms-logo.png" alt="YMS Logo" width={140} height={140} priority />
+          <Image
+            src="/yms_combined_calculator/yms-logo.png"
+            alt="YMS Logo"
+            width={140}
+            height={140}
+            priority
+          />
         </div>
         <div className="flex-grow text-center">
           <h1 className="text-4xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-          <p className="text-2xl font-semibold text-[#D2B48C]">Crop Calculator</p>
+          <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
         </div>
         <div className="w-[140px]" />
       </div>
