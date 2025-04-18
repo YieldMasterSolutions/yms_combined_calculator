@@ -189,33 +189,37 @@ export default function CombinedCalculator() {
       </div>
 
       <CalculatorForm
-        selectedSeedType={selectedSeedType}
-        setSelectedSeedType={setSelectedSeedType}
-        acres={acres}
-        setAcres={setAcres}
-        seedingRate={seedingRate}
-        setSeedingRate={setSeedingRate}
-        seedingRateUnit={seedingRateUnit}
-        setSeedingRateUnit={setSeedingRateUnit}
-        overrideSeeds={overrideSeeds}
-        setOverrideSeeds={setOverrideSeeds}
-        marketPrice={marketPrice}
-        setMarketPrice={setMarketPrice}
-        cropPriceUnit={cropPriceUnit}
-        setCropPriceUnit={setCropPriceUnit}
-        dealerDiscount={dealerDiscount}
-        setDealerDiscount={setDealerDiscount}
-        growerDiscount={growerDiscount}
-        setGrowerDiscount={setGrowerDiscount}
-        seedTreatments={seedTreatments}
-        setSeedTreatments={setSeedTreatments}
-        inFurrowFoliarProducts={inFurrowFoliarProducts}
-        setInFurrowFoliarProducts={setInFurrowFoliarProducts}
-        seedTypes={seedTypes}
-        productsSeedTreatment={productsSeedTreatment}
-        productsInFurrow={productsInFurrowFoliar}
-        onSubmit={handleFormSubmit}
-      />
+  selectedSeedType={selectedSeedType}
+  setSelectedSeedType={setSelectedSeedType}
+  acres={acres}
+  setAcres={setAcres}
+  seedingRate={seedingRate}
+  setSeedingRate={setSeedingRate}
+  seedingRateUnit={seedingRateUnit}
+  setSeedingRateUnit={setSeedingRateUnit}
+  overrideSeeds={overrideSeeds}
+  setOverrideSeeds={setOverrideSeeds}
+  marketPrice={marketPrice}
+  setMarketPrice={setMarketPrice}
+  cropPriceUnit={cropPriceUnit}
+  setCropPriceUnit={setCropPriceUnit}
+  dealerDiscount={dealerDiscount}
+  setDealerDiscount={setDealerDiscount}
+  growerDiscount={growerDiscount}
+  setGrowerDiscount={setGrowerDiscount}
+  seedTreatments={seedTreatments}
+  setSeedTreatments={setSeedTreatments}
+  seedTreatmentRateOverrides={seedTreatmentRateOverrides}
+  setSeedTreatmentRateOverrides={setSeedTreatmentRateOverrides}
+  inFurrowFoliarProducts={inFurrowFoliarProducts}
+  setInFurrowFoliarProducts={setInFurrowFoliarProducts}
+  foliarRateOverrides={foliarRateOverrides}
+  setFoliarRateOverrides={setFoliarRateOverrides}
+  seedTypes={seedTypes}
+  productsSeedTreatment={productsSeedTreatment}
+  productsInFurrow={productsInFurrowFoliar}
+  onSubmit={handleFormSubmit}
+/>
 
       <div className="text-center">
         <button
