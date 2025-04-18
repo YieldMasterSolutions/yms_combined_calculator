@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
@@ -25,20 +24,17 @@ export default function CombinedCalculator() {
   const [cropPriceUnit, setCropPriceUnit] = useState("bu");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
-const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
-const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>(
-  Array(4).fill({ name: "", applicationType: "" })
-);
-const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
-const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
 
-    { name: string; applicationType: string }[]
-  >([
+  const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
+  const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
+
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>([
     { name: "", applicationType: "" },
     { name: "", applicationType: "" },
     { name: "", applicationType: "" },
     { name: "", applicationType: "" },
   ]);
+  const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
 
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -75,11 +71,10 @@ const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", ""
     }
 
     const seedTreatmentObjs = seedTreatments
-      .filter(Boolean)
       .map((name) => productsSeedTreatment.find((p) => p["Product Name"] === name))
       .filter(Boolean) as Product[];
 
-    const seedTreatmentOutputs = seedTreatmentObjs.map((product) =>
+    const seedTreatmentOutputs = seedTreatmentObjs.map((product, i) =>
       calculateSeedTreatmentData(
         acresNum,
         rate,
@@ -88,19 +83,23 @@ const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", ""
         override,
         product,
         dealer,
-        grower
+        grower,
+        seedTreatmentRateOverrides[i] ? parseFloat(seedTreatmentRateOverrides[i]) : undefined
       )
     );
 
     const selectedFoliarObjs = inFurrowFoliarProducts
-      .filter((p) => p.name)
-      .map((p) => {
+      .map((p, i) => {
         const base = productsInFurrowFoliar.find((prod) => prod["Product Name"] === p.name);
         return base
-          ? { ...base, "Product Name": `${base["Product Name"]} (${p.applicationType})` }
+          ? {
+              ...base,
+              "Product Name": `${base["Product Name"]} (${p.applicationType})`,
+              _override: foliarRateOverrides[i] ? parseFloat(foliarRateOverrides[i]) : undefined,
+            }
           : null;
       })
-      .filter(Boolean) as Product[];
+      .filter(Boolean) as (Product & { _override?: number })[];
 
     const foliarOutput = calculateAllFoliarProductCosts(acresNum, selectedFoliarObjs, dealer, grower);
 
@@ -144,6 +143,7 @@ const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", ""
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
+
     html2canvas(resultRef.current, {
       scale: 2,
       useCORS: true,
@@ -183,47 +183,47 @@ const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", ""
     >
       <div className="flex items-center justify-between mb-6">
         <div className="flex-shrink-0">
-          <Image src="/yms_combined_calculator/yms-logo.png" alt="YMS Logo" width={160} height={160} priority />
+          <Image src="/yms_combined_calculator/yms-logo.png" alt="YMS Logo" width={140} height={140} priority />
         </div>
         <div className="flex-grow text-center">
-          <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-          <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
+          <h1 className="text-4xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
+          <p className="text-2xl font-semibold text-[#D2B48C]">Crop Calculator</p>
         </div>
-        <div className="w-[160px]" />
+        <div className="w-[140px]" />
       </div>
 
       <CalculatorForm
-  selectedSeedType={selectedSeedType}
-  setSelectedSeedType={setSelectedSeedType}
-  acres={acres}
-  setAcres={setAcres}
-  seedingRate={seedingRate}
-  setSeedingRate={setSeedingRate}
-  seedingRateUnit={seedingRateUnit}
-  setSeedingRateUnit={setSeedingRateUnit}
-  overrideSeeds={overrideSeeds}
-  setOverrideSeeds={setOverrideSeeds}
-  marketPrice={marketPrice}
-  setMarketPrice={setMarketPrice}
-  cropPriceUnit={cropPriceUnit}
-  setCropPriceUnit={setCropPriceUnit}
-  dealerDiscount={dealerDiscount}
-  setDealerDiscount={setDealerDiscount}
-  growerDiscount={growerDiscount}
-  setGrowerDiscount={setGrowerDiscount}
-  seedTreatments={seedTreatments}
-  setSeedTreatments={setSeedTreatments}
-  seedTreatmentRateOverrides={seedTreatmentRateOverrides}
-  setSeedTreatmentRateOverrides={setSeedTreatmentRateOverrides}
-  inFurrowFoliarProducts={inFurrowFoliarProducts}
-  setInFurrowFoliarProducts={setInFurrowFoliarProducts}
-  foliarRateOverrides={foliarRateOverrides}
-  setFoliarRateOverrides={setFoliarRateOverrides}
-  seedTypes={seedTypes}
-  productsSeedTreatment={productsSeedTreatment}
-  productsInFurrow={productsInFurrowFoliar}
-  onSubmit={handleFormSubmit}
-/>
+        selectedSeedType={selectedSeedType}
+        setSelectedSeedType={setSelectedSeedType}
+        acres={acres}
+        setAcres={setAcres}
+        seedingRate={seedingRate}
+        setSeedingRate={setSeedingRate}
+        seedingRateUnit={seedingRateUnit}
+        setSeedingRateUnit={setSeedingRateUnit}
+        overrideSeeds={overrideSeeds}
+        setOverrideSeeds={setOverrideSeeds}
+        marketPrice={marketPrice}
+        setMarketPrice={setMarketPrice}
+        cropPriceUnit={cropPriceUnit}
+        setCropPriceUnit={setCropPriceUnit}
+        dealerDiscount={dealerDiscount}
+        setDealerDiscount={setDealerDiscount}
+        growerDiscount={growerDiscount}
+        setGrowerDiscount={setGrowerDiscount}
+        seedTreatments={seedTreatments}
+        setSeedTreatments={setSeedTreatments}
+        seedTreatmentRateOverrides={seedTreatmentRateOverrides}
+        setSeedTreatmentRateOverrides={setSeedTreatmentRateOverrides}
+        inFurrowFoliarProducts={inFurrowFoliarProducts}
+        setInFurrowFoliarProducts={setInFurrowFoliarProducts}
+        foliarRateOverrides={foliarRateOverrides}
+        setFoliarRateOverrides={setFoliarRateOverrides}
+        seedTypes={seedTypes}
+        productsSeedTreatment={productsSeedTreatment}
+        productsInFurrow={productsInFurrowFoliar}
+        onSubmit={handleFormSubmit}
+      />
 
       <div className="text-center">
         <button
