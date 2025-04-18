@@ -30,11 +30,11 @@ export const productsSeedTreatment = [
 ];
 
 export const productsInFurrowFoliar = [
-  { "Product Name": "SoyFX", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$240.60", "Product Cost per fl oz": "$0.75", "Application Rate in Fluid Ounces": 16 },
-  { "Product Name": "PodFX", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$240.60", "Product Cost per fl oz": "$0.75", "Application Rate in Fluid Ounces": 16 },
-  { "Product Name": "N-Physis WG", "Package Size": 200, "Package Units": "gram", "Product Packaging": "Boxes", "Product Cost per Package": "$598.00", "Product Cost per gram": "$2.99", "Application Rate in Grams": 5 },
-  { "Product Name": "Envita SC", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$598.00", "Product Cost per oz": "$18.69", "Application Rate in Fluid Ounces": 0.8 },
-  { "Product Name": "Nutriquire Liquid", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$139.50", "Product Cost per oz": "$0.44", "Application Rate in Fluid Ounces": 32 },
-  { "Product Name": "Nutriquire Liquid Tote", "Package Size": 35200, "Package Units": "fl oz", "Product Packaging": "Totes", "Product Cost per Package": "$15,345.00", "Product Cost per oz": "$0.44", "Application Rate in Fluid Ounces": 32 },
-  { "Product Name": "NueNutri Liquid", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$107.50", "Product Cost per oz": "$0.34", "Application Rate in Fluid Ounces": 32 }
+  { "Product Name": "SoyFX 2.5 gal", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$240.60", "Product Cost per fl oz": "$0.75", "Application Rate in Fluid Ounces": 16 },
+  { "Product Name": "PodFX 2.5 gal", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$240.60", "Product Cost per fl oz": "$0.75", "Application Rate in Fluid Ounces": 16 },
+  { "Product Name": "N-Physis WG - 40 ac Box", "Package Size": 200, "Package Units": "gram", "Product Packaging": "Boxes", "Product Cost per Package": "$598.00", "Product Cost per gram": "$2.99", "Application Rate in Grams": 5 },
+  { "Product Name": "Envita SC 2.5 gal", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$598.00", "Product Cost per fl oz": "$18.69", "Application Rate in Fluid Ounces": 0.8 },
+  { "Product Name": "Nutriquire 2.5 gal", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$139.50", "Product Cost per fl oz": "$0.44", "Application Rate in Fluid Ounces": 32 },
+  { "Product Name": "Nutriquire 275 gal Tote", "Package Size": 35200, "Package Units": "fl oz", "Product Packaging": "Totes", "Product Cost per Package": "$15,345.00", "Product Cost per fl oz": "$0.44", "Application Rate in Fluid Ounces": 32 },
+  { "Product Name": "NueNutri 2.5 gal", "Package Size": 320, "Package Units": "fl oz", "Product Packaging": "Jugs", "Product Cost per Package": "$107.50", "Product Cost per fl oz": "$0.34", "Application Rate in Fluid Ounces": 32 }
 ];
