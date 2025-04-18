@@ -33,14 +33,10 @@ export default function CombinedCalculator() {
 
   const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
   const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
-  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<
-    { name: string; applicationType: string }[]
-  >([
-    { name: "", applicationType: "" },
-    { name: "", applicationType: "" },
-    { name: "", applicationType: "" },
-    { name: "", applicationType: "" },
-  ]);
+
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>(
+    Array(4).fill({ name: "", applicationType: "" })
+  );
   const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
 
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
@@ -135,23 +131,23 @@ export default function CombinedCalculator() {
       costPerAcre: totalPerAcre,
     });
 
-    const roiState = cropPrice > 0
-      ? {
-          breakeven: totalPerAcre / cropPrice,
-          roi2: (2 * totalPerAcre) / cropPrice,
-          roi3: (3 * totalPerAcre) / cropPrice,
-          roi4: (4 * totalPerAcre) / cropPrice,
-          roi5: (5 * totalPerAcre) / cropPrice,
-        }
-      : {
-          breakeven: null,
-          roi2: null,
-          roi3: null,
-          roi4: null,
-          roi5: null,
-        };
-
-    setRoi(roiState);
+    setRoi(
+      !isNaN(cropPrice) && cropPrice > 0
+        ? {
+            breakeven: totalPerAcre / cropPrice,
+            roi2: (2 * totalPerAcre) / cropPrice,
+            roi3: (3 * totalPerAcre) / cropPrice,
+            roi4: (4 * totalPerAcre) / cropPrice,
+            roi5: (5 * totalPerAcre) / cropPrice,
+          }
+        : {
+            breakeven: null,
+            roi2: null,
+            roi3: null,
+            roi4: null,
+            roi5: null,
+          }
+    );
   };
 
   const downloadPDF = () => {
@@ -200,16 +196,16 @@ export default function CombinedCalculator() {
           <Image
             src="/yms_combined_calculator/yms-logo.png"
             alt="YMS Logo"
-            width={140}
-            height={140}
+            width={160}
+            height={160}
             priority
           />
         </div>
         <div className="flex-grow text-center">
-          <h1 className="text-4xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
+          <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
           <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
         </div>
-        <div className="w-[140px]" />
+        <div className="w-[160px]" />
       </div>
 
       <CalculatorForm
@@ -245,16 +241,7 @@ export default function CombinedCalculator() {
         onSubmit={handleFormSubmit}
       />
 
-      <div className="text-center">
-        <button
-          onClick={handleFormSubmit}
-          className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg"
-        >
-          Calculate Combined Results
-        </button>
-      </div>
-
-      {(seedTreatmentResults.length || foliarResults.length) > 0 && (
+      {seedTreatmentResults.length > 0 || foliarResults.length > 0 ? (
         <ResultsDisplay
           seedTreatmentResults={seedTreatmentResults}
           inFurrowFoliarResults={foliarResults}
@@ -268,7 +255,7 @@ export default function CombinedCalculator() {
           roi5={roi.roi5}
           cropPriceUnit={cropPriceUnit}
         />
-      )}
+      ) : null}
 
       <div className="text-center">
         <button

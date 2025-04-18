@@ -2,8 +2,7 @@
 "use client";
 
 import React from "react";
-import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
-import { getDefaultSeedsPerUnit } from "../utils/calculations";
+import type { Product, SeedType } from "../utils/calculations";
 
 interface CalculatorFormProps {
   selectedSeedType: string;
@@ -32,6 +31,9 @@ interface CalculatorFormProps {
   setInFurrowFoliarProducts: (value: { name: string; applicationType: string }[]) => void;
   foliarRateOverrides: string[];
   setFoliarRateOverrides: (value: string[]) => void;
+  seedTypes: SeedType[];
+  productsSeedTreatment: Product[];
+  productsInFurrow: Product[];
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -62,38 +64,46 @@ export default function CalculatorForm({
   setInFurrowFoliarProducts,
   foliarRateOverrides,
   setFoliarRateOverrides,
+  seedTypes,
+  productsSeedTreatment,
+  productsInFurrow,
   onSubmit,
 }: CalculatorFormProps) {
   const defaultSeedsPerLb =
     seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] || "";
 
-  const handleSeedTreatmentChange = (index: number, value: string) => {
-    const updated = [...seedTreatments];
-    updated[index] = value;
-    setSeedTreatments(updated);
+  const handleProductChange = (index: number, value: string, type: "seed" | "foliar") => {
+    if (type === "seed") {
+      const newList = [...seedTreatments];
+      newList[index] = value;
+      setSeedTreatments(newList);
+    } else {
+      const newList = [...inFurrowFoliarProducts];
+      newList[index].name = value;
+      setInFurrowFoliarProducts(newList);
+    }
   };
 
-  const handleSeedRateOverride = (index: number, value: string) => {
-    const updated = [...seedTreatmentRateOverrides];
-    updated[index] = value;
-    setSeedTreatmentRateOverrides(updated);
+  const handleRateChange = (index: number, value: string, type: "seed" | "foliar") => {
+    if (type === "seed") {
+      const updated = [...seedTreatmentRateOverrides];
+      updated[index] = value;
+      setSeedTreatmentRateOverrides(updated);
+    } else {
+      const updated = [...foliarRateOverrides];
+      updated[index] = value;
+      setFoliarRateOverrides(updated);
+    }
   };
 
-  const handleFoliarProductChange = (index: number, field: "name" | "applicationType", value: string) => {
-    const updated = [...inFurrowFoliarProducts];
-    updated[index][field] = value;
-    setInFurrowFoliarProducts(updated);
-  };
-
-  const handleFoliarOverride = (index: number, value: string) => {
-    const updated = [...foliarRateOverrides];
-    updated[index] = value;
-    setFoliarRateOverrides(updated);
+  const handleAppTypeChange = (index: number, value: string) => {
+    const newList = [...inFurrowFoliarProducts];
+    newList[index].applicationType = value;
+    setInFurrowFoliarProducts(newList);
   };
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      {/* Crop Inputs */}
       <h2 className="text-blue-400 text-xl font-bold mb-2">Crop Inputs</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
