@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -29,11 +28,10 @@ export default function CombinedCalculator() {
 
   const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
   const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
-
-  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState(
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>(
     Array(4).fill({ name: "", applicationType: "" })
   );
-  const [foliarRateOverrides, setFoliarRateOverrides] = useState(["", "", "", ""]);
+  const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
 
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -43,7 +41,13 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  const [roi, setRoi] = useState({
+  const [roi, setRoi] = useState<{
+    breakeven: number | null;
+    roi2: number | null;
+    roi3: number | null;
+    roi4: number | null;
+    roi5: number | null;
+  }>({
     breakeven: null,
     roi2: null,
     roi3: null,
@@ -154,7 +158,6 @@ export default function CombinedCalculator() {
 
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-
       const margin = 20;
       const imgWidth = pageWidth - margin * 2;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -177,10 +180,7 @@ export default function CombinedCalculator() {
   };
 
   return (
-    <div
-      className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
-      ref={resultRef}
-    >
+    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="flex items-center justify-between mb-6">
         <div className="flex-shrink-0">
           <Image src="/yms_combined_calculator/yms-logo.png" alt="YMS Logo" width={160} height={160} priority />
@@ -226,10 +226,7 @@ export default function CombinedCalculator() {
       />
 
       <div className="text-center">
-        <button
-          onClick={handleFormSubmit}
-          className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg"
-        >
+        <button onClick={handleFormSubmit} className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg">
           Calculate Combined Results
         </button>
       </div>
