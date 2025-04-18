@@ -25,14 +25,14 @@ interface CalculatorFormProps {
   growerDiscount: string;
   setGrowerDiscount: (value: string) => void;
   seedTreatments: string[];
-  setSeedTreatments: (treatments: string[]) => void;
+  setSeedTreatments: (value: string[]) => void;
   seedTreatmentRateOverrides: string[];
-  setSeedTreatmentRateOverrides: (rates: string[]) => void;
+  setSeedTreatmentRateOverrides: (value: string[]) => void;
   inFurrowFoliarProducts: { name: string; applicationType: string }[];
-  setInFurrowFoliarProducts: (products: { name: string; applicationType: string }[]) => void;
+  setInFurrowFoliarProducts: (value: { name: string; applicationType: string }[]) => void;
   foliarRateOverrides: string[];
-  setFoliarRateOverrides: (rates: string[]) => void;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  setFoliarRateOverrides: (value: string[]) => void;
+  onSubmit: (e: React.FormEvent) => void;
 }
 
 export default function CalculatorForm({
@@ -67,9 +67,33 @@ export default function CalculatorForm({
   const defaultSeedsPerLb =
     seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] || "";
 
+  const handleSeedTreatmentChange = (index: number, value: string) => {
+    const updated = [...seedTreatments];
+    updated[index] = value;
+    setSeedTreatments(updated);
+  };
+
+  const handleSeedRateOverride = (index: number, value: string) => {
+    const updated = [...seedTreatmentRateOverrides];
+    updated[index] = value;
+    setSeedTreatmentRateOverrides(updated);
+  };
+
+  const handleFoliarProductChange = (index: number, field: "name" | "applicationType", value: string) => {
+    const updated = [...inFurrowFoliarProducts];
+    updated[index][field] = value;
+    setInFurrowFoliarProducts(updated);
+  };
+
+  const handleFoliarOverride = (index: number, value: string) => {
+    const updated = [...foliarRateOverrides];
+    updated[index] = value;
+    setFoliarRateOverrides(updated);
+  };
+
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      {/* Crop Inputs */}
+      {/* Crop Inputs Section */}
       <h2 className="text-blue-400 text-xl font-bold mb-2">Crop Inputs</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -77,12 +101,12 @@ export default function CalculatorForm({
           <select
             value={selectedSeedType}
             onChange={(e) => setSelectedSeedType(e.target.value)}
-            className="w-full bg-zinc-800 p-2 rounded"
+            className="w-full p-2 bg-zinc-800 text-white rounded"
           >
-            <option value="">-- Select Seed Type --</option>
-            {seedTypes.map((type, i) => (
-              <option key={i} value={type["Seed Type"]}>
-                {type["Seed Type"]}
+            <option value="">-- Select --</option>
+            {seedTypes.map((seed, i) => (
+              <option key={i} value={seed["Seed Type"]}>
+                {seed["Seed Type"]}
               </option>
             ))}
           </select>
@@ -93,7 +117,7 @@ export default function CalculatorForm({
             type="number"
             value={acres}
             onChange={(e) => setAcres(e.target.value)}
-            className="w-full bg-zinc-800 p-2 rounded"
+            className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
         <div>
@@ -102,7 +126,7 @@ export default function CalculatorForm({
             type="number"
             value={seedingRate}
             onChange={(e) => setSeedingRate(e.target.value)}
-            className="w-full bg-zinc-800 p-2 rounded"
+            className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
         <div>
@@ -110,41 +134,49 @@ export default function CalculatorForm({
           <select
             value={seedingRateUnit}
             onChange={(e) => setSeedingRateUnit(e.target.value)}
-            className="w-full bg-zinc-800 p-2 rounded"
+            className="w-full p-2 bg-zinc-800 text-white rounded"
           >
             <option value="seeds/acre">seeds/acre</option>
             <option value="lbs/acre">lbs/acre</option>
             <option value="bu/acre">bu/acre</option>
           </select>
         </div>
-        <div>
+        <div className="md:col-span-2">
           <label className="text-yellow-400 font-bold">
-            Seeds per Pound Override <span className="text-white">(Optional)</span>
+            Seeds per Pound Override <span className="text-sm text-white">(Optional)</span>
           </label>
           <input
             type="number"
             value={overrideSeeds}
             onChange={(e) => setOverrideSeeds(e.target.value)}
-            className="w-full bg-zinc-800 p-2 rounded"
+            className="w-full p-2 bg-zinc-800 text-white rounded"
           />
-          <p className="text-sm text-gray-400 mt-1">Default: {defaultSeedsPerLb} seeds/lb</p>
+          {selectedSeedType && (
+            <p className="text-sm text-gray-400 mt-1">
+              Default: {defaultSeedsPerLb} seeds/lb
+            </p>
+          )}
         </div>
         <div>
-          <label className="text-yellow-400 font-bold">Dealer Discount (%) <span className="text-white">(Optional)</span></label>
+          <label className="text-yellow-400 font-bold">
+            Dealer Discount (%) <span className="text-sm text-white">(Optional)</span>
+          </label>
           <input
             type="number"
             value={dealerDiscount}
             onChange={(e) => setDealerDiscount(e.target.value)}
-            className="w-full bg-zinc-800 p-2 rounded"
+            className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
         <div>
-          <label className="text-yellow-400 font-bold">Grower Discount (%) <span className="text-white">(Optional)</span></label>
+          <label className="text-yellow-400 font-bold">
+            Grower Discount (%) <span className="text-sm text-white">(Optional)</span>
+          </label>
           <input
             type="number"
             value={growerDiscount}
             onChange={(e) => setGrowerDiscount(e.target.value)}
-            className="w-full bg-zinc-800 p-2 rounded"
+            className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
