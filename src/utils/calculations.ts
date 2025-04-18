@@ -46,7 +46,8 @@ export function calculateSeedTreatmentData(
   overrideSeedsPerLb: number | undefined,
   product: Product,
   dealerDiscount: number = 0,
-  growerDiscount: number = 0
+  growerDiscount: number = 0,
+  rateOverride?: number
 ): ProductCalculation {
   const crop = seedType["Seed Type"].toLowerCase();
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
@@ -84,7 +85,7 @@ export function calculateSeedTreatmentData(
       break;
   }
 
-  const applicationRate = product["Application Rate in Ounces"] || 0;
+  const applicationRate = rateOverride ?? (product["Application Rate in Ounces"] || 0);
   const totalProductNeeded = applicationRate * totalUnits;
 
   const costPerUnit = product["Product Cost per oz"]
@@ -96,12 +97,13 @@ export function calculateSeedTreatmentData(
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
 
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
+  const discountedCostPerOunce = costPerUnit * discountFactor;
+
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
 
-  // ✅ Discounted cost per unit of treated seed and per acre
-  const costPerUnitOfSeed = (costPerUnit * applicationRate) * discountFactor;
-  const individualCostPerAcre = discountedTotalCostToGrower / acres;
+  const costPerUnitOfSeed = (totalProductNeeded * discountedCostPerOunce) / totalUnits;
+  const individualCostPerAcre = (totalProductNeeded * discountedCostPerOunce) / acres;
 
   const packageUnits = product["Package Units"] || "units";
   const productPackaging = product["Product Packaging"] || "";
@@ -125,7 +127,6 @@ export function calculateSeedTreatmentData(
   };
 }
 
-// ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
   acres: number,
   product: Product,
@@ -171,7 +172,6 @@ export function calculateProductData(
   };
 }
 
-// ✅ MULTI-PRODUCT COSTS SUMMARY
 export function calculateAllFoliarProductCosts(
   acres: number,
   selectedProducts: Product[],
@@ -193,7 +193,7 @@ export function calculateAllFoliarProductCosts(
 
   return { productsData, totalCostPerAcre, totalUndiscountedCost, totalDiscountedCost };
 }
-// ✅ Utility function for calculating seedsPerUnit dynamically
+
 export function getCalculatedSeedsPerUnit(
   seedType: SeedType,
   overrideSeedsPerLb?: number
@@ -208,10 +208,8 @@ export function getCalculatedSeedsPerUnit(
   return seedsPerLb * lbsPerUnit;
 }
 
-// ✅ Utility function for returning default seedsPerUnit without override
 export function getDefaultSeedsPerUnit(seedType: SeedType): number {
   const seedsPerLb = parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
   return seedsPerLb * lbsPerUnit;
 }
-
