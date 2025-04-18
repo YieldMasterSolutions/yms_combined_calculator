@@ -1,3 +1,4 @@
+// src/app/page.tsx
 "use client";
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
@@ -43,18 +44,12 @@ export default function CombinedCalculator() {
     costPerAcre: 0,
   });
 
-  const [roi, setRoi] = useState<{
-    breakeven: number | null;
-    roi2: number | null;
-    roi3: number | null;
-    roi4: number | null;
-    roi5: number | null;
-  }>({
-    breakeven: null,
-    roi2: null,
-    roi3: null,
-    roi4: null,
-    roi5: null,
+  const [roi, setRoi] = useState({
+    breakeven: null as number | null,
+    roi2: null as number | null,
+    roi3: null as number | null,
+    roi4: null as number | null,
+    roi5: null as number | null,
   });
 
   const resultRef = useRef<HTMLDivElement>(null);
@@ -70,7 +65,7 @@ export default function CombinedCalculator() {
     const override = overrideSeeds ? parseFloat(overrideSeeds) : undefined;
 
     const seedTypeObj = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
-    if (!seedTypeObj || isNaN(acresNum) || isNaN(cropPrice) || isNaN(rate)) {
+    if (!seedTypeObj || isNaN(acresNum) || isNaN(rate)) {
       console.error("Missing or invalid required values");
       return;
     }
@@ -143,71 +138,55 @@ export default function CombinedCalculator() {
     );
   };
 
-const downloadPDF = () => {
-  if (!resultRef.current) return;
+  const downloadPDF = () => {
+    if (!resultRef.current) return;
+    html2canvas(resultRef.current, {
+      scale: 2,
+      useCORS: true,
+      scrollY: -window.scrollY,
+      backgroundColor: "#111",
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "pt", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
 
-  html2canvas(resultRef.current, {
-    scale: 2,
-    useCORS: true,
-    scrollY: -window.scrollY,
-    backgroundColor: "#111", // match your dark theme background
-  }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "pt", "a4");
+      const margin = 20;
+      const imgWidth = pageWidth - margin * 2;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+      let heightLeft = imgHeight;
+      let position = margin;
 
-    const margin = 20;
-    const imgWidth = pageWidth - margin * 2;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    let heightLeft = imgHeight;
-    let position = margin;
-
-    // Add first page
-    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight - margin * 2;
-
-    // Add remaining pages if content overflows
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight + margin * 2;
-      pdf.addPage();
       pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
       heightLeft -= pageHeight - margin * 2;
-    }
 
-    pdf.save("YieldMaster_CombinedCalculation.pdf");
-  });
-};
-  
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight + margin * 2;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight - margin * 2;
+      }
+
+      pdf.save("YieldMaster_CombinedCalculation.pdf");
+    });
+  };
+
   return (
     <div
       className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
       ref={resultRef}
     >
-      
-<div className="flex items-center justify-between mb-6">
-  {/* Left-aligned logo */}
-  <div className="flex-shrink-0">
-    <Image
-      src="/yms_combined_calculator/yms-logo.png"
-      alt="YMS Logo"
-      width={160}  // Adjust size as needed
-      height={160}
-      priority
-    />
-  </div>
-
-  {/* Centered title */}
-  <div className="flex-grow text-center">
-    <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-    <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
-  </div>
-
-  {/* Right spacer to keep center alignment balanced */}
-  <div className="w-[160px]" />
-</div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex-shrink-0">
+          <Image src="/yms_combined_calculator/yms-logo.png" alt="YMS Logo" width={160} height={160} priority />
+        </div>
+        <div className="flex-grow text-center">
+          <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
+          <p className="text-2xl font-semibold text-[#D2B48C]">Biological Program Calculator</p>
+        </div>
+        <div className="w-[160px]" />
+      </div>
 
       <CalculatorForm
         selectedSeedType={selectedSeedType}
