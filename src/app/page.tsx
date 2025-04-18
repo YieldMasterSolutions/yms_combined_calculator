@@ -25,9 +25,13 @@ export default function CombinedCalculator() {
   const [cropPriceUnit, setCropPriceUnit] = useState("bu");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
+const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
+const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<{ name: string; applicationType: string }[]>(
+  Array(4).fill({ name: "", applicationType: "" })
+);
+const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState<string[]>(["", ""]);
+const [foliarRateOverrides, setFoliarRateOverrides] = useState<string[]>(["", "", "", ""]);
 
-  const [seedTreatments, setSeedTreatments] = useState<string[]>(["", ""]);
-  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState<
     { name: string; applicationType: string }[]
   >([
     { name: "", applicationType: "" },
