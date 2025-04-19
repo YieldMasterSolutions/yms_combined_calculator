@@ -84,7 +84,7 @@ export function calculateSeedTreatmentData(
       break;
   }
 
-  const applicationRate = rateOverride ?? product["Application Rate in Ounces"] || 0;
+  const applicationRate = (rateOverride ?? product["Application Rate in Ounces"]) || 0;
   const totalProductNeeded = applicationRate * totalUnits;
 
   const costPerUnit = product["Product Cost per oz"]
