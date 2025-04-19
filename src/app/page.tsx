@@ -1,6 +1,8 @@
+// src/app/page.tsx
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import {
@@ -9,6 +11,7 @@ import {
   productsInFurrowFoliar,
 } from "../utils/data";
 import {
+  ProductCalculation,
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
   calculateTotalProgramCost,
@@ -37,17 +40,10 @@ export default function Home() {
   ]);
   const [foliarRateOverrides, setFoliarRateOverrides] = useState(["", "", "", ""]);
 
-  const [seedTreatmentResults, setSeedTreatmentResults] = useState<any[]>([]);
-  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<any[]>([]);
+  const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
+  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<ProductCalculation[]>([]);
   const [programCost, setProgramCost] = useState<number | null>(null);
-  const [roi, setRoi] = useState<{
-    breakeven: number;
-    twoToOne: number;
-    threeToOne: number;
-    fourToOne: number;
-    fiveToOne: number;
-  } | null>(null);
-
+  const [roi, setRoi] = useState<ReturnType<typeof calculateROI> | null>(null);
   const [totalUndiscountedCost, setTotalUndiscountedCost] = useState(0);
   const [totalDiscountedCost, setTotalDiscountedCost] = useState(0);
   const [totalCostPerAcre, setTotalCostPerAcre] = useState(0);
@@ -58,15 +54,15 @@ export default function Home() {
     const acresNum = parseFloat(acres);
     const seedingRateNum = parseFloat(seedingRate);
     const overrideSeedsNum = overrideSeeds ? parseFloat(overrideSeeds) : undefined;
-    const dealerDiscountNum = dealerDiscount ? parseFloat(dealerDiscount) : 0;
-    const growerDiscountNum = growerDiscount ? parseFloat(growerDiscount) : 0;
+    const dealerDiscountNum = parseFloat(dealerDiscount) || 0;
+    const growerDiscountNum = parseFloat(growerDiscount) || 0;
     const marketPriceNum = marketPrice ? parseFloat(marketPrice) : undefined;
 
-    const selectedSeedData = seedTypes.find(s => s["Seed Type"] === selectedSeedType);
+    const selectedSeedData = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
     if (!selectedSeedData) return;
 
     const seedResults = seedTreatments.map((productName, index) => {
-      const product = productsSeedTreatment.find(p => p["Product Name"] === productName);
+      const product = productsSeedTreatment.find((p) => p["Product Name"] === productName);
       if (!product) return null;
 
       const rateOverride = seedTreatmentRateOverrides[index]
@@ -84,14 +80,12 @@ export default function Home() {
         growerDiscountNum,
         rateOverride
       );
-    }).filter((r): r is NonNullable<typeof r> => r !== null);
+    }).filter((r): r is ProductCalculation => r !== null);
 
     setSeedTreatmentResults(seedResults);
 
     const selectedFoliarProducts = inFurrowFoliarProducts.map((p, index) => {
-      const matchedProduct = productsInFurrowFoliar.find(
-        prod => prod["Product Name"] === p.name
-      );
+      const matchedProduct = productsInFurrowFoliar.find((prod) => prod["Product Name"] === p.name);
       if (matchedProduct) {
         return {
           ...matchedProduct,
@@ -102,7 +96,7 @@ export default function Home() {
         };
       }
       return null;
-    }).filter((p): p is NonNullable<typeof p> => p !== null);
+    }).filter((p): p is typeof productsInFurrowFoliar[number] & { _override?: number; applicationType?: string } => p !== null);
 
     const { productsData: foliarResults } = calculateAllFoliarProductCosts(
       acresNum,
@@ -140,7 +134,7 @@ export default function Home() {
   return (
     <main className="max-w-5xl mx-auto p-6 text-white">
       <div className="text-center mb-10">
-        <img src="/yms-logo.png" alt="YMS Logo" className="mx-auto mb-4 w-48" />
+        <Image src="/yms-logo.png" alt="YMS Logo" width={200} height={100} />
         <h1 className="text-3xl font-bold text-yellow-400">YMS Combined Calculator</h1>
         <h2 className="text-lg text-tan-300 mt-2">Biological Program Calculator</h2>
       </div>

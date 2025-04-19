@@ -1,301 +1,198 @@
-// src/components/CalculatorForm.tsx
+// src/app/page.tsx
 "use client";
 
-import React from "react";
-import { getDefaultSeedsPerUnit } from "../utils/calculations";
-
-interface Product {
-  "Product Name": string;
-  "Package Size": number;
-  "Package Units": string;
-  "Product Packaging": string;
-  "Product Cost per Package": string;
-  "Product Cost per fl oz"?: string;
-  "Product Cost per oz"?: string;
-  "Product Cost per gram"?: string;
-  "Application Rate in Fluid Ounces"?: number;
-  "Application Rate in Ounces"?: number;
-  "Application Rate in Grams"?: number;
-}
-
-interface SeedType {
-  "Seed Type": string;
-  "Seeds/lb": string;
-  "Seeds/Unit": string;
-  "Lbs/Unit": number;
-}
-
-interface CalculatorFormProps {
-  selectedSeedType: string;
-  setSelectedSeedType: (value: string) => void;
-  acres: string;
-  setAcres: (value: string) => void;
-  seedingRate: string;
-  setSeedingRate: (value: string) => void;
-  seedingRateUnit: string;
-  setSeedingRateUnit: (value: string) => void;
-  overrideSeeds: string;
-  setOverrideSeeds: (value: string) => void;
-  marketPrice: string;
-  setMarketPrice: (value: string) => void;
-  cropPriceUnit: string;
-  setCropPriceUnit: (value: string) => void;
-  dealerDiscount: string;
-  setDealerDiscount: (value: string) => void;
-  growerDiscount: string;
-  setGrowerDiscount: (value: string) => void;
-  seedTreatments: string[];
-  setSeedTreatments: (value: string[]) => void;
-  seedTreatmentRateOverrides: string[];
-  setSeedTreatmentRateOverrides: (value: string[]) => void;
-  inFurrowFoliarProducts: { name: string; applicationType: string }[];
-  setInFurrowFoliarProducts: (value: { name: string; applicationType: string }[]) => void;
-  foliarRateOverrides: string[];
-  setFoliarRateOverrides: (value: string[]) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  seedTypes: SeedType[];
-  productsSeedTreatment: Product[];
-  productsInFurrow: Product[];
-}
-
-export default function CalculatorForm({
-  selectedSeedType,
-  setSelectedSeedType,
-  acres,
-  setAcres,
-  seedingRate,
-  setSeedingRate,
-  seedingRateUnit,
-  setSeedingRateUnit,
-  overrideSeeds,
-  setOverrideSeeds,
-  marketPrice,
-  setMarketPrice,
-  cropPriceUnit,
-  setCropPriceUnit,
-  dealerDiscount,
-  setDealerDiscount,
-  growerDiscount,
-  setGrowerDiscount,
-  seedTreatments,
-  setSeedTreatments,
-  seedTreatmentRateOverrides,
-  setSeedTreatmentRateOverrides,
-  inFurrowFoliarProducts,
-  setInFurrowFoliarProducts,
-  foliarRateOverrides,
-  setFoliarRateOverrides,
-  onSubmit,
+import React, { useState } from "react";
+import Image from "next/image";
+import CalculatorForm from "../components/CalculatorForm";
+import ResultsDisplay from "../components/ResultsDisplay";
+import {
   seedTypes,
   productsSeedTreatment,
-  productsInFurrow,
-}: CalculatorFormProps) {
-  const defaultSeedsPerLb =
-    seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] || "";
+  productsInFurrowFoliar,
+} from "../utils/data";
+import {
+  calculateSeedTreatmentData,
+  calculateAllFoliarProductCosts,
+  calculateTotalProgramCost,
+  calculateROI,
+  ProductCalculation,
+} from "../utils/calculations";
 
-  const handleProductChange = (index: number, value: string, type: "seed" | "foliar") => {
-    if (type === "seed") {
-      const updated = [...seedTreatments];
-      updated[index] = value;
-      setSeedTreatments(updated);
+export default function Home() {
+  const [selectedSeedType, setSelectedSeedType] = useState("");
+  const [acres, setAcres] = useState("");
+  const [seedingRate, setSeedingRate] = useState("");
+  const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
+  const [overrideSeeds, setOverrideSeeds] = useState("");
+  const [marketPrice, setMarketPrice] = useState("");
+  const [cropPriceUnit, setCropPriceUnit] = useState("bu");
+  const [dealerDiscount, setDealerDiscount] = useState("");
+  const [growerDiscount, setGrowerDiscount] = useState("");
+
+  const [seedTreatments, setSeedTreatments] = useState(["", ""]);
+  const [seedTreatmentRateOverrides, setSeedTreatmentRateOverrides] = useState(["", ""]);
+
+  const [inFurrowFoliarProducts, setInFurrowFoliarProducts] = useState([
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+    { name: "", applicationType: "" },
+  ]);
+  const [foliarRateOverrides, setFoliarRateOverrides] = useState(["", "", "", ""]);
+
+  const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
+  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<ProductCalculation[]>([]);
+  const [programCost, setProgramCost] = useState<number | null>(null);
+  const [roi, setRoi] = useState<{
+    breakeven: number;
+    twoToOne: number;
+    threeToOne: number;
+    fourToOne: number;
+    fiveToOne: number;
+  } | null>(null);
+
+  const [totalUndiscountedCost, setTotalUndiscountedCost] = useState(0);
+  const [totalDiscountedCost, setTotalDiscountedCost] = useState(0);
+  const [totalCostPerAcre, setTotalCostPerAcre] = useState(0);
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const acresNum = parseFloat(acres);
+    const seedingRateNum = parseFloat(seedingRate);
+    const overrideSeedsNum = overrideSeeds ? parseFloat(overrideSeeds) : undefined;
+    const dealerDiscountNum = dealerDiscount ? parseFloat(dealerDiscount) : 0;
+    const growerDiscountNum = growerDiscount ? parseFloat(growerDiscount) : 0;
+    const marketPriceNum = marketPrice ? parseFloat(marketPrice) : undefined;
+
+    const selectedSeedData = seedTypes.find(s => s["Seed Type"] === selectedSeedType);
+    if (!selectedSeedData) return;
+
+    const seedResults = seedTreatments.map((productName, index) => {
+      const product = productsSeedTreatment.find(p => p["Product Name"] === productName);
+      if (!product) return null;
+
+      const rateOverride = seedTreatmentRateOverrides[index]
+        ? parseFloat(seedTreatmentRateOverrides[index])
+        : undefined;
+
+      return calculateSeedTreatmentData(
+        acresNum,
+        seedingRateNum,
+        seedingRateUnit,
+        selectedSeedData,
+        overrideSeedsNum,
+        product,
+        dealerDiscountNum,
+        growerDiscountNum,
+        rateOverride
+      );
+    }).filter((r): r is NonNullable<typeof r> => r !== null);
+
+    setSeedTreatmentResults(seedResults);
+
+    const selectedFoliarProducts = inFurrowFoliarProducts.map((p, index) => {
+      const matchedProduct = productsInFurrowFoliar.find(
+        prod => prod["Product Name"] === p.name
+      );
+      if (matchedProduct) {
+        return {
+          ...matchedProduct,
+          _override: foliarRateOverrides[index]
+            ? parseFloat(foliarRateOverrides[index])
+            : undefined,
+          applicationType: p.applicationType,
+        };
+      }
+      return null;
+    }).filter((p): p is NonNullable<typeof p> => p !== null);
+
+    const { productsData: foliarResults } = calculateAllFoliarProductCosts(
+      acresNum,
+      selectedFoliarProducts,
+      dealerDiscountNum,
+      growerDiscountNum
+    );
+
+    setInFurrowFoliarResults(foliarResults);
+
+    const totalCost = calculateTotalProgramCost(seedResults, foliarResults);
+    setProgramCost(totalCost);
+
+    const totalUndiscounted = seedResults.reduce((acc, item) => acc + item.originalTotalCostToGrower, 0)
+      + foliarResults.reduce((acc, item) => acc + item.originalTotalCostToGrower, 0);
+
+    const totalDiscounted = seedResults.reduce((acc, item) => acc + item.discountedTotalCostToGrower, 0)
+      + foliarResults.reduce((acc, item) => acc + item.discountedTotalCostToGrower, 0);
+
+    const costPerAcre = seedResults.reduce((acc, item) => acc + item.individualCostPerAcre, 0)
+      + foliarResults.reduce((acc, item) => acc + item.individualCostPerAcre, 0);
+
+    setTotalUndiscountedCost(totalUndiscounted);
+    setTotalDiscountedCost(totalDiscounted);
+    setTotalCostPerAcre(costPerAcre);
+
+    if (marketPriceNum !== undefined && !isNaN(totalCost)) {
+      const roiResults = calculateROI(totalCost, marketPriceNum);
+      setRoi(roiResults);
     } else {
-      const updated = [...inFurrowFoliarProducts];
-      updated[index].name = value;
-      setInFurrowFoliarProducts(updated);
+      setRoi(null);
     }
-  };
-
-  const handleRateChange = (index: number, value: string, type: "seed" | "foliar") => {
-    if (type === "seed") {
-      const updated = [...seedTreatmentRateOverrides];
-      updated[index] = value;
-      setSeedTreatmentRateOverrides(updated);
-    } else {
-      const updated = [...foliarRateOverrides];
-      updated[index] = value;
-      setFoliarRateOverrides(updated);
-    }
-  };
-
-  const handleAppTypeChange = (index: number, value: string) => {
-    const updated = [...inFurrowFoliarProducts];
-    updated[index].applicationType = value;
-    setInFurrowFoliarProducts(updated);
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
-      {/* Crop Inputs */}
-      <h2 className="text-blue-400 text-xl font-bold mb-2">Crop Inputs</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="text-yellow-400 font-bold">Crop Type</label>
-          <select
-            value={selectedSeedType}
-            onChange={(e) => setSelectedSeedType(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="">-- Select --</option>
-            {seedTypes.map((seed, i) => (
-              <option key={i} value={seed["Seed Type"]}>
-                {seed["Seed Type"]}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">Number of Acres</label>
-          <input
-            type="number"
-            value={acres}
-            onChange={(e) => setAcres(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">Seeding Rate</label>
-          <input
-            type="number"
-            value={seedingRate}
-            onChange={(e) => setSeedingRate(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">Rate Unit</label>
-          <select
-            value={seedingRateUnit}
-            onChange={(e) => setSeedingRateUnit(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="seeds/acre">seeds/acre</option>
-            <option value="lbs/acre">lbs/acre</option>
-            <option value="bu/acre">bu/acre</option>
-          </select>
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">
-            Seeds/lb Override <span className="text-white text-sm">(Optional)</span>
-          </label>
-          <input
-            type="number"
-            value={overrideSeeds}
-            onChange={(e) => setOverrideSeeds(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-          <p className="text-sm text-gray-400 mt-1">Default: {defaultSeedsPerLb}</p>
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">Dealer Discount (%)</label>
-          <input
-            type="number"
-            value={dealerDiscount}
-            onChange={(e) => setDealerDiscount(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">Grower Discount (%)</label>
-          <input
-            type="number"
-            value={growerDiscount}
-            onChange={(e) => setGrowerDiscount(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">Market Price (Optional)</label>
-          <input
-            type="number"
-            value={marketPrice}
-            onChange={(e) => setMarketPrice(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-        <div>
-          <label className="text-yellow-400 font-bold">Price Unit</label>
-          <select
-            value={cropPriceUnit}
-            onChange={(e) => setCropPriceUnit(e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="bu">$ / bu</option>
-            <option value="lb">$ / lb</option>
-            <option value="cwt">$ / cwt</option>
-            <option value="ton">$ / ton</option>
-          </select>
-        </div>
+    <main className="max-w-5xl mx-auto p-6 text-white">
+      <div className="text-center mb-10">
+        <Image src="/yms-logo.png" alt="YMS Logo" width={192} height={96} className="mx-auto mb-4" />
+        <h1 className="text-3xl font-bold text-yellow-400">YMS Combined Calculator</h1>
+        <h2 className="text-lg text-tan-300 mt-2">Biological Program Calculator</h2>
       </div>
 
-      {/* Seed Treatments */}
-      <h2 className="text-blue-400 text-xl font-bold mt-6 mb-2">Seed Treatments</h2>
-      {seedTreatments.map((treatment, i) => (
-        <div key={i} className="grid grid-cols-2 gap-2">
-          <select
-            value={treatment}
-            onChange={(e) => handleProductChange(i, e.target.value, "seed")}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="">-- Select Product --</option>
-            {productsSeedTreatment.map((product, index) => (
-              <option key={index} value={product["Product Name"]}>
-                {product["Product Name"]}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            placeholder="Rate Override (oz/unit)"
-            value={seedTreatmentRateOverrides[i]}
-            onChange={(e) => handleRateChange(i, e.target.value, "seed")}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-      ))}
+      <CalculatorForm
+        selectedSeedType={selectedSeedType}
+        setSelectedSeedType={setSelectedSeedType}
+        acres={acres}
+        setAcres={setAcres}
+        seedingRate={seedingRate}
+        setSeedingRate={setSeedingRate}
+        seedingRateUnit={seedingRateUnit}
+        setSeedingRateUnit={setSeedingRateUnit}
+        overrideSeeds={overrideSeeds}
+        setOverrideSeeds={setOverrideSeeds}
+        marketPrice={marketPrice}
+        setMarketPrice={setMarketPrice}
+        cropPriceUnit={cropPriceUnit}
+        setCropPriceUnit={setCropPriceUnit}
+        dealerDiscount={dealerDiscount}
+        setDealerDiscount={setDealerDiscount}
+        growerDiscount={growerDiscount}
+        setGrowerDiscount={setGrowerDiscount}
+        seedTreatments={seedTreatments}
+        setSeedTreatments={setSeedTreatments}
+        seedTreatmentRateOverrides={seedTreatmentRateOverrides}
+        setSeedTreatmentRateOverrides={setSeedTreatmentRateOverrides}
+        inFurrowFoliarProducts={inFurrowFoliarProducts}
+        setInFurrowFoliarProducts={setInFurrowFoliarProducts}
+        foliarRateOverrides={foliarRateOverrides}
+        setFoliarRateOverrides={setFoliarRateOverrides}
+        onSubmit={handleFormSubmit}
+        seedTypes={seedTypes}
+        productsSeedTreatment={productsSeedTreatment}
+        productsInFurrow={productsInFurrowFoliar}
+      />
 
-      {/* In-Furrow / Foliar Products */}
-      <h2 className="text-blue-400 text-xl font-bold mt-6 mb-2">In-Furrow / Foliar</h2>
-      {inFurrowFoliarProducts.map((product, i) => (
-        <div key={i} className="grid grid-cols-3 gap-2">
-          <select
-            value={product.name}
-            onChange={(e) => handleProductChange(i, e.target.value, "foliar")}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="">-- Select Product --</option>
-            {productsInFurrow.map((p, index) => (
-              <option key={index} value={p["Product Name"]}>
-                {p["Product Name"]}
-              </option>
-            ))}
-          </select>
-          <select
-            value={product.applicationType}
-            onChange={(e) => handleAppTypeChange(i, e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="">-- Application Type --</option>
-            <option value="In-Furrow">In-Furrow</option>
-            <option value="Foliar">Foliar</option>
-          </select>
-          <input
-            type="number"
-            placeholder="Rate Override (oz or g/acre)"
-            value={foliarRateOverrides[i]}
-            onChange={(e) => handleRateChange(i, e.target.value, "foliar")}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-      ))}
-
-      <div className="text-center pt-6">
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg"
-        >
-          Calculate Combined Results
-        </button>
-      </div>
-    </form>
+      {programCost !== null && (
+        <ResultsDisplay
+          seedTreatmentResults={seedTreatmentResults}
+          inFurrowFoliarResults={inFurrowFoliarResults}
+          programCost={programCost}
+          roi={roi}
+          cropPriceUnit={cropPriceUnit}
+          totalUndiscountedCost={totalUndiscountedCost}
+          totalDiscountedCost={totalDiscountedCost}
+          totalCostPerAcre={totalCostPerAcre}
+        />
+      )}
+    </main>
   );
 }
