@@ -96,8 +96,7 @@ export default function Home() {
         };
       }
       return null;
-    }).filter((p): p is typeof productsInFurrowFoliar[number] & { _override?: number; applicationType?: string } => p !== null);
-
+}).filter((p): p is NonNullable<typeof p> => p !== null);
     const { productsData: foliarResults } = calculateAllFoliarProductCosts(
       acresNum,
       selectedFoliarProducts,
