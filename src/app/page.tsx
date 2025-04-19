@@ -59,26 +59,55 @@ export default function Home() {
     const growerDiscountNum = growerDiscount ? parseFloat(growerDiscount) : 0;
     const marketPriceNum = marketPrice ? parseFloat(marketPrice) : undefined;
 
-    const seedResults = calculateSeedTreatmentData(
-      seedTreatments,
-      seedTreatmentRateOverrides,
-      selectedSeedType,
-      seedingRateNum,
-      seedingRateUnit,
-      acresNum,
-      overrideSeedsNum,
-      dealerDiscountNum,
-      growerDiscountNum
-    );
+    const selectedSeedData = seedTypes.find(s => s["Seed Type"] === selectedSeedType);
+    if (!selectedSeedData) return;
+
+    const seedResults = seedTreatments.map((productName, index) => {
+      const product = productsSeedTreatment.find(p => p["Product Name"] === productName);
+      if (!product) return null;
+
+      const rateOverride = seedTreatmentRateOverrides[index]
+        ? parseFloat(seedTreatmentRateOverrides[index])
+        : undefined;
+
+      return calculateSeedTreatmentData(
+        acresNum,
+        seedingRateNum,
+        seedingRateUnit,
+        selectedSeedData,
+        overrideSeedsNum,
+        product,
+        dealerDiscountNum,
+        growerDiscountNum,
+        rateOverride
+      );
+    }).filter((r): r is NonNullable<typeof r> => r !== null);
+
     setSeedTreatmentResults(seedResults);
 
-    const foliarResults = calculateAllFoliarProductCosts(
-      inFurrowFoliarProducts,
-      foliarRateOverrides,
+    const selectedFoliarProducts = inFurrowFoliarProducts.map((p, index) => {
+      const matchedProduct = productsInFurrowFoliar.find(
+        prod => prod["Product Name"] === p.name
+      );
+      if (matchedProduct) {
+        return {
+          ...matchedProduct,
+          _override: foliarRateOverrides[index]
+            ? parseFloat(foliarRateOverrides[index])
+            : undefined,
+          applicationType: p.applicationType,
+        };
+      }
+      return null;
+    }).filter((p): p is NonNullable<typeof p> => p !== null);
+
+    const { productsData: foliarResults } = calculateAllFoliarProductCosts(
       acresNum,
+      selectedFoliarProducts,
       dealerDiscountNum,
       growerDiscountNum
     );
+
     setInFurrowFoliarResults(foliarResults);
 
     const totalCost = calculateTotalProgramCost(seedResults, foliarResults);
