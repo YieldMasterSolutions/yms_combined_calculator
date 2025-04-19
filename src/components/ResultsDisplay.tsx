@@ -20,7 +20,6 @@ interface ResultsDisplayProps {
   totalUndiscountedCost: number;
   totalDiscountedCost: number;
   totalCostPerAcre: number;
-  programCost: number;
   roi: ROI | null;
   cropPriceUnit: string;
 }
