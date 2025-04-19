@@ -1,4 +1,6 @@
+// src/components/ResultsDisplay.tsx
 "use client";
+
 import React from "react";
 import type { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
@@ -30,7 +32,6 @@ export default function ResultsDisplay({
   totalUndiscountedCost,
   totalDiscountedCost,
   totalCostPerAcre,
-  programCost,
   roi,
   cropPriceUnit,
 }: ResultsDisplayProps) {
@@ -41,7 +42,6 @@ export default function ResultsDisplay({
 
   return (
     <div className="space-y-6 mt-8 text-white">
-      {/* Seed Treatment Section */}
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-2xl font-bold text-blue-400">Seed Treatment Calculations</h2>
@@ -107,7 +107,6 @@ export default function ResultsDisplay({
         </>
       )}
 
-      {/* In-Furrow / Foliar Products */}
       {inFurrowFoliarResults.length > 0 && (
         <>
           <h2 className="text-2xl font-bold text-blue-400">In-Furrow / Foliar Product Costs</h2>
@@ -151,7 +150,6 @@ export default function ResultsDisplay({
         </>
       )}
 
-      {/* Summary: Total + ROI */}
       <div className="grid md:grid-cols-2 gap-4 mt-6">
         <div className="bg-zinc-900 border rounded-md p-4">
           <h2 className="text-lg font-bold text-yellow-400">Total YMS Biological Program Cost</h2>
@@ -160,14 +158,16 @@ export default function ResultsDisplay({
           <p>Total Program Cost per Acre = {formatCurrency(totalCostPerAcre)}</p>
         </div>
 
-        <div className="bg-zinc-900 border rounded-md p-4">
-          <h2 className="text-lg font-bold text-yellow-400">Breakeven ROI Calculation</h2>
-          <p>Breakeven Yield per Acre = {roi ? formatYieldUnit(roi.breakeven) : "-"}</p>
-          <p>Yield Needed for 2:1 ROI = {roi ? formatYieldUnit(roi.twoToOne) : "-"}</p>
-          <p>Yield Needed for 3:1 ROI = {roi ? formatYieldUnit(roi.threeToOne) : "-"}</p>
-          <p>Yield Needed for 4:1 ROI = {roi ? formatYieldUnit(roi.fourToOne) : "-"}</p>
-          <p>Yield Needed for 5:1 ROI = {roi ? formatYieldUnit(roi.fiveToOne) : "-"}</p>
-        </div>
+        {roi && (
+          <div className="bg-zinc-900 border rounded-md p-4">
+            <h2 className="text-lg font-bold text-yellow-400">Breakeven ROI Calculation</h2>
+            <p>Breakeven Yield per Acre = {formatYieldUnit(roi.breakeven)}</p>
+            <p>Yield Needed for 2:1 ROI = {formatYieldUnit(roi.twoToOne)}</p>
+            <p>Yield Needed for 3:1 ROI = {formatYieldUnit(roi.threeToOne)}</p>
+            <p>Yield Needed for 4:1 ROI = {formatYieldUnit(roi.fourToOne)}</p>
+            <p>Yield Needed for 5:1 ROI = {formatYieldUnit(roi.fiveToOne)}</p>
+          </div>
+        )}
       </div>
     </div>
   );
