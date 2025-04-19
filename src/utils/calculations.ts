@@ -1,4 +1,3 @@
-
 // src/utils/calculations.ts
 
 export interface Product {
@@ -40,12 +39,6 @@ export interface ProductCalculation {
   costPerUnitOfSeed?: number;
 }
 
-// ✅ Utility function
-function parsePrice(value: string | undefined): number {
-  return value ? parseFloat(value.replace(/[^\d.-]/g, "")) : 0;
-}
-
-// ✅ SEED TREATMENT CALCULATIONS
 export function calculateSeedTreatmentData(
   acres: number,
   seedingRate: number,
@@ -61,10 +54,12 @@ export function calculateSeedTreatmentData(
   const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
 
-  let seedsPerUnit: number =
-    crop === "corn" ? 80000 :
-    crop === "soybeans" ? 140000 :
-    seedsPerLb * lbsPerUnit;
+  const seedsPerUnit =
+    crop === "corn"
+      ? 80000
+      : crop === "soybeans"
+      ? 140000
+      : seedsPerLb * lbsPerUnit;
 
   let totalSeeds = 0;
   let totalSeedWeight = 0;
@@ -89,12 +84,17 @@ export function calculateSeedTreatmentData(
       break;
   }
 
-  const applicationRate = rateOverride ?? (product["Application Rate in Ounces"] || 0);
+  const applicationRate = rateOverride ?? product["Application Rate in Ounces"] || 0;
   const totalProductNeeded = applicationRate * totalUnits;
-  const costPerUnit = parsePrice(product["Product Cost per oz"]);
+
+  const costPerUnit = product["Product Cost per oz"]
+    ? parseFloat(product["Product Cost per oz"].replace(/[^\d.-]/g, ""))
+    : 0;
+
   const packageSize = product["Package Size"];
-  const costPerPackage = parsePrice(product["Product Cost per Package"]);
+  const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
+
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedCostPerOunce = costPerUnit * discountFactor;
 
@@ -104,10 +104,12 @@ export function calculateSeedTreatmentData(
   const costPerUnitOfSeed = (totalProductNeeded * discountedCostPerOunce) / totalUnits;
   const individualCostPerAcre = (totalProductNeeded * discountedCostPerOunce) / acres;
 
+  const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Product Packaging"]}`;
+
   return {
     productName: product["Product Name"],
     packagesNeeded,
-    productPackageString: `${packageSize} ${product["Package Units"] || "units"} - ${product["Product Packaging"] || ""}`,
+    productPackageString,
     originalTotalCostToGrower,
     discountedTotalCostToGrower,
     individualCostPerAcre,
@@ -122,7 +124,6 @@ export function calculateSeedTreatmentData(
   };
 }
 
-// ✅ IN-FURROW / FOLIAR PRODUCT CALCULATIONS
 export function calculateProductData(
   acres: number,
   product: Product,
@@ -133,37 +134,44 @@ export function calculateProductData(
     product._override ??
     product["Application Rate in Fluid Ounces"] ??
     product["Application Rate in Ounces"] ??
-    product["Application Rate in Grams"] ?? 0;
+    product["Application Rate in Grams"] ??
+    0;
 
   const costPerUnit =
-    parsePrice(product["Product Cost per fl oz"]) ||
-    parsePrice(product["Product Cost per oz"]) ||
-    parsePrice(product["Product Cost per gram"]) || 0;
+    parseFloat(
+      product["Product Cost per fl oz"]?.replace(/[^\d.-]/g, "") ||
+      product["Product Cost per oz"]?.replace(/[^\d.-]/g, "") ||
+      product["Product Cost per gram"]?.replace(/[^\d.-]/g, "") ||
+      "0"
+    );
 
   const totalProductNeeded = applicationRate * acres;
   const packageSize = product["Package Size"];
-  const costPerPackage = parsePrice(product["Product Cost per Package"]);
+  const costPerPackage = parseFloat(product["Product Cost per Package"].replace(/[^\d.-]/g, ""));
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
+
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
 
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
-  const discountedIndividualCostPerAcre = totalProductNeeded * costPerUnit * discountFactor / acres;
+
+  const individualCostPerAcre = applicationRate * costPerUnit * discountFactor;
+
+  const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Product Packaging"]}`;
 
   return {
     productName: product["Product Name"],
     packagesNeeded,
-    productPackageString: `${packageSize} ${product["Package Units"] || "units"} - ${product["Product Packaging"] || ""}`,
+    productPackageString,
     originalTotalCostToGrower,
     discountedTotalCostToGrower,
-    individualCostPerAcre: discountedIndividualCostPerAcre,
+    individualCostPerAcre,
     applicationRate,
     costPerUnit,
     totalProductNeeded,
   };
 }
 
-// ✅ MULTI-PRODUCT COSTS SUMMARY
 export function calculateAllFoliarProductCosts(
   acres: number,
   selectedProducts: Product[],
@@ -186,19 +194,11 @@ export function calculateAllFoliarProductCosts(
   return { productsData, totalCostPerAcre, totalUndiscountedCost, totalDiscountedCost };
 }
 
-// ✅ Utility functions
-export function getCalculatedSeedsPerUnit(seedType: SeedType, overrideSeedsPerLb?: number): number {
+export function getDefaultSeedsPerUnit(seedType: SeedType): number {
   const crop = seedType["Seed Type"].toLowerCase();
-  const seedsPerLb = overrideSeedsPerLb || parseFloat(seedType["Seeds/lb"]);
-  const lbsPerUnit = seedType["Lbs/Unit"];
-
   if (crop === "corn") return 80000;
   if (crop === "soybeans") return 140000;
 
-  return seedsPerLb * lbsPerUnit;
-}
-
-export function getDefaultSeedsPerUnit(seedType: SeedType): number {
   const seedsPerLb = parseFloat(seedType["Seeds/lb"]);
   const lbsPerUnit = seedType["Lbs/Unit"];
   return seedsPerLb * lbsPerUnit;

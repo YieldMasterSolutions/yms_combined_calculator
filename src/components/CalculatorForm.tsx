@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { SeedType, Product } from "../utils/calculations";
+import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
+import { getDefaultSeedsPerUnit } from "../utils/calculations";
 
 interface CalculatorFormProps {
   selectedSeedType: string;
@@ -30,9 +31,6 @@ interface CalculatorFormProps {
   setInFurrowFoliarProducts: (value: { name: string; applicationType: string }[]) => void;
   foliarRateOverrides: string[];
   setFoliarRateOverrides: (value: string[]) => void;
-  seedTypes: SeedType[];
-  productsSeedTreatment: Product[];
-  productsInFurrow: Product[];
   onSubmit: (e: React.FormEvent) => void;
 }
 
@@ -63,36 +61,33 @@ export default function CalculatorForm({
   setInFurrowFoliarProducts,
   foliarRateOverrides,
   setFoliarRateOverrides,
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrow,
   onSubmit,
 }: CalculatorFormProps) {
   const defaultSeedsPerLb =
     seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] || "";
 
   const handleProductChange = (
-    group: "seed" | "foliar",
     index: number,
-    value: string
+    value: string,
+    type: "seed" | "foliar"
   ) => {
-    if (group === "seed") {
-      const updated = [...seedTreatments];
-      updated[index] = value;
-      setSeedTreatments(updated);
+    if (type === "seed") {
+      const newList = [...seedTreatments];
+      newList[index] = value;
+      setSeedTreatments(newList);
     } else {
-      const updated = [...inFurrowFoliarProducts];
-      updated[index].name = value;
-      setInFurrowFoliarProducts(updated);
+      const newList = [...inFurrowFoliarProducts];
+      newList[index].name = value;
+      setInFurrowFoliarProducts(newList);
     }
   };
 
   const handleRateChange = (
-    group: "seed" | "foliar",
     index: number,
-    value: string
+    value: string,
+    type: "seed" | "foliar"
   ) => {
-    if (group === "seed") {
+    if (type === "seed") {
       const updated = [...seedTreatmentRateOverrides];
       updated[index] = value;
       setSeedTreatmentRateOverrides(updated);
@@ -128,7 +123,6 @@ export default function CalculatorForm({
             ))}
           </select>
         </div>
-
         <div>
           <label className="text-yellow-400 font-bold">Number of Acres</label>
           <input
@@ -138,7 +132,6 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
-
         <div>
           <label className="text-yellow-400 font-bold">Seeding Rate</label>
           <input
@@ -148,7 +141,6 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
-
         <div>
           <label className="text-yellow-400 font-bold">Rate Unit</label>
           <select
@@ -161,8 +153,7 @@ export default function CalculatorForm({
             <option value="bu/acre">bu/acre</option>
           </select>
         </div>
-
-        <div>
+        <div className="md:col-span-2">
           <label className="text-yellow-400 font-bold">
             Seeds per Pound Override <span className="text-sm text-white">(Optional)</span>
           </label>
@@ -176,75 +167,111 @@ export default function CalculatorForm({
             <p className="text-sm text-gray-400 mt-1">Default: {defaultSeedsPerLb} seeds/lb</p>
           )}
         </div>
+        <div>
+          <label className="text-yellow-400 font-bold">Dealer Discount (%) <span className="text-sm text-white">(Optional)</span></label>
+          <input
+            type="number"
+            value={dealerDiscount}
+            onChange={(e) => setDealerDiscount(e.target.value)}
+            className="w-full p-2 bg-zinc-800 text-white rounded"
+          />
+        </div>
+        <div>
+          <label className="text-yellow-400 font-bold">Grower Discount (%) <span className="text-sm text-white">(Optional)</span></label>
+          <input
+            type="number"
+            value={growerDiscount}
+            onChange={(e) => setGrowerDiscount(e.target.value)}
+            className="w-full p-2 bg-zinc-800 text-white rounded"
+          />
+        </div>
+        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-yellow-400 font-bold">Market Price for Crop <span className="text-white">(Optional)</span></label>
+            <input
+              type="number"
+              value={marketPrice}
+              onChange={(e) => setMarketPrice(e.target.value)}
+              className="w-full bg-zinc-800 p-2 rounded"
+            />
+          </div>
+          <div>
+            <label className="text-yellow-400 font-bold">Crop Price Unit</label>
+            <select
+              value={cropPriceUnit}
+              onChange={(e) => setCropPriceUnit(e.target.value)}
+              className="w-full bg-zinc-800 p-2 rounded"
+            >
+              <option value="bu">$ / bu</option>
+              <option value="lb">$ / lb</option>
+              <option value="cwt">$ / cwt</option>
+              <option value="ton">$ / ton</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <h2 className="text-blue-400 text-xl font-bold mt-6">Product Inputs</h2>
-      {/* Seed Treatments */}
-      {seedTreatments.map((val, i) => (
-        <div key={i} className="grid md:grid-cols-2 gap-4 items-center mb-2">
-          <select
-            value={val}
-            onChange={(e) => handleProductChange("seed", i, e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="">-- Select Seed Treatment Product --</option>
-            {productsSeedTreatment.map((prod, j) => (
-              <option key={j} value={prod["Product Name"]}>
-                {prod["Product Name"]}
-              </option>
-            ))}
-          </select>
-          <input
-            type="number"
-            placeholder="Override Rate (oz/unit)"
-            value={seedTreatmentRateOverrides[i] || ""}
-            onChange={(e) => handleRateChange("seed", i, e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-      ))}
+      {/* Product Inputs */}
+      <h2 className="text-blue-400 text-xl font-bold mt-6 mb-2">Product Inputs</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {seedTreatments.map((val, i) => (
+          <div key={i}>
+            <label className="text-yellow-400 font-bold">Seed Treatment Product {i + 1} <span className="text-sm text-white">(Optional)</span></label>
+            <select
+              value={val}
+              onChange={(e) => handleProductChange(i, e.target.value, "seed")}
+              className="w-full p-2 bg-zinc-800 text-white rounded"
+            >
+              <option value="">-- Select Product --</option>
+              {productsSeedTreatment.map((product, idx) => (
+                <option key={idx} value={product["Product Name"]}>
+                  {product["Product Name"]}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              placeholder="Rate Override (oz/unit seed)"
+              value={seedTreatmentRateOverrides[i] || ""}
+              onChange={(e) => handleRateChange(i, e.target.value, "seed")}
+              className="w-full mt-1 p-2 bg-zinc-800 text-white rounded"
+            />
+          </div>
+        ))}
 
-      {/* In-Furrow / Foliar Products */}
-      {inFurrowFoliarProducts.map((item, i) => (
-        <div key={i} className="grid md:grid-cols-3 gap-4 items-center mb-2">
-          <select
-            value={item.name}
-            onChange={(e) => handleProductChange("foliar", i, e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="">-- Select Product --</option>
-            {productsInFurrow.map((prod, j) => (
-              <option key={j} value={prod["Product Name"]}>
-                {prod["Product Name"]}
-              </option>
-            ))}
-          </select>
-          <select
-            value={item.applicationType}
-            onChange={(e) => handleAppTypeChange(i, e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          >
-            <option value="">-- Application Type --</option>
-            <option value="In-Furrow">In-Furrow</option>
-            <option value="Foliar">Foliar</option>
-          </select>
-          <input
-            type="number"
-            placeholder="Override Rate (fl oz/acre)"
-            value={foliarRateOverrides[i] || ""}
-            onChange={(e) => handleRateChange("foliar", i, e.target.value)}
-            className="w-full p-2 bg-zinc-800 text-white rounded"
-          />
-        </div>
-      ))}
-
-      <div className="text-center pt-6">
-        <button
-          type="submit"
-          className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg"
-        >
-          Calculate Combined Results
-        </button>
+        {inFurrowFoliarProducts.map((item, i) => (
+          <div key={i} className="flex flex-col gap-1">
+            <label className="text-yellow-400 font-bold">In-Furrow/Foliar Product {i + 1} <span className="text-sm text-white">(Optional)</span></label>
+            <select
+              value={item.name}
+              onChange={(e) => handleProductChange(i, e.target.value, "foliar")}
+              className="w-full p-2 bg-zinc-800 text-white rounded"
+            >
+              <option value="">-- Select Product --</option>
+              {productsInFurrowFoliar.map((product, idx) => (
+                <option key={idx} value={product["Product Name"]}>
+                  {product["Product Name"]}
+                </option>
+              ))}
+            </select>
+            <select
+              value={item.applicationType}
+              onChange={(e) => handleAppTypeChange(i, e.target.value)}
+              className="w-full p-2 bg-zinc-800 text-white rounded"
+            >
+              <option value="">-- Select Type --</option>
+              <option value="In-Furrow">In-Furrow</option>
+              <option value="Foliar">Foliar</option>
+            </select>
+            <input
+              type="number"
+              placeholder="Rate Override (fl oz/acre)"
+              value={foliarRateOverrides[i] || ""}
+              onChange={(e) => handleRateChange(i, e.target.value, "foliar")}
+              className="w-full p-2 bg-zinc-800 text-white rounded"
+            />
+          </div>
+        ))}
       </div>
     </form>
   );
