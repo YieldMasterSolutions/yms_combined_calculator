@@ -175,7 +175,6 @@ export default function Home() {
         <ResultsDisplay
           seedTreatmentResults={seedTreatmentResults}
           inFurrowFoliarResults={inFurrowFoliarResults}
-          programCost={programCost}
           roi={roi}
           cropPriceUnit={cropPriceUnit}
           totalUndiscountedCost={totalUndiscountedCost}
