@@ -194,6 +194,26 @@ export function calculateAllFoliarProductCosts(
   return { productsData, totalCostPerAcre, totalUndiscountedCost, totalDiscountedCost };
 }
 
+export function calculateTotalProgramCost(
+  seedResults: ProductCalculation[],
+  foliarResults: ProductCalculation[]
+): number {
+  const seedCost = seedResults.reduce((sum, s) => sum + (s.discountedTotalCostToGrower || 0), 0);
+  const foliarCost = foliarResults.reduce((sum, f) => sum + (f.discountedTotalCostToGrower || 0), 0);
+  return seedCost + foliarCost;
+}
+
+export function calculateROI(totalCost: number, marketPrice: number) {
+  const breakeven = totalCost / marketPrice;
+  return {
+    breakeven,
+    twoToOne: (2 * totalCost) / marketPrice,
+    threeToOne: (3 * totalCost) / marketPrice,
+    fourToOne: (4 * totalCost) / marketPrice,
+    fiveToOne: (5 * totalCost) / marketPrice,
+  };
+}
+
 export function getDefaultSeedsPerUnit(seedType: SeedType): number {
   const crop = seedType["Seed Type"].toLowerCase();
   if (crop === "corn") return 80000;
