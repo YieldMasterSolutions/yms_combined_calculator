@@ -4,6 +4,27 @@
 import React from "react";
 import { getDefaultSeedsPerUnit } from "../utils/calculations";
 
+interface Product {
+  "Product Name": string;
+  "Package Size": number;
+  "Package Units": string;
+  "Product Packaging": string;
+  "Product Cost per Package": string;
+  "Product Cost per fl oz"?: string;
+  "Product Cost per oz"?: string;
+  "Product Cost per gram"?: string;
+  "Application Rate in Fluid Ounces"?: number;
+  "Application Rate in Ounces"?: number;
+  "Application Rate in Grams"?: number;
+}
+
+interface SeedType {
+  "Seed Type": string;
+  "Seeds/lb": string;
+  "Seeds/Unit": string;
+  "Lbs/Unit": number;
+}
+
 interface CalculatorFormProps {
   selectedSeedType: string;
   setSelectedSeedType: (value: string) => void;
@@ -32,14 +53,9 @@ interface CalculatorFormProps {
   foliarRateOverrides: string[];
   setFoliarRateOverrides: (value: string[]) => void;
   onSubmit: (e: React.FormEvent) => void;
-  seedTypes: {
-    "Seed Type": string;
-    "Seeds/lb": string;
-    "Seeds/Unit": string;
-    "Lbs/Unit": number;
-  }[];
-  productsSeedTreatment: { [key: string]: string | number }[];
-  productsInFurrow: { [key: string]: string | number }[];
+  seedTypes: SeedType[];
+  productsSeedTreatment: Product[];
+  productsInFurrow: Product[];
 }
 
 export default function CalculatorForm({
@@ -211,7 +227,7 @@ export default function CalculatorForm({
         </div>
       </div>
 
-      {/* Seed Treatment Products */}
+      {/* Seed Treatments */}
       <h2 className="text-blue-400 text-xl font-bold mt-6 mb-2">Seed Treatments</h2>
       {seedTreatments.map((treatment, i) => (
         <div key={i} className="grid grid-cols-2 gap-2">
@@ -222,7 +238,7 @@ export default function CalculatorForm({
           >
             <option value="">-- Select Product --</option>
             {productsSeedTreatment.map((product, index) => (
-              <option key={index} value={product["Product Name"] as string}>
+              <option key={index} value={product["Product Name"]}>
                 {product["Product Name"]}
               </option>
             ))}
@@ -248,7 +264,7 @@ export default function CalculatorForm({
           >
             <option value="">-- Select Product --</option>
             {productsInFurrow.map((p, index) => (
-              <option key={index} value={p["Product Name"] as string}>
+              <option key={index} value={p["Product Name"]}>
                 {p["Product Name"]}
               </option>
             ))}
@@ -264,7 +280,7 @@ export default function CalculatorForm({
           </select>
           <input
             type="number"
-            placeholder="Rate Override (fl oz/acre)"
+            placeholder="Rate Override (oz or g/acre)"
             value={foliarRateOverrides[i]}
             onChange={(e) => handleRateChange(i, e.target.value, "foliar")}
             className="w-full p-2 bg-zinc-800 text-white rounded"
