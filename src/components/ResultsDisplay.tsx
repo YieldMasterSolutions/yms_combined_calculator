@@ -6,18 +6,22 @@ import { formatNumber } from "../utils/formatNumber";
 const formatCurrency = (n: number) => `$${formatNumber(n, 2)}`;
 const formatYield = (n: number) => formatNumber(n, 2);
 
+interface ROI {
+  breakeven: number;
+  twoToOne: number;
+  threeToOne: number;
+  fourToOne: number;
+  fiveToOne: number;
+}
+
 interface ResultsDisplayProps {
   seedTreatmentResults: ProductCalculation[];
   inFurrowFoliarResults: ProductCalculation[];
   totalUndiscountedCost: number;
   totalDiscountedCost: number;
-  programCost: number;
   totalCostPerAcre: number;
-  breakevenYield: number | null;
-  roi2: number | null;
-  roi3: number | null;
-  roi4: number | null;
-  roi5: number | null;
+  programCost: number;
+  roi: ROI | null;
   cropPriceUnit: string;
 }
 
@@ -27,11 +31,8 @@ export default function ResultsDisplay({
   totalUndiscountedCost,
   totalDiscountedCost,
   totalCostPerAcre,
-  breakevenYield,
-  roi2,
-  roi3,
-  roi4,
-  roi5,
+  programCost,
+  roi,
   cropPriceUnit,
 }: ResultsDisplayProps) {
   const formatYieldUnit = (value: number | null) =>
@@ -159,13 +160,14 @@ export default function ResultsDisplay({
           <p>Total Discounted Cost = {formatCurrency(totalDiscountedCost)}</p>
           <p>Total Program Cost per Acre = {formatCurrency(totalCostPerAcre)}</p>
         </div>
+
         <div className="bg-zinc-900 border rounded-md p-4">
           <h2 className="text-lg font-bold text-yellow-400">Breakeven ROI Calculation</h2>
-          <p>Breakeven Yield per Acre = {formatYieldUnit(breakevenYield)}</p>
-          <p>Yield Needed for 2:1 ROI = {formatYieldUnit(roi2)}</p>
-          <p>Yield Needed for 3:1 ROI = {formatYieldUnit(roi3)}</p>
-          <p>Yield Needed for 4:1 ROI = {formatYieldUnit(roi4)}</p>
-          <p>Yield Needed for 5:1 ROI = {formatYieldUnit(roi5)}</p>
+          <p>Breakeven Yield per Acre = {roi ? formatYieldUnit(roi.breakeven) : "-"}</p>
+          <p>Yield Needed for 2:1 ROI = {roi ? formatYieldUnit(roi.twoToOne) : "-"}</p>
+          <p>Yield Needed for 3:1 ROI = {roi ? formatYieldUnit(roi.threeToOne) : "-"}</p>
+          <p>Yield Needed for 4:1 ROI = {roi ? formatYieldUnit(roi.fourToOne) : "-"}</p>
+          <p>Yield Needed for 5:1 ROI = {roi ? formatYieldUnit(roi.fiveToOne) : "-"}</p>
         </div>
       </div>
     </div>
