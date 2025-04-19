@@ -2,7 +2,6 @@
 "use client";
 
 import React from "react";
-import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 import { getDefaultSeedsPerUnit } from "../utils/calculations";
 
 interface CalculatorFormProps {
@@ -33,6 +32,9 @@ interface CalculatorFormProps {
   foliarRateOverrides: string[];
   setFoliarRateOverrides: (value: string[]) => void;
   onSubmit: (e: React.FormEvent) => void;
+  seedTypes: { "Seed Type": string; "Seeds/lb": number }[];
+  productsSeedTreatment: { [key: string]: string | number }[];
+  productsInFurrow: { [key: string]: string | number }[];
 }
 
 export default function CalculatorForm({
@@ -63,6 +65,9 @@ export default function CalculatorForm({
   foliarRateOverrides,
   setFoliarRateOverrides,
   onSubmit,
+  seedTypes,
+  productsSeedTreatment,
+  productsInFurrow,
 }: CalculatorFormProps) {
   const defaultSeedsPerLb =
     seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] || "";
@@ -212,7 +217,7 @@ export default function CalculatorForm({
           >
             <option value="">-- Select Product --</option>
             {productsSeedTreatment.map((product, index) => (
-              <option key={index} value={product["Product Name"]}>
+              <option key={index} value={product["Product Name"] as string}>
                 {product["Product Name"]}
               </option>
             ))}
@@ -237,8 +242,8 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           >
             <option value="">-- Select Product --</option>
-            {productsInFurrowFoliar.map((p, index) => (
-              <option key={index} value={p["Product Name"]}>
+            {productsInFurrow.map((p, index) => (
+              <option key={index} value={p["Product Name"] as string}>
                 {p["Product Name"]}
               </option>
             ))}
