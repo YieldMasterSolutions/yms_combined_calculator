@@ -1,8 +1,7 @@
-// src/components/CalculatorForm.tsx
 "use client";
 
 import React from "react";
-import type { Product, SeedType } from "../utils/calculations";
+import { SeedType, Product } from "../utils/calculations";
 
 interface CalculatorFormProps {
   selectedSeedType: string;
@@ -73,41 +72,41 @@ export default function CalculatorForm({
     seedTypes.find((s) => s["Seed Type"] === selectedSeedType)?.["Seeds/lb"] || "";
 
   const handleProductChange = (
+    group: "seed" | "foliar",
     index: number,
-    value: string,
-    type: "seed" | "foliar"
+    value: string
   ) => {
-    if (type === "seed") {
-      const newList = [...seedTreatments];
-      newList[index] = value;
-      setSeedTreatments(newList);
+    if (group === "seed") {
+      const updated = [...seedTreatments];
+      updated[index] = value;
+      setSeedTreatments(updated);
     } else {
-      const newList = [...inFurrowFoliarProducts];
-      newList[index].name = value;
-      setInFurrowFoliarProducts(newList);
+      const updated = [...inFurrowFoliarProducts];
+      updated[index].name = value;
+      setInFurrowFoliarProducts(updated);
     }
   };
 
   const handleRateChange = (
+    group: "seed" | "foliar",
     index: number,
-    value: string,
-    type: "seed" | "foliar"
+    value: string
   ) => {
-    if (type === "seed") {
-      const newList = [...seedTreatmentRateOverrides];
-      newList[index] = value;
-      setSeedTreatmentRateOverrides(newList);
+    if (group === "seed") {
+      const updated = [...seedTreatmentRateOverrides];
+      updated[index] = value;
+      setSeedTreatmentRateOverrides(updated);
     } else {
-      const newList = [...foliarRateOverrides];
-      newList[index] = value;
-      setFoliarRateOverrides(newList);
+      const updated = [...foliarRateOverrides];
+      updated[index] = value;
+      setFoliarRateOverrides(updated);
     }
   };
 
   const handleAppTypeChange = (index: number, value: string) => {
-    const newList = [...inFurrowFoliarProducts];
-    newList[index].applicationType = value;
-    setInFurrowFoliarProducts(newList);
+    const updated = [...inFurrowFoliarProducts];
+    updated[index].applicationType = value;
+    setInFurrowFoliarProducts(updated);
   };
 
   return (
@@ -129,6 +128,7 @@ export default function CalculatorForm({
             ))}
           </select>
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">Number of Acres</label>
           <input
@@ -138,6 +138,7 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">Seeding Rate</label>
           <input
@@ -147,6 +148,7 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
+
         <div>
           <label className="text-yellow-400 font-bold">Rate Unit</label>
           <select
@@ -159,7 +161,8 @@ export default function CalculatorForm({
             <option value="bu/acre">bu/acre</option>
           </select>
         </div>
-        <div className="md:col-span-2">
+
+        <div>
           <label className="text-yellow-400 font-bold">
             Seeds per Pound Override <span className="text-sm text-white">(Optional)</span>
           </label>
@@ -170,57 +173,78 @@ export default function CalculatorForm({
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
           {selectedSeedType && (
-            <p className="text-sm text-gray-400 mt-1">
-              Default: {defaultSeedsPerLb} seeds/lb
-            </p>
+            <p className="text-sm text-gray-400 mt-1">Default: {defaultSeedsPerLb} seeds/lb</p>
           )}
         </div>
-        <div>
-          <label className="text-yellow-400 font-bold">
-            Dealer Discount (%) <span className="text-sm text-white">(Optional)</span>
-          </label>
+      </div>
+
+      <h2 className="text-blue-400 text-xl font-bold mt-6">Product Inputs</h2>
+      {/* Seed Treatments */}
+      {seedTreatments.map((val, i) => (
+        <div key={i} className="grid md:grid-cols-2 gap-4 items-center mb-2">
+          <select
+            value={val}
+            onChange={(e) => handleProductChange("seed", i, e.target.value)}
+            className="w-full p-2 bg-zinc-800 text-white rounded"
+          >
+            <option value="">-- Select Seed Treatment Product --</option>
+            {productsSeedTreatment.map((prod, j) => (
+              <option key={j} value={prod["Product Name"]}>
+                {prod["Product Name"]}
+              </option>
+            ))}
+          </select>
           <input
             type="number"
-            value={dealerDiscount}
-            onChange={(e) => setDealerDiscount(e.target.value)}
+            placeholder="Override Rate (oz/unit)"
+            value={seedTreatmentRateOverrides[i] || ""}
+            onChange={(e) => handleRateChange("seed", i, e.target.value)}
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
-        <div>
-          <label className="text-yellow-400 font-bold">
-            Grower Discount (%) <span className="text-sm text-white">(Optional)</span>
-          </label>
+      ))}
+
+      {/* In-Furrow / Foliar Products */}
+      {inFurrowFoliarProducts.map((item, i) => (
+        <div key={i} className="grid md:grid-cols-3 gap-4 items-center mb-2">
+          <select
+            value={item.name}
+            onChange={(e) => handleProductChange("foliar", i, e.target.value)}
+            className="w-full p-2 bg-zinc-800 text-white rounded"
+          >
+            <option value="">-- Select Product --</option>
+            {productsInFurrow.map((prod, j) => (
+              <option key={j} value={prod["Product Name"]}>
+                {prod["Product Name"]}
+              </option>
+            ))}
+          </select>
+          <select
+            value={item.applicationType}
+            onChange={(e) => handleAppTypeChange(i, e.target.value)}
+            className="w-full p-2 bg-zinc-800 text-white rounded"
+          >
+            <option value="">-- Application Type --</option>
+            <option value="In-Furrow">In-Furrow</option>
+            <option value="Foliar">Foliar</option>
+          </select>
           <input
             type="number"
-            value={growerDiscount}
-            onChange={(e) => setGrowerDiscount(e.target.value)}
+            placeholder="Override Rate (fl oz/acre)"
+            value={foliarRateOverrides[i] || ""}
+            onChange={(e) => handleRateChange("foliar", i, e.target.value)}
             className="w-full p-2 bg-zinc-800 text-white rounded"
           />
         </div>
-        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-yellow-400 font-bold">Market Price for Crop <span className="text-white">(Optional)</span></label>
-            <input
-              type="number"
-              value={marketPrice}
-              onChange={(e) => setMarketPrice(e.target.value)}
-              className="w-full bg-zinc-800 p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="text-yellow-400 font-bold">Crop Price Unit</label>
-            <select
-              value={cropPriceUnit}
-              onChange={(e) => setCropPriceUnit(e.target.value)}
-              className="w-full bg-zinc-800 p-2 rounded"
-            >
-              <option value="bu">$ / bu</option>
-              <option value="lb">$ / lb</option>
-              <option value="cwt">$ / cwt</option>
-              <option value="ton">$ / ton</option>
-            </select>
-          </div>
-        </div>
+      ))}
+
+      <div className="text-center pt-6">
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg"
+        >
+          Calculate Combined Results
+        </button>
       </div>
     </form>
   );
