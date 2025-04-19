@@ -11,6 +11,7 @@ interface ResultsDisplayProps {
   inFurrowFoliarResults: ProductCalculation[];
   totalUndiscountedCost: number;
   totalDiscountedCost: number;
+  programCost: number;
   totalCostPerAcre: number;
   breakevenYield: number | null;
   roi2: number | null;
