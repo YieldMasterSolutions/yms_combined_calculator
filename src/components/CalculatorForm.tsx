@@ -32,7 +32,12 @@ interface CalculatorFormProps {
   foliarRateOverrides: string[];
   setFoliarRateOverrides: (value: string[]) => void;
   onSubmit: (e: React.FormEvent) => void;
-  seedTypes: { "Seed Type": string; "Seeds/lb": number }[];
+  seedTypes: {
+    "Seed Type": string;
+    "Seeds/lb": string;
+    "Seeds/Unit": string;
+    "Lbs/Unit": number;
+  }[];
   productsSeedTreatment: { [key: string]: string | number }[];
   productsInFurrow: { [key: string]: string | number }[];
 }
