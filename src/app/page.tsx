@@ -19,7 +19,7 @@ import {
   calculateROI,
   calculateProgramCost,
   SeedTreatmentResult,
-  FoliarProductCost,
+  FoliarProductResult,
   ROIResults,
 } from "../utils/calculations";
 
@@ -41,7 +41,7 @@ interface FormData {
 
 const Page = () => {
   const [seedResults, setSeedResults] = useState<SeedTreatmentResult[]>([]);
-  const [foliarResults, setFoliarResults] = useState<FoliarProductCost[]>([]);
+  const [foliarResults, setFoliarResults] = useState<FoliarProductResult[]>([]);
   const [roi, setRoi] = useState<ROIResults | null>(null);
   const [cropPriceUnit, setCropPriceUnit] = useState<string>("bu");
   const [growerName, setGrowerName] = useState<string>("");
