@@ -51,13 +51,19 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   const [seedTreatmentSelections, setSeedTreatmentSelections] = useState<string[]>(["", ""]);
   const [foliarSelections, setFoliarSelections] = useState<string[]>(["", "", "", ""]);
 
+  const formatLabel = (product: ProductData) => {
+    const size = product["Package Size"].toString().replace(/\.0$/, "");
+    const unit = product["Unit"].includes("gram") ? "g" : product["Unit"];
+    return `${product["Product Name"]} – ${size} ${unit} ${product["Package Type"]}`;
+  };
+
   const handleCalculateClick = () => {
     const selectedSeedTreatments = seedTreatmentSelections
-      .map(name => productsSeedTreatment.find(p => p["Product Name"] === name))
+      .map(name => productsSeedTreatment.find(p => formatLabel(p) === name))
       .filter((p): p is ProductData => !!p);
 
     const selectedFoliarProducts = foliarSelections
-      .map(name => productsInFurrow.find(p => p["Product Name"] === name))
+      .map(name => productsInFurrow.find(p => formatLabel(p) === name))
       .filter((p): p is ProductData => !!p);
 
     const formData: FormData = {
@@ -154,9 +160,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             }}
           >
             <option value="">Select Product</option>
-            {productsSeedTreatment.map(p => (
-              <option key={p["Product Name"]} value={p["Product Name"]}>{p["Product Name"]}</option>
-            ))}
+            {productsSeedTreatment.map(p => {
+              const label = formatLabel(p);
+              return (
+                <option key={label} value={label}>{label}</option>
+              );
+            })}
           </select>
         ))}
       </div>
@@ -175,9 +184,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             }}
           >
             <option value="">Select Product</option>
-            {productsInFurrow.map(p => (
-              <option key={p["Product Name"]} value={p["Product Name"]}>{p["Product Name"]}</option>
-            ))}
+            {productsInFurrow.map(p => {
+              const label = formatLabel(p);
+              return (
+                <option key={label} value={label}>{label}</option>
+              );
+            })}
           </select>
         ))}
       </div>

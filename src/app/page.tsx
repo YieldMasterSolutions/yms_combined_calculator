@@ -1,8 +1,9 @@
-// Force deploy
+// page.tsx
 
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
@@ -106,7 +107,12 @@ const Page = () => {
 
   return (
     <main className="max-w-6xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">YMS Product Calculator</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-3xl font-bold text-yellow-400">YieldMaster Solutions</h1>
+        <Image src="/yms-logo.png" alt="YMS Logo" width={140} height={50} />
+      </div>
+      <h2 className="text-xl font-semibold text-white mb-6">Biological Program Calculator</h2>
+
       <CalculatorForm
         seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
