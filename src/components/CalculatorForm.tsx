@@ -47,22 +47,25 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   const [growerDiscount, setGrowerDiscount] = useState<number>(0);
   const [grower, setGrower] = useState<string>("");
   const [rep, setRep] = useState<string>("");
+
   const [seedTreatmentSelections, setSeedTreatmentSelections] = useState<string[]>(["", ""]);
   const [foliarSelections, setFoliarSelections] = useState<string[]>(["", "", "", ""]);
 
   const formatLabel = (product: ProductData) => {
     const size = product["Package Size"].toString().replace(/\.0$/, "");
-    const unit = product["Package Unit"]?.includes("gram") ? "g" : product["Package Unit"] || "";
+    const unit = product["Package Unit"]?.toLowerCase().includes("gram")
+      ? "g"
+      : product["Package Unit"] || "oz";
     return `${product["Product Name"]} – ${size} ${unit} ${product["Package Type"]}`;
   };
 
   const handleCalculateClick = () => {
     const selectedSeedTreatments = seedTreatmentSelections
-      .map((name) => productsSeedTreatment.find((p) => p["Product Name"] === name))
+      .map(name => productsSeedTreatment.find(p => p["Product Name"] === name))
       .filter((p): p is ProductData => !!p);
 
     const selectedFoliarProducts = foliarSelections
-      .map((name) => productsInFurrow.find((p) => p["Product Name"] === name))
+      .map(name => productsInFurrow.find(p => p["Product Name"] === name))
       .filter((p): p is ProductData => !!p);
 
     const formData: FormData = {
@@ -97,7 +100,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </label>
         <label>
           Crop Type:
-          <select className="w-full border p-1 text-sm" value={selectedSeedType} onChange={e => setSelectedSeedType(e.target.value)}>
+          <select className="w-full border p-1 text-base" value={selectedSeedType} onChange={e => setSelectedSeedType(e.target.value)}>
             {seedTypes.map(seed => (
               <option key={seed["Seed Type"]} value={seed["Seed Type"]}>{seed["Seed Type"]}</option>
             ))}
@@ -113,7 +116,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </label>
         <label>
           Rate Unit:
-          <select className="w-full border p-1 text-sm" value={rateUnit} onChange={e => setRateUnit(e.target.value)}>
+          <select className="w-full border p-1 text-base" value={rateUnit} onChange={e => setRateUnit(e.target.value)}>
             <option value="seeds/acre">seeds/acre</option>
             <option value="lbs/acre">lbs/acre</option>
           </select>
@@ -128,7 +131,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </label>
         <label>
           Price Unit:
-          <select className="w-full border p-1 text-sm" value={priceUnit} onChange={e => setPriceUnit(e.target.value)}>
+          <select className="w-full border p-1 text-base" value={priceUnit} onChange={e => setPriceUnit(e.target.value)}>
             <option value="bu">$/bu</option>
             <option value="lb">$/lb</option>
             <option value="cwt">$/cwt</option>
@@ -146,11 +149,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <h3 className="font-bold text-blue-700 text-base mt-4">Seed Treatment Products</h3>
+        <h3 className="font-bold text-blue-500 text-base mt-4">Seed Treatment Products</h3>
         {seedTreatmentSelections.map((sel, i) => (
           <select
             key={i}
-            className="w-full border p-1 mt-1 text-sm"
+            className="w-full border p-1 mt-1 text-base"
             value={sel}
             onChange={(e) => {
               const newSelections = [...seedTreatmentSelections];
@@ -159,7 +162,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             }}
           >
             <option value="">Select Product</option>
-            {productsSeedTreatment.map((p) => (
+            {productsSeedTreatment.map(p => (
               <option key={p["Product Name"]} value={p["Product Name"]}>{formatLabel(p)}</option>
             ))}
           </select>
@@ -167,11 +170,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <h3 className="font-bold text-blue-700 text-base mt-4">In-Furrow / Foliar Products</h3>
+        <h3 className="font-bold text-blue-500 text-base mt-4">In-Furrow / Foliar Products</h3>
         {foliarSelections.map((sel, i) => (
           <select
             key={i}
-            className="w-full border p-1 mt-1 text-sm"
+            className="w-full border p-1 mt-1 text-base"
             value={sel}
             onChange={(e) => {
               const newSelections = [...foliarSelections];
@@ -180,7 +183,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             }}
           >
             <option value="">Select Product</option>
-            {productsInFurrow.map((p) => (
+            {productsInFurrow.map(p => (
               <option key={p["Product Name"]} value={p["Product Name"]}>{formatLabel(p)}</option>
             ))}
           </select>
