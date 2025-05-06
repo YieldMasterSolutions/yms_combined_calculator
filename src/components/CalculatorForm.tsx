@@ -51,14 +51,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   const [seedTreatmentSelections, setSeedTreatmentSelections] = useState<string[]>(["", ""]);
   const [foliarSelections, setFoliarSelections] = useState<string[]>(["", "", "", ""]);
 
-  const formatLabel = (product: ProductData) => {
-    const size = product["Package Size"].toString().replace(/\.0$/, "");
-    const unit = product["Package Unit"]?.toLowerCase().includes("gram")
-      ? "g"
-      : product["Package Unit"] || "oz";
-    return `${product["Product Name"]} – ${size} ${unit} ${product["Package Type"]}`;
-  };
-
   const handleCalculateClick = () => {
     const selectedSeedTreatments = seedTreatmentSelections
       .map(name => productsSeedTreatment.find(p => p["Product Name"] === name))
@@ -85,6 +77,14 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     };
 
     onCalculate(formData);
+  };
+
+  const formatLabel = (product: ProductData) => {
+    const size = product["Package Size"].toString().replace(/\.0$/, "");
+    const unit = product["Package Units"]?.toLowerCase().includes("gram")
+      ? "g"
+      : product["Package Units"] || "oz";
+    return `${product["Product Name"]} – ${size} ${unit} ${product["Package Type"]}`;
   };
 
   return (
@@ -149,7 +149,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <h3 className="font-bold text-blue-500 text-base mt-4">Seed Treatment Products</h3>
+        <h3 className="font-bold text-blue-700 text-base mt-4">Seed Treatment Products</h3>
         {seedTreatmentSelections.map((sel, i) => (
           <select
             key={i}
@@ -170,7 +170,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <h3 className="font-bold text-blue-500 text-base mt-4">In-Furrow / Foliar Products</h3>
+        <h3 className="font-bold text-blue-700 text-base mt-4">In-Furrow / Foliar Products</h3>
         {foliarSelections.map((sel, i) => (
           <select
             key={i}
