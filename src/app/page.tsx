@@ -6,8 +6,20 @@ import React, { useState } from "react";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
-import { calculateSeedTreatmentData, calculateAllFoliarProductCosts, calculateROI, SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
-import { seedTypes, productsSeedTreatment, productsInFurrowFoliar, ProductData } from "../utils/data";
+import {
+  calculateSeedTreatmentData,
+  calculateAllFoliarProductCosts,
+  calculateROI,
+  SeedTreatmentResult,
+  FoliarProductResult,
+  ROIResults
+} from "../utils/calculations";
+import {
+  seedTypes,
+  productsSeedTreatment,
+  productsInFurrowFoliar,
+  ProductData
+} from "../utils/data";
 
 interface FormData {
   seedType: string;
@@ -46,10 +58,12 @@ export default function Home() {
       foliarProducts,
       marketPrice,
       priceUnit,
-      seedsPerPoundOverride ?? 0,
+      seedsPerPoundOverride,
       grower,
-      rep,
+      rep
     } = formData;
+
+    const seedsPerPound = seedsPerPoundOverride ?? 0;
 
     setGrowerName(grower);
     setDealerRep(rep);
@@ -68,7 +82,7 @@ export default function Home() {
       dealerDiscount,
       growerDiscount,
       seedTreatmentWithMethod,
-      seedsPerPoundOverride,
+      seedsPerPound,
       "Planter Box"
     );
 
