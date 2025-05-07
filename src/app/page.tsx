@@ -23,11 +23,6 @@ import {
   ROIResults,
 } from "../utils/calculations";
 
-interface ProductSelection {
-  product: ProductData;
-  applicationMethod: string;
-}
-
 interface FormData {
   seedType: string;
   acres: number;
@@ -35,8 +30,8 @@ interface FormData {
   rateUnit: string;
   dealerDiscount: number;
   growerDiscount: number;
-  seedTreatmentProducts: ProductSelection[];
-  foliarProducts: ProductSelection[];
+  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
+  foliarProducts: { product: ProductData; applicationMethod: string }[];
   marketPrice: number;
   priceUnit: string;
   seedsPerPoundOverride?: number;
@@ -134,7 +129,7 @@ const Page = () => {
               roi={roi!}
               cropPriceUnit={cropPriceUnit}
               growerName={growerName}
-              repName={repName}
+              dealerRep={repName}
               programCost={programCost}
             />
           </div>
@@ -152,3 +147,4 @@ const Page = () => {
 };
 
 export default Page;
+
