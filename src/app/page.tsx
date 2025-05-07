@@ -6,19 +6,35 @@ import React, { useState } from "react";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
-import { calculateSeedTreatmentData, calculateAllFoliarProductCosts, calculateROI } from "../utils/calculations";
-import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
+import { calculateSeedTreatmentData, calculateAllFoliarProductCosts, calculateROI, SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
+import { seedTypes, productsSeedTreatment, productsInFurrowFoliar, ProductData } from "../utils/data";
+
+interface FormData {
+  seedType: string;
+  acres: number;
+  seedingRate: number;
+  rateUnit: string;
+  dealerDiscount: number;
+  growerDiscount: number;
+  seedTreatmentProducts: { product: ProductData }[];
+  foliarProducts: { product: ProductData; applicationMethod: string }[];
+  marketPrice: number;
+  priceUnit: string;
+  seedsPerPoundOverride?: number;
+  grower: string;
+  rep: string;
+}
 
 export default function Home() {
-  const [seedResults, setSeedResults] = useState([]);
-  const [foliarResults, setFoliarResults] = useState([]);
-  const [roiResults, setRoiResults] = useState(null);
+  const [seedResults, setSeedResults] = useState<SeedTreatmentResult[]>([]);
+  const [foliarResults, setFoliarResults] = useState<FoliarProductResult[]>([]);
+  const [roiResults, setRoiResults] = useState<ROIResults | null>(null);
   const [cropPriceUnit, setCropPriceUnit] = useState("bu");
   const [growerName, setGrowerName] = useState("");
   const [dealerRep, setDealerRep] = useState("");
   const [programCost, setProgramCost] = useState(0);
 
-  const handleCalculate = (formData) => {
+  const handleCalculate = (formData: FormData) => {
     const {
       seedType,
       acres,
