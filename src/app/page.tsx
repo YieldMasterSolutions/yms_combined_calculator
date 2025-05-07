@@ -23,6 +23,11 @@ import {
   ROIResults,
 } from "../utils/calculations";
 
+interface ProductSelection {
+  product: ProductData;
+  applicationMethod: string;
+}
+
 interface FormData {
   seedType: string;
   acres: number;
@@ -30,8 +35,8 @@ interface FormData {
   rateUnit: string;
   dealerDiscount: number;
   growerDiscount: number;
-  seedTreatmentProducts: ProductData[];
-  foliarProducts: ProductData[];
+  seedTreatmentProducts: ProductSelection[];
+  foliarProducts: ProductSelection[];
   marketPrice: number;
   priceUnit: string;
   seedsPerPoundOverride?: number;
@@ -84,10 +89,7 @@ const Page = () => {
       rateUnit,
       dealerDiscount,
       growerDiscount,
-      seedTreatmentProducts.map((product) => ({
-        product,
-        applicationMethod: product["Application Method"] || "Planter Box Treatment",
-      })),
+      seedTreatmentProducts,
       seedsPerPound,
       lbsPerUnit
     );
@@ -96,10 +98,7 @@ const Page = () => {
       acres,
       dealerDiscount,
       growerDiscount,
-      foliarProducts.map((product) => ({
-        product,
-        applicationMethod: product["Application Method"] || "In-Furrow",
-      }))
+      foliarProducts
     );
 
     const totalCost = calculateProgramCost(seedOutput, foliarOutput);
