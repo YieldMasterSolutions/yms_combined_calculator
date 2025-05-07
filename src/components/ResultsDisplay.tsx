@@ -1,7 +1,8 @@
 // src/components/ResultsDisplay.tsx
+
 import React, { useState } from "react";
 import { FoliarProductResult } from "../utils/data";
-import formatNumber from "../utils/formatNumber";
+import { formatNumber } from "../utils/formatNumber";
 import PDFDownloadButton from "./PDFDownloadButton";
 
 interface SeedTreatmentResults {
@@ -71,7 +72,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <PDFDownloadButton />
       </div>
 
-      {/* Seed Treatment Section */}
       <h3 className="text-lg font-bold text-blue-700 mb-2">Seed Treatment Calculations</h3>
       {seedTreatmentResults.map((result, index) => (
         <div key={index} className="border border-gray-300 rounded-lg p-4 mb-6">
@@ -120,7 +120,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       ))}
 
-      {/* In-Furrow / Foliar Section */}
       <h3 className="text-lg font-bold text-blue-700 mb-2">In-Furrow / Foliar Product Costs</h3>
       {inFurrowFoliarResults.map((result, index) => (
         <div key={index} className="border border-gray-300 rounded-lg p-4 mb-6">
@@ -159,7 +158,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       ))}
 
-      {/* ROI Section */}
       <h3 className="text-lg font-bold text-blue-700 mb-2">ROI Yield Thresholds</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="font-bold text-yellow-600">Breakeven Yield per Acre</div>
