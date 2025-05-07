@@ -76,7 +76,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Application Rate Unit": "oz/unit"
   },
   {
-    "Product Name": "Nutriquire + Terrasym450 Corn",
+    "Product Name": "Nutriquire + Terrasym 450 Corn",
     "Package Size": 12.5,
     "Package Units": "oz",
     "Package Type": "Pouch",
@@ -87,7 +87,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Application Rate Unit": "oz/unit"
   },
   {
-    "Product Name": "Nutriquire + Terrasym401 Soybean",
+    "Product Name": "Nutriquire + Terrasym 401 Soybean",
     "Package Size": 20,
     "Package Units": "oz",
     "Package Type": "Pouch",
@@ -107,5 +107,30 @@ export const productsSeedTreatment: ProductData[] = [
     "Application Method": "Seed Treatment",
     "Product Form": "Dry",
     "Application Rate Unit": "oz/unit"
+  }
+];
+
+export const productsInFurrowFoliar: ProductData[] = [
+  {
+    "Product Name": "BioForge",
+    "Application Rate": 8,
+    "Product Cost per fl oz": 1.25,
+    "Package Size": 128,
+    "Package Units": "fl oz",
+    "Package Type": "Gallon",
+    "Application Method": "In-Furrow",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "N-Physis WG",
+    "Application Rate": 56.7,
+    "Product Cost per gram": 0.23,
+    "Package Size": 1000,
+    "Package Units": "g",
+    "Package Type": "Pouch",
+    "Application Method": "Foliar",
+    "Product Form": "Dry",
+    "Application Rate Unit": "g/acre"
   }
 ];
