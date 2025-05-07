@@ -9,15 +9,28 @@ export interface ProductData {
   "Package Size": number;
   "Package Units": string;
   "Package Type": string;
-  "Application Method"?: string;
+  "Application Method"?: string; // e.g., "Seed Treatment", "In-Furrow", etc.
   "Product Form"?: "Liquid" | "Dry";
-  "Application Rate Unit"?: "oz/unit" | "fl oz/acre" | "g/acre";
+  "Application Rate Unit"?: "oz/unit" | "fl oz/unit" | "fl oz/acre" | "g/acre";
 }
 
 export interface SeedType {
   "Seed Type": string;
   "Seeds/lb": string;
   "Lbs/Unit": number;
+}
+
+export interface FoliarProductResult {
+  productName: string;
+  applicationRate: number;
+  totalProductNeeded: number;
+  totalProductUnits: number;
+  productPackageString: string;
+  productCostPerOz: number;
+  totalCostToGrower: number;
+  totalDiscountedCostToGrower: number;
+  individualCostPerAcre: number;
+  applicationMethod: string;
 }
 
 export const seedTypes: SeedType[] = [
