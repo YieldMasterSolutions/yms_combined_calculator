@@ -36,14 +36,13 @@ interface FormData {
   grower: string;
   rep: string;
 }
-
-  foliarProducts: { product: ProductData; applicationMethod: string }[];
   marketPrice: number | undefined;
   priceUnit: string;
   seedsPerPoundOverride?: number;
   grower: string;
   rep: string;
-}[];
+}
+
   
 
 export default function Home() {
