@@ -2,7 +2,7 @@
 
 import React from "react";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
-import formatNumber from "../utils/formatNumber";
+import { formatNumber } from "../utils/formatNumber";
 
 interface ResultsDisplayProps {
   seedResults: SeedTreatmentResult[];
@@ -45,12 +45,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div><span className="font-semibold text-yellow-600">Seeds per Unit:</span> {formatNumber(res.seedsPerUnit)}</div>
             <div><span className="font-semibold text-yellow-600">Application Rate:</span> {res.applicationRate} {res.rateUnit}</div>
             <div><span className="font-semibold text-yellow-600">Total Product Needed:</span> {formatNumber(res.totalProductNeeded)}</div>
-            <div><span className="font-semibold text-yellow-600">Units to Order:</span> {res.totalProductUnits} – {res.productPackageString}</div>
+            <div><span className="font-semibold text-yellow-600">Total Product Units to Order:</span> {res.totalProductUnits} – {res.productPackageString}</div>
             <div><span className="font-semibold text-yellow-600">Product Cost per Ounce:</span> ${formatNumber(res.productCostPerOz)}</div>
             <div><span className="font-semibold text-yellow-600">Total Cost to Grower (MSRP):</span> ${formatNumber(res.totalCostToGrower)}</div>
             <div><span className="font-semibold text-yellow-600">Total Discounted Cost to Grower:</span> ${formatNumber(res.totalDiscountedCostToGrower)}</div>
-            <div><span className="font-semibold text-yellow-600">Cost per Unit of Seed:</span> ${formatNumber(res.productCostPerUnitSeed)}</div>
-            <div><span className="font-semibold text-yellow-600">Cost of Seed Treatment per Acre:</span> ${formatNumber(res.individualCostPerAcre)}</div>
+            <div><span className="font-semibold text-yellow-600">Product Cost per Unit of Treated Seed:</span> ${formatNumber(res.productCostPerUnitSeed)}</div>
+            <div><span className="font-semibold text-yellow-600">Individual Cost of Seed Treatment per Acre:</span> ${formatNumber(res.individualCostPerAcre)}</div>
           </div>
         </div>
       ))}
@@ -60,13 +60,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div key={index} className="mt-6 border border-gray-400 p-4 bg-white shadow">
           <h3 className="text-md font-bold text-blue-700 mb-2">{res.productName} ({res.applicationMethod})</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <div><span className="font-semibold text-yellow-600">Application Rate:</span> {res.applicationRate}</div>
+            <div><span className="font-semibold text-yellow-600">Application Rate:</span> {res.applicationRate} {res.rateUnit}</div>
             <div><span className="font-semibold text-yellow-600">Total Product Needed:</span> {formatNumber(res.totalProductNeeded)}</div>
-            <div><span className="font-semibold text-yellow-600">Units to Order:</span> {res.totalProductUnits} – {res.productPackageString}</div>
+            <div><span className="font-semibold text-yellow-600">Total Product Units to Order:</span> {res.totalProductUnits} – {res.productPackageString}</div>
             <div><span className="font-semibold text-yellow-600">Product Cost per Ounce:</span> ${formatNumber(res.productCostPerOz)}</div>
             <div><span className="font-semibold text-yellow-600">Total Cost to Grower (MSRP):</span> ${formatNumber(res.totalCostToGrower)}</div>
             <div><span className="font-semibold text-yellow-600">Total Discounted Cost to Grower:</span> ${formatNumber(res.totalDiscountedCostToGrower)}</div>
-            <div><span className="font-semibold text-yellow-600">Cost per Acre:</span> ${formatNumber(res.individualCostPerAcre)}</div>
+            <div><span className="font-semibold text-yellow-600">Individual Cost per Acre:</span> ${formatNumber(res.individualCostPerAcre)}</div>
           </div>
         </div>
       ))}
@@ -76,10 +76,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div><span className="font-semibold text-yellow-600">Total Biological Program Cost per Acre:</span> ${formatNumber(programCost)}</div>
           <div><span className="font-semibold text-yellow-600">Breakeven Yield per Acre:</span> {formatNumber(roi.breakeven)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield for 2:1 ROI:</span> {formatNumber(roi.roi2x)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield for 3:1 ROI:</span> {formatNumber(roi.roi3x)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield for 4:1 ROI:</span> {formatNumber(roi.roi4x)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield for 5:1 ROI:</span> {formatNumber(roi.roi5x)} {cropPriceUnit}/acre</div>
+          <div><span className="font-semibold text-yellow-600">Yield Needed for 2:1 ROI:</span> {formatNumber(roi.roi2x)} {cropPriceUnit}/acre</div>
+          <div><span className="font-semibold text-yellow-600">Yield Needed for 3:1 ROI:</span> {formatNumber(roi.roi3x)} {cropPriceUnit}/acre</div>
+          <div><span className="font-semibold text-yellow-600">Yield Needed for 4:1 ROI:</span> {formatNumber(roi.roi4x)} {cropPriceUnit}/acre</div>
+          <div><span className="font-semibold text-yellow-600">Yield Needed for 5:1 ROI:</span> {formatNumber(roi.roi5x)} {cropPriceUnit}/acre</div>
         </div>
       </div>
     </div>
