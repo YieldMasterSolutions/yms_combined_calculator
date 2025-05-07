@@ -57,11 +57,12 @@ export default function Home() {
 
     const seedResults = calculateSeedTreatmentData(
       seedType,
+      acres,
       seedingRate,
       rateUnit,
-      seedTreatmentProducts,
       dealerDiscount,
       growerDiscount,
+      seedTreatmentProducts,
       seedsPerPoundOverride
     );
 
