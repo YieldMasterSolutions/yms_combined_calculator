@@ -1,46 +1,42 @@
+// src/utils/calculations.ts
+
+import { ProductData } from "./data";
+
 export interface SeedTreatmentResult {
   productName: string;
   applicationRate: number;
-  unit: string;
   totalProductNeeded: number;
   totalProductUnits: number;
-  packageSize: number;
-  packageUnits: string;
-  costPerOz: number;
-  totalCostMSRP: number;
-  totalCostDiscounted: number;
+  productPackageString: string;
+  productCostPerOz: number;
+  totalCostToGrower: number;
+  totalDiscountedCostToGrower: number;
   costPerUnitSeed: number;
   costPerAcre: number;
-  totalSeeds: number;
-  totalWeight: number;
-  totalUnits: number;
-  seedsPerUnit: number;
+  productForm: string;
+  applicationMethod: string;
 }
 
 export interface FoliarProductResult {
   productName: string;
-  applicationType: string;
   applicationRate: number;
-  unit: string;
   totalProductNeeded: number;
   totalProductUnits: number;
-  packageSize: number;
-  packageUnits: string;
-  costPerOz: number;
-  totalCostMSRP: number;
-  totalCostDiscounted: number;
-  costPerAcre: number;
+  productPackageString: string;
+  productCostPerOz: number;
+  totalCostToGrower: number;
+  totalDiscountedCostToGrower: number;
+  individualCostPerAcre: number;
+  applicationMethod: string;
 }
 
 export interface ROIResults {
-  Breakeven: number;
-  "2:1 ROI": number;
-  "3:1 ROI": number;
-  "4:1 ROI": number;
-  "5:1 ROI": number;
+  breakeven: number;
+  roi2: number;
+  roi3: number;
+  roi4: number;
+  roi5: number;
 }
-
-import { ProductData } from "./data";
 
 export function calculateSeedTreatmentData(
   seedType: string,
@@ -49,107 +45,73 @@ export function calculateSeedTreatmentData(
   rateUnit: string,
   dealerDiscount: number,
   growerDiscount: number,
-  seedTreatments: ProductData[],
-  seedsPerLb: number,
+  selections: { product: ProductData; applicationMethod: string }[],
+  seedsPerPound: number,
   lbsPerUnit: number
 ): SeedTreatmentResult[] {
-  const results: SeedTreatmentResult[] = [];
-
   const totalSeeds =
-    rateUnit === "seeds/acre"
-      ? seedingRate * acres
-      : seedingRate * acres * seedsPerLb;
-
+    rateUnit === "seeds/acre" ? acres * seedingRate : acres * seedingRate * seedsPerPound;
   const totalWeight =
-    rateUnit === "lbs/acre"
-      ? seedingRate * acres
-      : totalSeeds / seedsPerLb;
-
+    rateUnit === "lbs/acre" ? acres * seedingRate : totalSeeds / seedsPerPound;
   const totalUnits = totalWeight / lbsPerUnit;
 
-  let seedsPerUnit: number = 0;
-  if (seedType.toLowerCase() === "corn") {
-    seedsPerUnit = 80000;
-  } else if (seedType.toLowerCase() === "soybeans") {
-    seedsPerUnit = 140000;
-  } else {
-    seedsPerUnit = seedsPerLb * lbsPerUnit;
-  }
+  return selections.map(({ product, applicationMethod }) => {
+    const seedsPerUnit = seedType === "Corn" ? 80000 : seedType === "Soybeans" ? 140000 : seedsPerPound * lbsPerUnit;
+    const unitsToTreat = totalSeeds / seedsPerUnit;
+    const applicationRate = product["Application Rate"];
+    const productCostPerOz = product["Product Cost per oz"] ?? product["Product Cost per fl oz"] ?? 0;
+    const totalProductNeeded = applicationRate * unitsToTreat;
+    const totalProductUnits = Math.ceil(totalProductNeeded / product["Package Size"]);
+    const productPackageString = `${product["Package Size"]} ${product["Package Units"]} ${product["Package Type"]}`;
+    const totalCostToGrower = totalProductNeeded * productCostPerOz;
+    const totalDiscountedCostToGrower = totalCostToGrower * (1 - dealerDiscount / 100) * (1 - growerDiscount / 100);
+    const costPerUnitSeed = totalDiscountedCostToGrower / totalSeeds;
+    const costPerAcre = totalDiscountedCostToGrower / acres;
 
-  for (const product of seedTreatments) {
-    const rate = product["Application Rate in Ounces"] ?? 0;
-    const unit = "oz";
-    const packageSize = product["Package Size"];
-    const packageUnits = product["Package Units"];
-    const pricePerOz = parseFloat(product["Product Cost per oz"].replace("$", ""));
-
-    const totalProductNeeded = totalUnits * rate;
-    const totalProductUnits = Math.ceil(totalProductNeeded / packageSize);
-
-    const totalCostMSRP = totalProductNeeded * pricePerOz;
-    const discountFactor = (1 - dealerDiscount / 100) * (1 - growerDiscount / 100);
-    const totalCostDiscounted = totalCostMSRP * discountFactor;
-
-    const costPerUnitSeed = totalProductNeeded * pricePerOz / (totalSeeds || 1);
-    const costPerAcre = totalCostDiscounted / acres;
-
-    results.push({
+    return {
       productName: product["Product Name"],
-      applicationRate: rate,
-      unit,
+      applicationRate,
       totalProductNeeded,
       totalProductUnits,
-      packageSize,
-      packageUnits,
-      costPerOz: pricePerOz,
-      totalCostMSRP,
-      totalCostDiscounted,
+      productPackageString,
+      productCostPerOz,
+      totalCostToGrower,
+      totalDiscountedCostToGrower,
       costPerUnitSeed,
       costPerAcre,
-      totalSeeds,
-      totalWeight,
-      totalUnits,
-      seedsPerUnit,
-    });
-  }
-
-  return results;
+      productForm: product["Product Form"] || "",
+      applicationMethod,
+    };
+  });
 }
 
 export function calculateAllFoliarProductCosts(
   acres: number,
   dealerDiscount: number,
   growerDiscount: number,
-  foliarProducts: ProductData[]
+  selections: { product: ProductData; applicationMethod: string }[]
 ): FoliarProductResult[] {
-  return foliarProducts.map((product) => {
-    const rate = product["Application Rate in Ounces"] ?? 0;
-    const unit = "fl oz";
-    const totalProductNeeded = acres * rate;
-    const packageSize = product["Package Size"];
-    const packageUnits = product["Package Units"];
-    const totalProductUnits = Math.ceil(totalProductNeeded / packageSize);
-    const pricePerOz = parseFloat(product["Product Cost per oz"].replace("$", ""));
-
-    const totalCostMSRP = totalProductNeeded * pricePerOz;
-    const discountFactor = (1 - dealerDiscount / 100) * (1 - growerDiscount / 100);
-    const totalCostDiscounted = totalCostMSRP * discountFactor;
-
-    const costPerAcre = totalCostDiscounted / acres;
+  return selections.map(({ product, applicationMethod }) => {
+    const rate = product["Application Rate"];
+    const productCostPerOz = product["Product Cost per oz"] ?? product["Product Cost per fl oz"] ?? product["Product Cost per gram"] ?? 0;
+    const totalProductNeeded = rate * acres;
+    const totalProductUnits = Math.ceil(totalProductNeeded / product["Package Size"]);
+    const productPackageString = `${product["Package Size"]} ${product["Package Units"]} ${product["Package Type"]}`;
+    const totalCostToGrower = totalProductNeeded * productCostPerOz;
+    const totalDiscountedCostToGrower = totalCostToGrower * (1 - dealerDiscount / 100) * (1 - growerDiscount / 100);
+    const individualCostPerAcre = totalDiscountedCostToGrower / acres;
 
     return {
       productName: product["Product Name"],
-      applicationType: product["Product Packaging"],
       applicationRate: rate,
-      unit,
       totalProductNeeded,
       totalProductUnits,
-      packageSize,
-      packageUnits,
-      costPerOz: pricePerOz,
-      totalCostMSRP,
-      totalCostDiscounted,
-      costPerAcre,
+      productPackageString,
+      productCostPerOz,
+      totalCostToGrower,
+      totalDiscountedCostToGrower,
+      individualCostPerAcre,
+      applicationMethod,
     };
   });
 }
@@ -158,30 +120,18 @@ export function calculateProgramCost(
   seedResults: SeedTreatmentResult[],
   foliarResults: FoliarProductResult[]
 ): number {
-  const seedCost = seedResults.reduce((sum, r) => sum + r.costPerAcre, 0);
-  const foliarCost = foliarResults.reduce((sum, r) => sum + r.costPerAcre, 0);
+  const seedCost = seedResults.reduce((sum, p) => sum + p.costPerAcre, 0);
+  const foliarCost = foliarResults.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
   return seedCost + foliarCost;
 }
 
-export function calculateROI(
-  marketPrice: number,
-  programCost: number
-): ROIResults {
-  if (marketPrice === 0) {
-    return {
-      Breakeven: 0,
-      "2:1 ROI": 0,
-      "3:1 ROI": 0,
-      "4:1 ROI": 0,
-      "5:1 ROI": 0,
-    };
-  }
-
+export function calculateROI(marketPrice: number, programCost: number): ROIResults {
+  const calculateYield = (multiplier: number) => programCost === 0 ? 0 : (programCost * multiplier) / marketPrice;
   return {
-    Breakeven: programCost / marketPrice,
-    "2:1 ROI": (2 * programCost) / marketPrice,
-    "3:1 ROI": (3 * programCost) / marketPrice,
-    "4:1 ROI": (4 * programCost) / marketPrice,
-    "5:1 ROI": (5 * programCost) / marketPrice,
+    breakeven: calculateYield(1),
+    roi2: calculateYield(2),
+    roi3: calculateYield(3),
+    roi4: calculateYield(4),
+    roi5: calculateYield(5),
   };
 }

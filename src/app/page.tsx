@@ -1,6 +1,6 @@
-"use client";
-
 // src/app/page.tsx
+
+"use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
@@ -36,7 +36,7 @@ interface FormData {
   priceUnit: string;
   seedsPerPoundOverride?: number;
   grower: string;
-  dealerRep: string;
+  rep: string;
 }
 
 const Page = () => {
@@ -45,7 +45,7 @@ const Page = () => {
   const [roi, setRoi] = useState<ROIResults | null>(null);
   const [cropPriceUnit, setCropPriceUnit] = useState<string>("bu");
   const [growerName, setGrowerName] = useState<string>("");
-  const [dealerRep, setDealerRep] = useState<string>("");
+  const [repName, setRepName] = useState<string>("");
   const [programCost, setProgramCost] = useState<number>(0);
 
   const handleCalculate = (formData: FormData) => {
@@ -62,11 +62,11 @@ const Page = () => {
       priceUnit,
       seedsPerPoundOverride,
       grower,
-      dealerRep,
+      rep,
     } = formData;
 
     setGrowerName(grower);
-    setDealerRep(dealerRep);
+    setRepName(rep);
     setCropPriceUnit(priceUnit);
 
     const selectedSeed = seedTypes.find((s) => s["Seed Type"] === seedType);
@@ -129,18 +129,16 @@ const Page = () => {
               roi={roi!}
               cropPriceUnit={cropPriceUnit}
               growerName={growerName}
-              dealerRep={dealerRep}
+              repName={repName}
               programCost={programCost}
             />
           </div>
           <ResultsDisplay
             seedTreatmentResults={seedResults}
             inFurrowFoliarResults={foliarResults}
-            roiResults={{
-              ...roi!,
-              programCost,
-              roiUnit: cropPriceUnit,
-            }}
+            roiResults={roi!}
+            cropPriceUnit={cropPriceUnit}
+            programCost={programCost}
           />
         </>
       ) : null}

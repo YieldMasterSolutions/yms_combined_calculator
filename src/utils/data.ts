@@ -9,7 +9,7 @@ export interface ProductData {
   "Package Size": number;
   "Package Units": string;
   "Package Type": string;
-  "Application Method"?: string; // e.g., "Seed Treatment", "In-Furrow", etc.
+  "Application Method"?: string;
   "Product Form"?: "Liquid" | "Dry";
   "Application Rate Unit"?: "oz/unit" | "fl oz/acre" | "g/acre";
 }
@@ -18,19 +18,6 @@ export interface SeedType {
   "Seed Type": string;
   "Seeds/lb": string;
   "Lbs/Unit": number;
-}
-
-export interface FoliarProductResult {
-  productName: string;
-  applicationRate: number;
-  totalProductNeeded: number;
-  totalProductUnits: number;
-  productPackageString: string;
-  productCostPerOz: number;
-  totalCostToGrower: number;
-  totalDiscountedCostToGrower: number;
-  individualCostPerAcre: number;
-  applicationType: string;
 }
 
 export const seedTypes: SeedType[] = [
@@ -60,7 +47,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Package Type": "Jug",
     "Product Cost per oz": 9.16,
     "Application Rate": 1,
-    "Application Method": "Seed Treatment",
+    "Application Method": "Seed Coating",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/unit"
   },
@@ -71,40 +58,40 @@ export const productsSeedTreatment: ProductData[] = [
     "Package Type": "Pail",
     "Product Cost per oz": 2.98,
     "Application Rate": 2,
-    "Application Method": "Seed Treatment",
+    "Application Method": "Planter Box Treatment",
     "Product Form": "Dry",
     "Application Rate Unit": "oz/unit"
   },
   {
-    "Product Name": "Nutriquire + Terrasym 450 Corn",
+    "Product Name": "Nutriquire + Terrasym450 Corn",
     "Package Size": 12.5,
     "Package Units": "oz",
     "Package Type": "Pouch",
     "Product Cost per oz": 70.56,
     "Application Rate": 0.5,
-    "Application Method": "Seed Treatment",
+    "Application Method": "Planter Box Treatment",
     "Product Form": "Dry",
     "Application Rate Unit": "oz/unit"
   },
   {
-    "Product Name": "Nutriquire + Terrasym 401 Soybean",
+    "Product Name": "Nutriquire + Terrasym401 Soybean",
     "Package Size": 20,
     "Package Units": "oz",
     "Package Type": "Pouch",
     "Product Cost per oz": 70.56,
     "Application Rate": 0.5,
-    "Application Method": "Seed Treatment",
+    "Application Method": "Planter Box Treatment",
     "Product Form": "Dry",
     "Application Rate Unit": "oz/unit"
   },
   {
-    "Product Name": "Terrasym 450+DUST+TS201",
+    "Product Name": "Terrasym 450+DUST+TS201 CRW",
     "Package Size": 25,
     "Package Units": "oz",
     "Package Type": "Pouch",
     "Product Cost per oz": 69.60,
     "Application Rate": 0.5,
-    "Application Method": "Seed Treatment",
+    "Application Method": "Planter Box Treatment",
     "Product Form": "Dry",
     "Application Rate Unit": "oz/unit"
   }
@@ -112,25 +99,91 @@ export const productsSeedTreatment: ProductData[] = [
 
 export const productsInFurrowFoliar: ProductData[] = [
   {
-    "Product Name": "BioForge",
-    "Application Rate": 8,
-    "Product Cost per fl oz": 1.25,
-    "Package Size": 128,
+    "Product Name": "Soyfx SC",
+    "Application Rate": 16,
+    "Product Cost per fl oz": 0.75,
+    "Package Size": 320,
     "Package Units": "fl oz",
-    "Package Type": "Gallon",
-    "Application Method": "In-Furrow",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "Podfx SC",
+    "Application Rate": 16,
+    "Product Cost per fl oz": 0.75,
+    "Package Size": 320,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/acre"
   },
   {
     "Product Name": "N-Physis WG",
-    "Application Rate": 56.7,
-    "Product Cost per gram": 0.23,
-    "Package Size": 1000,
-    "Package Units": "g",
-    "Package Type": "Pouch",
-    "Application Method": "Foliar",
+    "Application Rate": 5,
+    "Product Cost per gram": 2.99,
+    "Package Size": 200,
+    "Package Units": "grams",
+    "Package Type": "Box",
+    "Application Method": "In-Furrow or Foliar",
     "Product Form": "Dry",
     "Application Rate Unit": "g/acre"
+  },
+  {
+    "Product Name": "Envita WG",
+    "Application Rate": 5,
+    "Product Cost per gram": 2.99,
+    "Package Size": 200,
+    "Package Units": "grams",
+    "Package Type": "Box",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Dry",
+    "Application Rate Unit": "g/acre"
+  },
+  {
+    "Product Name": "Envita SC",
+    "Application Rate": 0.8,
+    "Product Cost per fl oz": 18.69,
+    "Package Size": 32,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "Nutriquire Liquid",
+    "Application Rate": 32,
+    "Product Cost per fl oz": 0.44,
+    "Package Size": 320,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "Nutriquire Liquid Tote",
+    "Application Rate": 32,
+    "Product Cost per fl oz": 0.44,
+    "Package Size": 35200,
+    "Package Units": "fl oz",
+    "Package Type": "Tote",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "NueNutri Liquid",
+    "Application Rate": 32,
+    "Product Cost per fl oz": 0.34,
+    "Package Size": 320,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
   }
 ];
