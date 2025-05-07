@@ -36,14 +36,6 @@ interface FormData {
   grower: string;
   rep: string;
 }
-  marketPrice: number | undefined;
-  priceUnit: string;
-  seedsPerPoundOverride?: number;
-  grower: string;
-  rep: string;
-}
-
-  
 
 export default function Home() {
   const [seedResults, setSeedResults] = useState<SeedTreatmentResult[]>([]);
