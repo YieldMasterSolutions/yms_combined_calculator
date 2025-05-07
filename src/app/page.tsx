@@ -84,7 +84,10 @@ const Page = () => {
       rateUnit,
       dealerDiscount,
       growerDiscount,
-      seedTreatmentProducts,
+      seedTreatmentProducts.map((product) => ({
+        product,
+        applicationMethod: product["Application Method"] || "Planter Box Treatment",
+      })),
       seedsPerPound,
       lbsPerUnit
     );
@@ -93,7 +96,10 @@ const Page = () => {
       acres,
       dealerDiscount,
       growerDiscount,
-      foliarProducts
+      foliarProducts.map((product) => ({
+        product,
+        applicationMethod: product["Application Method"] || "In-Furrow",
+      }))
     );
 
     const totalCost = calculateProgramCost(seedOutput, foliarOutput);

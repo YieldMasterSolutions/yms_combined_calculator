@@ -4,7 +4,7 @@
 
 import React from "react";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
-import formatNumber from "../utils/formatNumber";
+import { formatNumber } from "../utils/formatNumber"; // ✅ fixed import
 
 interface ResultsDisplayProps {
   seedTreatmentResults: SeedTreatmentResult[];
