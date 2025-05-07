@@ -90,9 +90,9 @@ export default function Home() {
 
     const foliarResults = calculateAllFoliarProductCosts(
       acres,
-      foliarProducts,
       dealerDiscount,
-      growerDiscount
+      growerDiscount,
+      foliarProducts
     );
 
     const totalSeedCost = seedResults.reduce((sum, item) => sum + item.individualCostPerAcre, 0);
