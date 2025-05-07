@@ -71,8 +71,7 @@ export default function Home() {
 
     const seedTreatmentWithMethod = seedTreatmentProducts.map(p => ({
       ...p,
-      applicationMethod: "Planter Box"
-    }));
+      applicationMethod: }));
 
     const seedResults = calculateSeedTreatmentData(
       seedType,
