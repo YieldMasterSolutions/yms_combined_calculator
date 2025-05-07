@@ -64,6 +64,8 @@ export default function Home() {
     } = formData;
 
     const seedsPerPound = seedsPerPoundOverride ?? 0;
+    const selectedSeed = seedTypes.find(seed => seed.label === seedType);
+    const lbsPerUnit = selectedSeed?.lbsPerUnit ?? 50;
 
     setGrowerName(grower);
     setDealerRep(rep);
@@ -82,7 +84,8 @@ export default function Home() {
       dealerDiscount,
       growerDiscount,
       seedTreatmentWithMethod,
-      seedsPerPound
+      seedsPerPound,
+      lbsPerUnit
     );
 
     const foliarResults = calculateAllFoliarProductCosts(
