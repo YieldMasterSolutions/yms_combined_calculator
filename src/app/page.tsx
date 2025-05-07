@@ -3,52 +3,22 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
-import {
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-  ProductData,
-} from "../utils/data";
-import {
-  calculateSeedTreatmentData,
-  calculateAllFoliarProductCosts,
-  calculateROI,
-  calculateProgramCost,
-  SeedTreatmentResult,
-  FoliarProductResult,
-  ROIResults,
-} from "../utils/calculations";
+import { calculateSeedTreatmentData, calculateAllFoliarProductCosts, calculateROI } from "../utils/calculations";
+import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 
-interface FormData {
-  seedType: string;
-  acres: number;
-  seedingRate: number;
-  rateUnit: string;
-  dealerDiscount: number;
-  growerDiscount: number;
-  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
-  foliarProducts: { product: ProductData; applicationMethod: string }[];
-  marketPrice: number;
-  priceUnit: string;
-  seedsPerPoundOverride?: number;
-  grower: string;
-  rep: string;
-}
+export default function Home() {
+  const [seedResults, setSeedResults] = useState([]);
+  const [foliarResults, setFoliarResults] = useState([]);
+  const [roiResults, setRoiResults] = useState(null);
+  const [cropPriceUnit, setCropPriceUnit] = useState("bu");
+  const [growerName, setGrowerName] = useState("");
+  const [dealerRep, setDealerRep] = useState("");
+  const [programCost, setProgramCost] = useState(0);
 
-const Page = () => {
-  const [seedResults, setSeedResults] = useState<SeedTreatmentResult[]>([]);
-  const [foliarResults, setFoliarResults] = useState<FoliarProductResult[]>([]);
-  const [roi, setRoi] = useState<ROIResults | null>(null);
-  const [cropPriceUnit, setCropPriceUnit] = useState<string>("bu");
-  const [growerName, setGrowerName] = useState<string>("");
-  const [repName, setRepName] = useState<string>("");
-  const [programCost, setProgramCost] = useState<number>(0);
-
-  const handleCalculate = (formData: FormData) => {
+  const handleCalculate = (formData) => {
     const {
       seedType,
       acres,
@@ -66,52 +36,42 @@ const Page = () => {
     } = formData;
 
     setGrowerName(grower);
-    setRepName(rep);
+    setDealerRep(rep);
     setCropPriceUnit(priceUnit);
 
-    const selectedSeed = seedTypes.find((s) => s["Seed Type"] === seedType);
-    const seedsPerPound = seedsPerPoundOverride
-      ? seedsPerPoundOverride
-      : selectedSeed
-      ? parseFloat(selectedSeed["Seeds/lb"])
-      : 0;
-    const lbsPerUnit = selectedSeed ? selectedSeed["Lbs/Unit"] : 0;
-
-    const seedOutput = calculateSeedTreatmentData(
+    const seedResults = calculateSeedTreatmentData(
       seedType,
-      acres,
       seedingRate,
       rateUnit,
-      dealerDiscount,
-      growerDiscount,
       seedTreatmentProducts,
-      seedsPerPound,
-      lbsPerUnit
-    );
-
-    const foliarOutput = calculateAllFoliarProductCosts(
-      acres,
       dealerDiscount,
       growerDiscount,
-      foliarProducts
+      seedsPerPoundOverride
     );
 
-    const totalCost = calculateProgramCost(seedOutput, foliarOutput);
-    const roiOutput = calculateROI(marketPrice, totalCost);
+    const foliarResults = calculateAllFoliarProductCosts(
+      acres,
+      foliarProducts,
+      dealerDiscount,
+      growerDiscount
+    );
 
-    setSeedResults(seedOutput);
-    setFoliarResults(foliarOutput);
-    setProgramCost(totalCost);
-    setRoi(roiOutput);
+    const totalSeedCost = seedResults.reduce((sum, item) => sum + item.individualCostPerAcre, 0);
+    const totalFoliarCost = foliarResults.reduce((sum, item) => sum + item.individualCostPerAcre, 0);
+    const totalProgramCost = totalSeedCost + totalFoliarCost;
+
+    setSeedResults(seedResults);
+    setFoliarResults(foliarResults);
+    setProgramCost(totalProgramCost);
+
+    const roi = calculateROI(totalProgramCost, marketPrice);
+    setRoiResults(roi);
   };
 
   return (
-    <main className="max-w-6xl mx-auto p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold text-yellow-400">YieldMaster Solutions</h1>
-        <Image src="/yms-logo.png" alt="YMS Logo" width={140} height={50} />
-      </div>
-      <h2 className="text-xl font-semibold text-white mb-6">Biological Program Calculator</h2>
+    <main className="max-w-6xl mx-auto p-4 text-base bg-neutral-950 text-white min-h-screen">
+      <h1 className="text-4xl font-bold text-center mb-2 text-yellow-400">YMS Combined Calculator</h1>
+      <h2 className="text-xl text-center mb-6 text-stone-300">Biological Program Calculator</h2>
 
       <CalculatorForm
         seedTypes={seedTypes}
@@ -120,31 +80,28 @@ const Page = () => {
         onCalculate={handleCalculate}
       />
 
-      {seedResults.length > 0 || foliarResults.length > 0 ? (
-        <>
-          <div className="flex justify-end mb-4">
-            <PDFDownloadButton
-              seedResults={seedResults}
-              foliarResults={foliarResults}
-              roi={roi!}
-              cropPriceUnit={cropPriceUnit}
-              growerName={growerName}
-              dealerRep={repName}
-              programCost={programCost}
-            />
-          </div>
-          <ResultsDisplay
-            seedTreatmentResults={seedResults}
-            inFurrowFoliarResults={foliarResults}
-            roiResults={roi!}
+      {(seedResults.length > 0 || foliarResults.length > 0) && roiResults && (
+        <div className="mt-10">
+          <PDFDownloadButton
+            seedResults={seedResults}
+            foliarResults={foliarResults}
+            roi={roiResults}
             cropPriceUnit={cropPriceUnit}
+            growerName={growerName}
+            dealerRep={dealerRep}
             programCost={programCost}
           />
-        </>
-      ) : null}
+          <ResultsDisplay
+            seedResults={seedResults}
+            inFurrowFoliarResults={foliarResults}
+            roi={roiResults}
+            cropPriceUnit={cropPriceUnit}
+            growerName={growerName}
+            dealerRep={dealerRep}
+            programCost={programCost}
+          />
+        </div>
+      )}
     </main>
   );
-};
-
-export default Page;
-
+}
