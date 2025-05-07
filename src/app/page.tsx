@@ -1,6 +1,6 @@
-v// src/app/page.tsx
-
 "use client";
+
+// src/app/page.tsx
 
 import React, { useState } from "react";
 import Image from "next/image";
