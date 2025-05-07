@@ -13,7 +13,7 @@ interface PDFDownloadButtonProps {
   roi: ROIResults;
   cropPriceUnit: string;
   growerName: string;
-  repName: string;
+  dealerRep: string;
   programCost: number;
 }
 
@@ -23,7 +23,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
   roi,
   cropPriceUnit,
   growerName,
-  repName,
+  dealerRep,
   programCost,
 }) => {
   const componentRef = useRef<HTMLDivElement>(null);
@@ -35,7 +35,16 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
 
   return (
     <>
-      <div style={{ display: "none" }}>
+      <div
+        style={{
+          visibility: "hidden",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          height: 0,
+          overflow: "hidden",
+        }}
+      >
         <div ref={componentRef}>
           <PDFResults
             seedResults={seedResults}
@@ -43,11 +52,12 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
             roi={roi}
             cropPriceUnit={cropPriceUnit}
             growerName={growerName}
-            repName={repName}
+            dealerRep={dealerRep}
             programCost={programCost}
           />
         </div>
       </div>
+
       <button
         onClick={() => handlePrint?.()}
         className="bg-green-600 text-white px-4 py-2 rounded shadow"

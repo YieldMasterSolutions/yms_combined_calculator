@@ -25,7 +25,7 @@ interface FormData {
   priceUnit: string;
   seedsPerPoundOverride?: number;
   grower: string;
-  rep: string;
+  dealerRep: string;
 }
 
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
@@ -44,7 +44,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   const [dealerDiscount, setDealerDiscount] = useState<number>(0);
   const [growerDiscount, setGrowerDiscount] = useState<number>(0);
   const [grower, setGrower] = useState<string>("");
-  const [rep, setRep] = useState<string>("");
+  const [dealerRep, setDealerRep] = useState<string>("");
 
   const [seedTreatmentSelections, setSeedTreatmentSelections] = useState<string[]>(["", ""]);
   const [foliarSelections, setFoliarSelections] = useState<string[]>(["", "", "", ""]);
@@ -71,7 +71,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       priceUnit,
       seedsPerPoundOverride: overrideSeeds,
       grower,
-      rep,
+      dealerRep,
     };
 
     onCalculate(formData);
@@ -82,72 +82,84 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     const unit = product["Package Units"]?.toLowerCase().includes("gram")
       ? "g"
       : product["Package Units"] || "oz";
-    return `${product["Product Name"]} – ${size} ${unit} ${product["Product Packaging"]}`;
+    return `${product["Product Name"]} – ${size} ${unit} ${product["Package Type"]}`;
   };
 
   return (
     <form className="space-y-4 text-sm">
-      <div className="grid grid-cols-2 gap-4">
-        <label>
-          Grower Name:
-          <input type="text" className="w-full border p-1" value={grower} onChange={e => setGrower(e.target.value)} />
-        </label>
-        <label>
-          Rep Name:
-          <input type="text" className="w-full border p-1" value={rep} onChange={e => setRep(e.target.value)} />
-        </label>
-        <label>
-          Crop Type:
-          <select className="w-full border p-1" value={selectedSeedType} onChange={e => setSelectedSeedType(e.target.value)}>
-            {seedTypes.map(seed => (
-              <option key={seed["Seed Type"]} value={seed["Seed Type"]}>{seed["Seed Type"]}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Acres:
-          <input type="number" className="w-full border p-1" value={acres} onChange={e => setAcres(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Seeding Rate:
-          <input type="number" className="w-full border p-1" value={seedingRate} onChange={e => setSeedingRate(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Rate Unit:
-          <select className="w-full border p-1" value={rateUnit} onChange={e => setRateUnit(e.target.value)}>
-            <option value="seeds/acre">seeds/acre</option>
-            <option value="lbs/acre">lbs/acre</option>
-          </select>
-        </label>
-        <label>
-          Seeds/lb Override (Optional):
-          <input type="number" className="w-full border p-1" value={overrideSeeds ?? ""} onChange={e => setOverrideSeeds(e.target.value ? parseFloat(e.target.value) : undefined)} />
-        </label>
-        <label>
-          Market Price:
-          <input type="number" className="w-full border p-1" value={marketPrice} onChange={e => setMarketPrice(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Price Unit:
-          <select className="w-full border p-1" value={priceUnit} onChange={e => setPriceUnit(e.target.value)}>
-            <option value="bu">$/bu</option>
-            <option value="lb">$/lb</option>
-            <option value="cwt">$/cwt</option>
-            <option value="ton">$/ton</option>
-          </select>
-        </label>
-        <label>
-          Dealer Discount (%):
-          <input type="number" className="w-full border p-1" value={dealerDiscount} onChange={e => setDealerDiscount(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Grower Discount (%):
-          <input type="number" className="w-full border p-1" value={growerDiscount} onChange={e => setGrowerDiscount(parseFloat(e.target.value))} />
-        </label>
+      <div>
+        <h3 className="font-bold text-blue-700 text-base mb-2">Crop Inputs</h3>
+        <div className="grid grid-cols-5 gap-4">
+          <label className="font-bold text-yellow-600">
+            Crop Type:
+            <select className="w-full border p-1 text-black" value={selectedSeedType} onChange={e => setSelectedSeedType(e.target.value)}>
+              {seedTypes.map(seed => (
+                <option key={seed["Seed Type"]} value={seed["Seed Type"]}>{seed["Seed Type"]}</option>
+              ))}
+            </select>
+          </label>
+          <label className="font-bold text-yellow-600">
+            Acres:
+            <input type="number" className="w-full border p-1" value={acres} onChange={e => setAcres(parseFloat(e.target.value))} />
+          </label>
+          <label className="font-bold text-yellow-600">
+            Seeding Rate:
+            <input type="number" className="w-full border p-1" value={seedingRate} onChange={e => setSeedingRate(parseFloat(e.target.value))} />
+          </label>
+          <label className="font-bold text-yellow-600">
+            Rate Unit:
+            <select className="w-full border p-1 text-black" value={rateUnit} onChange={e => setRateUnit(e.target.value)}>
+              <option value="seeds/acre">seeds/acre</option>
+              <option value="lbs/acre">lbs/acre</option>
+            </select>
+          </label>
+          <label className="font-bold text-yellow-600">
+            Seeds/lb Override (Optional):
+            <input type="number" className="w-full border p-1" value={overrideSeeds ?? ""} onChange={e => setOverrideSeeds(e.target.value ? parseFloat(e.target.value) : undefined)} />
+          </label>
+        </div>
       </div>
 
       <div>
-        <h3 className="font-bold text-blue-700 text-base mt-4">Seed Treatment Products</h3>
+        <h3 className="font-bold text-blue-700 text-base mt-6 mb-2">Pricing & Contact Info</h3>
+        <div className="grid grid-cols-4 gap-4">
+          <label className="font-bold text-yellow-600">
+            Market Price:
+            <input type="number" className="w-full border p-1" value={marketPrice} onChange={e => setMarketPrice(parseFloat(e.target.value))} />
+          </label>
+          <label className="font-bold text-yellow-600">
+            Price Unit:
+            <select className="w-full border p-1 text-black" value={priceUnit} onChange={e => setPriceUnit(e.target.value)}>
+              <option value="bu">$/bu</option>
+              <option value="lb">$/lb</option>
+              <option value="cwt">$/cwt</option>
+              <option value="ton">$/ton</option>
+            </select>
+          </label>
+          <label className="font-bold text-yellow-600">
+            Grower Name:
+            <input type="text" className="w-full border p-1" value={grower} onChange={e => setGrower(e.target.value)} />
+          </label>
+          <label className="font-bold text-yellow-600">
+            Dealer/Rep Name:
+            <input type="text" className="w-full border p-1" value={dealerRep} onChange={e => setDealerRep(e.target.value)} />
+          </label>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <label className="font-bold text-yellow-600">
+            Dealer Discount (%):
+            <input type="number" className="w-full border p-1" value={dealerDiscount} onChange={e => setDealerDiscount(parseFloat(e.target.value))} />
+          </label>
+          <label className="font-bold text-yellow-600">
+            Grower Discount (%):
+            <input type="number" className="w-full border p-1" value={growerDiscount} onChange={e => setGrowerDiscount(parseFloat(e.target.value))} />
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-blue-700 text-base mt-6">Seed Treatment Products</h3>
         {seedTreatmentSelections.map((sel, i) => (
           <select
             key={i}

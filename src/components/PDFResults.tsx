@@ -2,76 +2,75 @@
 
 import React from "react";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
-import { formatNumber } from "../utils/formatNumber";
 
 interface PDFResultsProps {
   seedResults: SeedTreatmentResult[];
   foliarResults: FoliarProductResult[];
   roi: ROIResults;
-  programCost: number;
   cropPriceUnit: string;
   growerName: string;
-  repName: string;
+  dealerRep: string;
+  programCost: number;
 }
 
 const PDFResults: React.FC<PDFResultsProps> = ({
   seedResults,
   foliarResults,
   roi,
-  programCost,
   cropPriceUnit,
   growerName,
-  repName,
+  dealerRep,
+  programCost,
 }) => {
   return (
-    <>
-      <div className="p-6 text-xs">
-        <div className="mb-4">
-          <strong>Grower:</strong> {growerName} <br />
-          <strong>Rep:</strong> {repName}
+    <div className="p-6 text-sm filter print:grayscale">
+      <h1 className="text-2xl font-bold mb-2">YMS Biological Program Summary</h1>
+      <p><strong>Grower Name:</strong> {growerName}</p>
+      <p><strong>Dealer/Rep:</strong> {dealerRep}</p>
+      <p className="mb-4"><strong>Total Program Cost per Acre:</strong> ${programCost.toFixed(2)}</p>
+
+      <h2 className="text-xl font-bold mt-4 mb-2">Seed Treatment Products</h2>
+      {seedResults.map((res, index) => (
+        <div key={index} className="mb-4">
+          <p><strong>{res.productName}</strong></p>
+          <ul className="ml-4 list-disc">
+            <li>Application Rate: {res.applicationRate} {res.rateUnit}</li>
+            <li>Total Product Needed: {res.totalProductNeeded.toFixed(2)}</li>
+            <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
+            <li>Product Cost per Ounce: ${res.productCostPerOz.toFixed(2)}</li>
+            <li>Total Cost to Grower (MSRP): ${res.totalCostToGrower.toFixed(2)}</li>
+            <li>Total Discounted Cost to Grower: ${res.totalDiscountedCostToGrower.toFixed(2)}</li>
+            <li>Product Cost per Unit of Treated Seed: ${res.productCostPerUnitSeed.toFixed(4)}</li>
+            <li>Individual Cost per Acre: ${res.individualCostPerAcre.toFixed(2)}</li>
+          </ul>
         </div>
+      ))}
 
-        {seedResults.map((result, index) => (
-          <div key={index} className="mb-4 border border-gray-400 p-2">
-            <h3 className="font-semibold mb-1">Seed Treatment: {result.productName}</h3>
-            <div>Total Seeds: {formatNumber(result.totalSeeds)}</div>
-            <div>Total Weight (lbs): {formatNumber(result.totalWeight)}</div>
-            <div>Total Units: {formatNumber(result.totalUnits)}</div>
-            <div>Seeds per Unit: {formatNumber(result.seedsPerUnit)}</div>
-            <div>Application Rate: {formatNumber(result.applicationRate)} {result.unit}</div>
-            <div>Total Product Needed: {formatNumber(result.totalProductNeeded)} {result.unit}</div>
-            <div>Product Units to Order: {result.totalProductUnits}</div>
-            <div>Cost per Ounce: ${formatNumber(result.costPerOz)}</div>
-            <div>Total MSRP: ${formatNumber(result.totalCostMSRP)}</div>
-            <div>Total Discounted: ${formatNumber(result.totalCostDiscounted)}</div>
-            <div>Cost per Unit of Seed: ${formatNumber(result.costPerUnitSeed)}</div>
-            <div>Cost per Acre: ${formatNumber(result.costPerAcre)}</div>
-          </div>
-        ))}
-
-        {foliarResults.map((result, index) => (
-          <div key={index} className="mb-4 border border-gray-400 p-2">
-            <h3 className="font-semibold mb-1">{result.productName} ({result.applicationType})</h3>
-            <div>Application Rate: {formatNumber(result.applicationRate)} {result.unit}</div>
-            <div>Total Product Needed: {formatNumber(result.totalProductNeeded)} {result.unit}</div>
-            <div>Product Units to Order: {result.totalProductUnits}</div>
-            <div>Cost per Ounce: ${formatNumber(result.costPerOz)}</div>
-            <div>Total MSRP: ${formatNumber(result.totalCostMSRP)}</div>
-            <div>Total Discounted: ${formatNumber(result.totalCostDiscounted)}</div>
-            <div>Cost per Acre: ${formatNumber(result.costPerAcre)}</div>
-          </div>
-        ))}
-
-        <div className="border-t border-black pt-2 mt-4">
-          <strong>Total Program Cost per Acre:</strong> ${formatNumber(programCost)} <br />
-          <strong>Breakeven Yield per Acre:</strong> {formatNumber(roi.Breakeven)} {cropPriceUnit}/acre<br />
-          <strong>2:1 ROI Yield:</strong> {formatNumber(roi["2:1 ROI"])} {cropPriceUnit}/acre<br />
-          <strong>3:1 ROI Yield:</strong> {formatNumber(roi["3:1 ROI"])} {cropPriceUnit}/acre<br />
-          <strong>4:1 ROI Yield:</strong> {formatNumber(roi["4:1 ROI"])} {cropPriceUnit}/acre<br />
-          <strong>5:1 ROI Yield:</strong> {formatNumber(roi["5:1 ROI"])} {cropPriceUnit}/acre
+      <h2 className="text-xl font-bold mt-4 mb-2">In-Furrow / Foliar Products</h2>
+      {foliarResults.map((res, index) => (
+        <div key={index} className="mb-4">
+          <p><strong>{res.productName} ({res.applicationType})</strong></p>
+          <ul className="ml-4 list-disc">
+            <li>Application Rate: {res.applicationRate} {res.rateUnit}</li>
+            <li>Total Product Needed: {res.totalProductNeeded.toFixed(2)}</li>
+            <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
+            <li>Product Cost per Ounce: ${res.productCostPerOz.toFixed(2)}</li>
+            <li>Total Cost to Grower (MSRP): ${res.totalCostToGrower.toFixed(2)}</li>
+            <li>Total Discounted Cost to Grower: ${res.totalDiscountedCostToGrower.toFixed(2)}</li>
+            <li>Individual Cost per Acre: ${res.individualCostPerAcre.toFixed(2)}</li>
+          </ul>
         </div>
-      </div>
-    </>
+      ))}
+
+      <h2 className="text-xl font-bold mt-4 mb-2">ROI Summary</h2>
+      <ul className="ml-4 list-disc">
+        <li>Breakeven Yield per Acre: {roi.breakevenYield.toFixed(2)} {cropPriceUnit}/acre</li>
+        <li>Yield Needed for 2:1 ROI: {roi.roi2x.toFixed(2)} {cropPriceUnit}/acre</li>
+        <li>Yield Needed for 3:1 ROI: {roi.roi3x.toFixed(2)} {cropPriceUnit}/acre</li>
+        <li>Yield Needed for 4:1 ROI: {roi.roi4x.toFixed(2)} {cropPriceUnit}/acre</li>
+        <li>Yield Needed for 5:1 ROI: {roi.roi5x.toFixed(2)} {cropPriceUnit}/acre</li>
+      </ul>
+    </div>
   );
 };
 
