@@ -23,12 +23,20 @@ import {
 
 interface FormData {
   seedType: string;
-  acres: number;
-  seedingRate: number;
+  acres: number | undefined;
+  seedingRate: number | undefined;
   rateUnit: string;
-  dealerDiscount: number;
-  growerDiscount: number;
+  dealerDiscount: number | undefined;
+  growerDiscount: number | undefined;
   seedTreatmentProducts: { product: ProductData }[];
+
+  foliarProducts: { product: ProductData; applicationMethod: string }[];
+  marketPrice: number | undefined;
+  priceUnit: string;
+  seedsPerPoundOverride?: number;
+  grower: string;
+  rep: string;
+}[];
   foliarProducts: { product: ProductData; applicationMethod: string }[];
   marketPrice: number;
   priceUnit: string;
