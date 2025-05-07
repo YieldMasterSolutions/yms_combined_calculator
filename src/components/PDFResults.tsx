@@ -1,5 +1,7 @@
 // src/components/PDFResults.tsx
 
+"use client";
+
 import React from "react";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
 
@@ -22,54 +24,68 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   dealerRep,
   programCost,
 }) => {
+  const renderRow = (label: string, value: string | number) => (
+    <div className="flex justify-between border-b border-gray-300 py-1 text-sm">
+      <span className="font-semibold text-gray-800">{label}</span>
+      <span className="text-black">{value}</span>
+    </div>
+  );
+
   return (
-    <div className="p-6 text-black">
-      <h2 className="text-xl font-bold mb-2">YieldMaster Solutions - Biological Program Summary</h2>
-      <p><strong>Grower:</strong> {growerName}</p>
-      <p><strong>Rep:</strong> {dealerRep}</p>
+    <div className="p-6 text-black text-sm">
+      <div className="mb-4">
+        {renderRow("Grower Name", growerName)}
+        {renderRow("Dealer/Rep Name", dealerRep)}
+      </div>
 
-      <h3 className="text-lg font-bold mt-4">Seed Treatment Products</h3>
-      {seedResults.map((res, index) => (
-        <div key={index} className="mb-4">
-          <p><strong>{res.productName}</strong></p>
-          <ul className="ml-4 list-disc">
-            <li>Application Rate: {res.applicationRate} {res.productForm === "Liquid" ? "fl oz/unit" : "oz/unit"}</li>
-            <li>Total Product Needed: {res.totalProductNeeded.toFixed(2)}</li>
-            <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
-            <li>Product Cost per Ounce: ${res.productCostPerOz.toFixed(2)}</li>
-            <li>Total Cost to Grower (MSRP): ${res.totalCostToGrower.toFixed(2)}</li>
-            <li>Discounted Cost to Grower: ${res.totalDiscountedCostToGrower.toFixed(2)}</li>
-            <li>Cost per Unit of Treated Seed: ${res.costPerUnitSeed.toFixed(4)}</li>
-            <li>Individual Cost per Acre: ${res.costPerAcre.toFixed(2)}</li>
-          </ul>
+      {seedResults.map((res, idx) => (
+        <div key={idx} className="mb-6">
+          <h2 className="font-bold text-gray-800 mb-2">Seed Treatment Product: {res.productName}</h2>
+          {renderRow("Total Number of Seeds to be Treated", res.totalUnitsToTreat * 80000)}
+          {renderRow("Total Weight of Seeds to be Treated", (res.totalUnitsToTreat * 50).toFixed(2))}
+          {renderRow("Total Number of Units to be Treated", res.totalUnitsToTreat.toFixed(2))}
+          {renderRow("Number of Seeds per Unit", "80,000")}  {/* Assumes fixed for corn */}
+          {renderRow("Application Rate", `${res.applicationRate} ${res.rateUnit}`)}
+          {renderRow("Total Amount of Product Needed", `${res.totalProductNeeded.toFixed(2)} oz`)}
+          {renderRow("Total Number of Product Packages", `${res.totalProductUnits} ${res.productPackageString.split(" ")[2]}s`)}
+          {renderRow("Product Cost per Package", `$${((res.productCostPerOz * res.totalProductNeeded) / res.totalProductUnits).toFixed(2)}`)}
+          {renderRow("Total Cost to the Grower", `$${res.totalCostToGrower.toFixed(2)}`)}
+          {renderRow("Product Cost per Ounce", `$${res.productCostPerOz.toFixed(2)}`)}
+          {renderRow("Total Discounted Cost to Grower", `$${res.totalDiscountedCostToGrower.toFixed(2)}`)}
+          {renderRow("Product Cost per Unit of Treated Seed", `$${res.costPerUnitSeed.toFixed(6)}`)}
+          {renderRow("Product Cost per Acre", `$${res.costPerAcre.toFixed(2)}`)}
         </div>
       ))}
 
-      <h3 className="text-lg font-bold mt-4">In-Furrow / Foliar Products</h3>
-      {foliarResults.map((res, index) => (
-        <div key={index} className="mb-4">
-          <p><strong>{res.productName} ({res.applicationMethod})</strong></p>
-          <ul className="ml-4 list-disc">
-            <li>Application Rate: {res.applicationRate}</li>
-            <li>Total Product Needed: {res.totalProductNeeded.toFixed(2)}</li>
-            <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
-            <li>Product Cost per Ounce: ${res.productCostPerOz.toFixed(2)}</li>
-            <li>Total Cost to Grower (MSRP): ${res.totalCostToGrower.toFixed(2)}</li>
-            <li>Discounted Cost to Grower: ${res.totalDiscountedCostToGrower.toFixed(2)}</li>
-            <li>Individual Cost per Acre: ${res.individualCostPerAcre.toFixed(2)}</li>
-          </ul>
+      {foliarResults.length > 0 && (
+        <div className="mb-6">
+          <h2 className="font-bold text-gray-800 mb-2">In-Furrow / Foliar Product Costs</h2>
+          {foliarResults.map((res, idx) => (
+            <div key={idx} className="mb-4">
+              <h3 className="font-semibold text-gray-700 mb-1">{res.productName} ({res.applicationMethod})</h3>
+              {renderRow("Application Rate", `${res.applicationRate} ${res.productName.includes("WG") ? "g/acre" : "fl oz/acre"}`)}
+              {renderRow("Total Amount of Product Needed", `${res.totalProductNeeded.toFixed(2)} ${res.productName.includes("WG") ? "g" : "fl oz"}`)}
+              {renderRow("Total Product Units to Order", `${res.totalProductUnits} ${res.productPackageString.split(" ")[2]}s`)}
+              {renderRow("Product Cost per Ounce", `$${res.productCostPerOz.toFixed(2)}`)}
+              {renderRow("Total Cost to Grower (MSRP)", `$${res.totalCostToGrower.toFixed(2)}`)}
+              {renderRow("Total Discounted Cost to Grower", `$${res.totalDiscountedCostToGrower.toFixed(2)}`)}
+              {renderRow("Individual Cost per Acre", `$${res.individualCostPerAcre.toFixed(2)}`)}
+            </div>
+          ))}
         </div>
-      ))}
+      )}
 
-      <h3 className="text-lg font-bold mt-4">Program Summary</h3>
-      <p><strong>Total Program Cost per Acre:</strong> ${programCost.toFixed(2)}</p>
-      <ul className="ml-4 list-disc">
-        <li>Breakeven Yield: {roi.breakeven.toFixed(2)} {cropPriceUnit}/acre</li>
-        <li>2:1 ROI Yield: {roi.roi2.toFixed(2)} {cropPriceUnit}/acre</li>
-        <li>3:1 ROI Yield: {roi.roi3.toFixed(2)} {cropPriceUnit}/acre</li>
-        <li>4:1 ROI Yield: {roi.roi4.toFixed(2)} {cropPriceUnit}/acre</li>
-        <li>5:1 ROI Yield: {roi.roi5.toFixed(2)} {cropPriceUnit}/acre</li>
-      </ul>
+      <div className="mb-4">
+        {renderRow("Total Program Cost", `$${programCost.toFixed(2)}`)}
+      </div>
+
+      <div className="grid grid-cols-5 gap-4">
+        {renderRow("Breakeven", `${roi.breakeven.toFixed(2)} ${cropPriceUnit}/acre`)}
+        {renderRow("2:1 ROI", `${roi.roi2.toFixed(2)} ${cropPriceUnit}/acre`)}
+        {renderRow("3:1 ROI", `${roi.roi3.toFixed(2)} ${cropPriceUnit}/acre`)}
+        {renderRow("4:1 ROI", `${roi.roi4.toFixed(2)} ${cropPriceUnit}/acre`)}
+        {renderRow("5:1 ROI", `${roi.roi5.toFixed(2)} ${cropPriceUnit}/acre`)}
+      </div>
     </div>
   );
 };

@@ -13,9 +13,10 @@ export interface SeedTreatmentResult {
   totalDiscountedCostToGrower: number;
   costPerUnitSeed: number;
   costPerAcre: number;
+  totalUnitsToTreat: number;
+  rateUnit: string;
   productForm: string;
   applicationMethod: string;
-  totalUnits: number;
 }
 
 export interface FoliarProductResult {
@@ -66,7 +67,7 @@ export function calculateSeedTreatmentData(
     const productPackageString = `${product["Package Size"]} ${product["Package Units"]} ${product["Package Type"]}`;
     const totalCostToGrower = totalProductNeeded * productCostPerOz;
     const totalDiscountedCostToGrower = totalCostToGrower * (1 - dealerDiscount / 100) * (1 - growerDiscount / 100);
-    const costPerUnitSeed = totalDiscountedCostToGrower / totalSeeds;
+    const costPerUnitSeed = totalDiscountedCostToGrower / unitsToTreat;
     const costPerAcre = totalDiscountedCostToGrower / acres;
 
     return {
@@ -80,9 +81,10 @@ export function calculateSeedTreatmentData(
       totalDiscountedCostToGrower,
       costPerUnitSeed,
       costPerAcre,
+      totalUnitsToTreat: unitsToTreat,
+      rateUnit: product["Application Rate Unit"] || "",
       productForm: product["Product Form"] || "",
       applicationMethod,
-      totalUnits,
     };
   });
 }

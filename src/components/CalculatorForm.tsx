@@ -14,18 +14,18 @@ interface CalculatorFormProps {
 
 interface FormData {
   seedType: string;
-  acres: number;
+  acres?: number;
   seedingRate: number;
   rateUnit: string;
-  dealerDiscount: number;
-  growerDiscount: number;
+  dealerDiscount?: number;
+  growerDiscount?: number;
   seedTreatmentProducts: ProductSelection[];
   foliarProducts: ProductSelection[];
-  marketPrice: number;
-  priceUnit: string;
+  marketPrice?: number;
+  priceUnit?: string;
   seedsPerPoundOverride?: number;
-  grower: string;
-  rep: string;
+  grower?: string;
+  rep?: string;
 }
 
 interface ProductSelection {
@@ -53,6 +53,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
   const [seedTreatmentSelections, setSeedTreatmentSelections] = useState<(ProductSelection | null)[]>([null, null]);
   const [foliarSelections, setFoliarSelections] = useState<(ProductSelection | null)[]>([null, null, null, null]);
+
+  const selectedSeed = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
 
   const handleCalculateClick = () => {
     const selectedSeedTreatments = seedTreatmentSelections.filter((p): p is ProductSelection => p !== null);
@@ -87,19 +89,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   const appMethodsFoliar = ["In-Furrow", "Foliar"];
 
   return (
-    <form className="space-y-4 text-sm">
-      <div className="grid grid-cols-2 gap-4">
+    <form className="space-y-4 text-base bg-gray-900 text-white p-4 rounded-lg">
+      <div className="grid grid-cols-4 gap-4">
         <label>
-          Grower Name:
-          <input type="text" className="w-full border p-1" value={grower} onChange={e => setGrower(e.target.value)} />
-        </label>
-        <label>
-          Dealer/Rep Name:
-          <input type="text" className="w-full border p-1" value={rep} onChange={e => setRep(e.target.value)} />
-        </label>
-        <label>
-          Crop Type:
-          <select className="w-full border p-1" value={selectedSeedType} onChange={e => setSelectedSeedType(e.target.value)}>
+          Crop Type*:
+          <select className="w-full border p-2 text-black" value={selectedSeedType} onChange={e => setSelectedSeedType(e.target.value)}>
             {seedTypes.map(seed => (
               <option key={seed["Seed Type"]} value={seed["Seed Type"]}>{seed["Seed Type"]}</option>
             ))}
@@ -107,30 +101,31 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </label>
         <label>
           Acres:
-          <input type="number" className="w-full border p-1" value={acres} onChange={e => setAcres(parseFloat(e.target.value))} />
+          <input type="number" className="w-full border p-2 text-black" value={acres} onChange={e => setAcres(parseFloat(e.target.value))} />
         </label>
         <label>
-          Seeding Rate:
-          <input type="number" className="w-full border p-1" value={seedingRate} onChange={e => setSeedingRate(parseFloat(e.target.value))} />
+          Seeding Rate*:
+          <input type="number" className="w-full border p-2 text-black" value={seedingRate} onChange={e => setSeedingRate(parseFloat(e.target.value))} />
         </label>
         <label>
-          Rate Unit:
-          <select className="w-full border p-1" value={rateUnit} onChange={e => setRateUnit(e.target.value)}>
+          Rate Unit*:
+          <select className="w-full border p-2 text-black" value={rateUnit} onChange={e => setRateUnit(e.target.value)}>
             <option value="seeds/acre">seeds/acre</option>
             <option value="lbs/acre">lbs/acre</option>
           </select>
         </label>
-        <label>
+        <label className="col-span-2">
           Seeds/lb Override (Optional):
-          <input type="number" className="w-full border p-1" value={overrideSeeds ?? ""} onChange={e => setOverrideSeeds(e.target.value ? parseFloat(e.target.value) : undefined)} />
+          <input type="number" className="w-full border p-2 text-black" value={overrideSeeds ?? ""} onChange={e => setOverrideSeeds(e.target.value ? parseFloat(e.target.value) : undefined)} />
+          <p className="text-gray-400 text-sm">Default: {selectedSeed?.["Seeds/lb"] || "N/A"}</p>
         </label>
         <label>
           Market Price:
-          <input type="number" className="w-full border p-1" value={marketPrice} onChange={e => setMarketPrice(parseFloat(e.target.value))} />
+          <input type="number" className="w-full border p-2 text-black" value={marketPrice} onChange={e => setMarketPrice(parseFloat(e.target.value))} />
         </label>
         <label>
           Price Unit:
-          <select className="w-full border p-1" value={priceUnit} onChange={e => setPriceUnit(e.target.value)}>
+          <select className="w-full border p-2 text-black" value={priceUnit} onChange={e => setPriceUnit(e.target.value)}>
             <option value="bu">$/bu</option>
             <option value="lb">$/lb</option>
             <option value="cwt">$/cwt</option>
@@ -139,20 +134,28 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </label>
         <label>
           Dealer Discount (%):
-          <input type="number" className="w-full border p-1" value={dealerDiscount} onChange={e => setDealerDiscount(parseFloat(e.target.value))} />
+          <input type="number" className="w-full border p-2 text-black" value={dealerDiscount} onChange={e => setDealerDiscount(parseFloat(e.target.value))} />
         </label>
         <label>
           Grower Discount (%):
-          <input type="number" className="w-full border p-1" value={growerDiscount} onChange={e => setGrowerDiscount(parseFloat(e.target.value))} />
+          <input type="number" className="w-full border p-2 text-black" value={growerDiscount} onChange={e => setGrowerDiscount(parseFloat(e.target.value))} />
+        </label>
+        <label>
+          Grower Name:
+          <input type="text" className="w-full border p-2 text-black" value={grower} onChange={e => setGrower(e.target.value)} />
+        </label>
+        <label>
+          Dealer/Rep Name:
+          <input type="text" className="w-full border p-2 text-black" value={rep} onChange={e => setRep(e.target.value)} />
         </label>
       </div>
 
       <div>
-        <h3 className="font-bold text-blue-700 text-base mt-4">Seed Treatment Products</h3>
+        <h3 className="font-bold text-yellow-400 text-lg mt-6 mb-2">Seed Treatment Products</h3>
         {seedTreatmentSelections.map((sel, i) => (
           <div key={i} className="flex gap-2 mt-2">
             <select
-              className="w-2/3 border p-1"
+              className="w-2/3 border p-2 text-black"
               value={sel?.product["Product Name"] || ""}
               onChange={(e) => {
                 const product = productsSeedTreatment.find(p => p["Product Name"] === e.target.value);
@@ -167,7 +170,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               ))}
             </select>
             <select
-              className="w-1/3 border p-1"
+              className="w-1/3 border p-2 text-black"
               value={sel?.applicationMethod || appMethodsSeed[0]}
               onChange={(e) => {
                 const newSelections = [...seedTreatmentSelections];
@@ -184,11 +187,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
 
       <div>
-        <h3 className="font-bold text-blue-700 text-base mt-4">In-Furrow / Foliar Products</h3>
+        <h3 className="font-bold text-yellow-400 text-lg mt-6 mb-2">In-Furrow / Foliar Products</h3>
         {foliarSelections.map((sel, i) => (
           <div key={i} className="flex gap-2 mt-2">
             <select
-              className="w-2/3 border p-1"
+              className="w-2/3 border p-2 text-black"
               value={sel?.product["Product Name"] || ""}
               onChange={(e) => {
                 const product = productsInFurrow.find(p => p["Product Name"] === e.target.value);
@@ -203,7 +206,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               ))}
             </select>
             <select
-              className="w-1/3 border p-1"
+              className="w-1/3 border p-2 text-black"
               value={sel?.applicationMethod || appMethodsFoliar[0]}
               onChange={(e) => {
                 const newSelections = [...foliarSelections];
@@ -222,7 +225,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       <button
         type="button"
         onClick={handleCalculateClick}
-        className="mt-4 bg-blue-600 text-white px-4 py-2 rounded shadow"
+        className="mt-6 bg-blue-600 text-white px-6 py-2 rounded shadow"
       >
         Calculate
       </button>
