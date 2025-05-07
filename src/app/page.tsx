@@ -95,7 +95,7 @@ export default function Home() {
       foliarProducts
     );
 
-    const totalSeedCost = seedResults.reduce((sum, item) => sum + item.individualCostPerAcre, 0);
+    const totalSeedCost = seedResults.reduce((sum, item) => sum + item.costPerAcre, 0);
     const totalFoliarCost = foliarResults.reduce((sum, item) => sum + item.individualCostPerAcre, 0);
     const totalProgramCost = totalSeedCost + totalFoliarCost;
 
