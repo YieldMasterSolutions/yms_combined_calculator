@@ -46,7 +46,7 @@ export default function Home() {
       foliarProducts,
       marketPrice,
       priceUnit,
-      seedsPerPoundOverride,
+      seedsPerPoundOverride ?? 0,
       grower,
       rep,
     } = formData;
