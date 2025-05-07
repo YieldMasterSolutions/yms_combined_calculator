@@ -63,7 +63,8 @@ export default function Home() {
       dealerDiscount,
       growerDiscount,
       seedTreatmentProducts,
-      seedsPerPoundOverride
+      seedsPerPoundOverride,
+      "Planter Box"
     );
 
     const foliarResults = calculateAllFoliarProductCosts(
