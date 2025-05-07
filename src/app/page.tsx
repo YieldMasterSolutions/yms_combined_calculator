@@ -64,7 +64,7 @@ export default function Home() {
     } = formData;
 
     const seedsPerPound = seedsPerPoundOverride ?? 0;
-    const selectedSeed = seedTypes.find(seed => seed.label === seedType);
+    const selectedSeed = seedTypes.find(seed => seed.name === seedType);
     const lbsPerUnit = selectedSeed?.lbsPerUnit ?? 50;
 
     setGrowerName(grower);
