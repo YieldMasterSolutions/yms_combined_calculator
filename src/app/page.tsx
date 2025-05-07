@@ -71,7 +71,8 @@ export default function Home() {
 
     const seedTreatmentWithMethod = seedTreatmentProducts.map(p => ({
       ...p,
-      applicationMethod: }));
+      applicationMethod: "Planter Box"
+    }));
 
     const seedResults = calculateSeedTreatmentData(
       seedType,
@@ -81,8 +82,7 @@ export default function Home() {
       dealerDiscount,
       growerDiscount,
       seedTreatmentWithMethod,
-      seedsPerPound,
-      "Planter Box"
+      seedsPerPound
     );
 
     const foliarResults = calculateAllFoliarProductCosts(
