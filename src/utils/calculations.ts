@@ -15,6 +15,7 @@ export interface SeedTreatmentResult {
   costPerAcre: number;
   productForm: string;
   applicationMethod: string;
+  totalUnits: number;
 }
 
 export interface FoliarProductResult {
@@ -81,6 +82,7 @@ export function calculateSeedTreatmentData(
       costPerAcre,
       productForm: product["Product Form"] || "",
       applicationMethod,
+      totalUnits,
     };
   });
 }
