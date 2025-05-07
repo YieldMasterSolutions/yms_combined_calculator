@@ -36,14 +36,6 @@ interface FormData {
   grower: string;
   rep: string;
 }
-  marketPrice: number | undefined;
-  priceUnit: string;
-  seedsPerPoundOverride?: number;
-  grower: string;
-  rep: string;
-}
-
-  
 
 export default function Home() {
   const [seedResults, setSeedResults] = useState<SeedTreatmentResult[]>([]);
@@ -84,9 +76,11 @@ export default function Home() {
       applicationMethod: "Planter Box"
     }));
 
+    const acresValue = acres ?? 0;
+
     const seedResults = calculateSeedTreatmentData(
       seedType,
-      acres,
+      acresValue,
       seedingRate,
       rateUnit,
       dealerDiscount,
