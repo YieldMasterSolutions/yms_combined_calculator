@@ -29,6 +29,13 @@ interface FormData {
   dealerDiscount: number | undefined;
   growerDiscount: number | undefined;
   seedTreatmentProducts: { product: ProductData }[];
+  foliarProducts: { product: ProductData; applicationMethod: string }[];
+  marketPrice: number | undefined;
+  priceUnit: string;
+  seedsPerPoundOverride?: number;
+  grower: string;
+  rep: string;
+}
 
   foliarProducts: { product: ProductData; applicationMethod: string }[];
   marketPrice: number | undefined;
@@ -37,13 +44,7 @@ interface FormData {
   grower: string;
   rep: string;
 }[];
-  foliarProducts: { product: ProductData; applicationMethod: string }[];
-  marketPrice: number;
-  priceUnit: string;
-  seedsPerPoundOverride?: number;
-  grower: string;
-  rep: string;
-}
+  
 
 export default function Home() {
   const [seedResults, setSeedResults] = useState<SeedTreatmentResult[]>([]);
