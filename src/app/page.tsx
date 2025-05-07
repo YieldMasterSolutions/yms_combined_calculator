@@ -76,9 +76,11 @@ export default function Home() {
       applicationMethod: "Planter Box"
     }));
 
+    const acresValue = acres ?? 0;
+
     const seedResults = calculateSeedTreatmentData(
       seedType,
-      acres,
+      acresValue,
       seedingRate,
       rateUnit,
       dealerDiscount,
