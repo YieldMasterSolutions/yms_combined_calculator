@@ -55,6 +55,11 @@ export default function Home() {
     setDealerRep(rep);
     setCropPriceUnit(priceUnit);
 
+    const seedTreatmentWithMethod = seedTreatmentProducts.map(p => ({
+      ...p,
+      applicationMethod: "Planter Box"
+    }));
+
     const seedResults = calculateSeedTreatmentData(
       seedType,
       acres,
@@ -62,7 +67,7 @@ export default function Home() {
       rateUnit,
       dealerDiscount,
       growerDiscount,
-      seedTreatmentProducts,
+      seedTreatmentWithMethod,
       seedsPerPoundOverride,
       "Planter Box"
     );
