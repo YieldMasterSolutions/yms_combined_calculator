@@ -71,21 +71,21 @@ export function calculateProductData(
   const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Package Type"]}`;
 
   return {
-    productName: product["Product Name"],
-    packagesNeeded,
-    productPackageString,
-    originalTotalCostToGrower,
-    discountedTotalCostToGrower,
-    individualCostPerAcre,
-    applicationRate,
-    rateUnit,
-    totalProductNeeded,
-    totalProductUnits: packagesNeeded,
-    productCostPerOz: costPerUnit,
-    totalCostToGrower: originalTotalCostToGrower,
-    costPerUnitSeed: individualCostPerAcre,
-    discountedCostToGrower
-  };
+  productName: product["Product Name"],
+  packagesNeeded,
+  productPackageString,
+  originalTotalCostToGrower,
+  discountedTotalCostToGrower,
+  individualCostPerAcre,
+  applicationRate,
+  rateUnit,
+  totalProductNeeded,
+  totalProductUnits: packagesNeeded,
+  productCostPerOz: costPerUnit,
+  totalCostToGrower: originalTotalCostToGrower,
+  costPerUnitSeed: individualCostPerAcre,
+  discountedCostToGrower: discountedTotalCostToGrower
+};
 }
 
 function seedingRatePerAcre(
