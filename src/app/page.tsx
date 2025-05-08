@@ -8,7 +8,9 @@ import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 import {
   seedTypes,
-  FormData
+  productsSeedTreatment,
+  productsInFurrowFoliar,
+  FormData,
 } from "../utils/data";
 import {
   calculateSeedTreatmentData,
@@ -90,6 +92,8 @@ export default function Home() {
 
       <CalculatorForm
         seedTypes={seedTypes}
+        productsSeedTreatment={productsSeedTreatment}
+        productsInFurrow={productsInFurrowFoliar}
         onSubmit={handleFormSubmit}
       />
 
