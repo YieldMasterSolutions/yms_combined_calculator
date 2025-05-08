@@ -2,15 +2,19 @@
 
 export interface ProductData {
   "Product Name": string;
-  "Application Rate": number;
+  "Product Form"?: "Liquid" | "Dry";
+  "Application Method"?: string;
+  "Application Rate"?: number;
+  "Application Rate in Fluid Ounces"?: number;
+  "Application Rate in Ounces"?: number;
+  "Application Rate in Grams"?: number;
+  "Application Rate in Ounces per Unit"?: number;
   "Product Cost per fl oz"?: number;
   "Product Cost per oz"?: number;
   "Product Cost per gram"?: number;
   "Package Size": number;
   "Package Units": string;
   "Package Type": string;
-  "Application Method"?: string;
-  "Product Form"?: "Liquid" | "Dry";
   "Application Rate Unit"?: "oz/unit" | "fl oz/unit" | "fl oz/acre" | "g/acre";
 }
 
