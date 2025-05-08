@@ -1,238 +1,257 @@
 // src/components/CalculatorForm.tsx
 
-"use client";
+import React, { useState } from 'react';
+import { ProductData, SeedType } from '../utils/data';
 
-import React, { useState } from "react";
-import { SeedType, ProductData } from "../utils/data";
-
-interface CalculatorFormProps {
+export interface CalculatorFormProps {
   seedTypes: SeedType[];
   productsSeedTreatment: ProductData[];
   productsInFurrow: ProductData[];
-  onCalculate: (formData: FormData) => void;
-}
-
-interface FormData {
-  seedType: string;
-  acres: number;  // acres is now mandatory
-  seedingRate: number;  // seedingRate is now mandatory and should always be a number
-  rateUnit: string;
-  dealerDiscount?: number;
-  growerDiscount?: number;
-  seedTreatmentProducts: ProductSelection[];
-  foliarProducts: ProductSelection[];
-  marketPrice?: number;
-  priceUnit?: string;
-  seedsPerPoundOverride?: number;
-  grower?: string;
-  rep?: string;
-}
-
-interface ProductSelection {
-  product: ProductData;
-  applicationMethod: string;
+  onSubmit: (data: any) => void;
 }
 
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
   seedTypes,
   productsSeedTreatment,
   productsInFurrow,
-  onCalculate,
+  onSubmit,
 }) => {
-  const [selectedSeedType, setSelectedSeedType] = useState<string>(seedTypes[0]?.["Seed Type"] || "");
-  const [acres, setAcres] = useState<number>(0);
-  const [seedingRate, setSeedingRate] = useState<number>(0);
-  const [rateUnit, setRateUnit] = useState<string>("seeds/acre");
-  const [overrideSeeds, setOverrideSeeds] = useState<number | undefined>(undefined);
-  const [marketPrice, setMarketPrice] = useState<number>(0);
-  const [priceUnit, setPriceUnit] = useState<string>("bu");
-  const [dealerDiscount, setDealerDiscount] = useState<number>(0);
-  const [growerDiscount, setGrowerDiscount] = useState<number>(0);
-  const [grower, setGrower] = useState<string>("");
-  const [rep, setRep] = useState<string>("");
+  const [formState, setFormState] = useState<any>({
+    seedTreatmentProducts: [],
+    inFurrowFoliarProducts: [],
+  });
 
-  const [seedTreatmentSelections, setSeedTreatmentSelections] = useState<(ProductSelection | null)[]>([null, null]);
-  const [foliarSelections, setFoliarSelections] = useState<(ProductSelection | null)[]>([null, null, null, null]);
-
-  const selectedSeed = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
-
-  const handleCalculateClick = () => {
-    // Validate mandatory fields
-    if (acres <= 0 || seedingRate <= 0) {
-      alert("Both Acres and Seeding Rate are mandatory fields and must be positive numbers.");
-      return; // Stop the calculation if acres or seedingRate is invalid
-    }
-
-    const selectedSeedTreatments = seedTreatmentSelections.filter((p): p is ProductSelection => p !== null);
-    const selectedFoliarProducts = foliarSelections.filter((p): p is ProductSelection => p !== null);
-
-    const formData: FormData = {
-      seedType: selectedSeedType,
-      acres,
-      seedingRate,
-      rateUnit,
-      dealerDiscount,
-      growerDiscount,
-      seedTreatmentProducts: selectedSeedTreatments,
-      foliarProducts: selectedFoliarProducts,
-      marketPrice,
-      priceUnit,
-      seedsPerPoundOverride: overrideSeeds,
-      grower,
-      rep,
-    };
-
-    onCalculate(formData);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormState((prev: any) => ({ ...prev, [name]: value }));
   };
 
-  const renderProductOption = (product: ProductData) => {
-    const size = product["Package Size"].toString().replace(/\.0$/, "");
-    const unit = product["Package Units"] || "oz";
-    return `${product["Product Name"]} – ${product["Product Form"]} – ${size} ${unit} ${product["Package Type"]}`;
+  const handleProductChange = (
+    index: number,
+    type: 'seedTreatment' | 'inFurrowFoliar',
+    key: 'product' | 'applicationMethod',
+    value: any
+  ) => {
+    setFormState((prev: any) => {
+      const listKey = type === 'seedTreatment' ? 'seedTreatmentProducts' : 'inFurrowFoliarProducts';
+      const updatedList = [...(prev[listKey] || [])];
+      updatedList[index] = { ...updatedList[index], [key]: value };
+      return { ...prev, [listKey]: updatedList };
+    });
   };
 
-  const appMethodsSeed = ["Seed Coating", "Planter Box Treatment"];
-  const appMethodsFoliar = ["In-Furrow", "Foliar"];
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formState);
+  };
 
   return (
-    <form className="space-y-4 text-base bg-gray-900 text-white p-4 rounded-lg">
-      <div className="grid grid-cols-4 gap-4">
-        <label>
-          Crop Type*:
-          <select className="w-full border p-2 text-black" value={selectedSeedType} onChange={e => setSelectedSeedType(e.target.value)}>
-            {seedTypes.map(seed => (
-              <option key={seed["Seed Type"]} value={seed["Seed Type"]}>{seed["Seed Type"]}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Acres*:
-          <input type="number" className="w-full border p-2 text-black" value={acres} onChange={e => setAcres(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Seeding Rate*:
-          <input type="number" className="w-full border p-2 text-black" value={seedingRate} onChange={e => setSeedingRate(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Rate Unit*:
-          <select className="w-full border p-2 text-black" value={rateUnit} onChange={e => setRateUnit(e.target.value)}>
+    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-6">
+      <h2 className="text-xl font-bold text-yellow-600 mb-4">Crop Inputs</h2>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block font-semibold text-gray-700">Grower Name</label>
+          <input
+            type="text"
+            name="growerName"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Rep Name</label>
+          <input
+            type="text"
+            name="repName"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Acres</label>
+          <input
+            type="number"
+            name="acres"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Seeding Rate</label>
+          <input
+            type="number"
+            name="seedingRate"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Rate Unit</label>
+          <select
+            name="rateUnit"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          >
+            <option value="">Select Unit</option>
             <option value="seeds/acre">seeds/acre</option>
             <option value="lbs/acre">lbs/acre</option>
           </select>
-        </label>
-        <label className="col-span-2">
-          Seeds/lb Override (Optional):
-          <input type="number" className="w-full border p-2 text-black" value={overrideSeeds ?? ""} onChange={e => setOverrideSeeds(e.target.value ? parseFloat(e.target.value) : undefined)} />
-          <p className="text-gray-400 text-sm">Default: {selectedSeed?.["Seeds/lb"] || "N/A"}</p>
-        </label>
-        <label>
-          Market Price:
-          <input type="number" className="w-full border p-2 text-black" value={marketPrice} onChange={e => setMarketPrice(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Price Unit:
-          <select className="w-full border p-2 text-black" value={priceUnit} onChange={e => setPriceUnit(e.target.value)}>
-            <option value="bu">$/bu</option>
-            <option value="lb">$/lb</option>
-            <option value="cwt">$/cwt</option>
-            <option value="ton">$/ton</option>
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Seed Type</label>
+          <select
+            name="seedType"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          >
+            <option value="">Select Seed Type</option>
+            {seedTypes.map((seed) => (
+              <option key={seed.name} value={seed.name}>
+                {seed.name}
+              </option>
+            ))}
           </select>
-        </label>
-        <label>
-          Dealer Discount (%):
-          <input type="number" className="w-full border p-2 text-black" value={dealerDiscount} onChange={e => setDealerDiscount(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Grower Discount (%):
-          <input type="number" className="w-full border p-2 text-black" value={growerDiscount} onChange={e => setGrowerDiscount(parseFloat(e.target.value))} />
-        </label>
-        <label>
-          Grower Name:
-          <input type="text" className="w-full border p-2 text-black" value={grower} onChange={e => setGrower(e.target.value)} />
-        </label>
-        <label>
-          Dealer/Rep Name:
-          <input type="text" className="w-full border p-2 text-black" value={rep} onChange={e => setRep(e.target.value)} />
-        </label>
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Seeds per Pound Override (Optional)</label>
+          <input
+            type="number"
+            name="seedsPerPoundOverride"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Lbs per Unit</label>
+          <input
+            type="number"
+            name="lbsPerUnit"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            required
+          />
+        </div>
       </div>
 
-      <div>
-        <h3 className="font-bold text-yellow-400 text-lg mt-6 mb-2">Seed Treatment Products</h3>
-        {seedTreatmentSelections.map((sel, i) => (
-          <div key={i} className="flex gap-2 mt-2">
+      <h2 className="text-xl font-bold text-yellow-600 mt-6 mb-4">Product Inputs</h2>
+
+      {[0, 1].map((index) => (
+        <div key={index} className="grid grid-cols-2 gap-4 mb-2">
+          <div>
+            <label className="block font-semibold text-gray-700">Seed Treatment Product {index + 1}</label>
             <select
-              className="w-2/3 border p-2 text-black"
-              value={sel?.product["Product Name"] || ""}
-              onChange={(e) => {
-                const product = productsSeedTreatment.find(p => p["Product Name"] === e.target.value);
-                const newSelections = [...seedTreatmentSelections];
-                newSelections[i] = product ? { product, applicationMethod: appMethodsSeed[0] } : null;
-                setSeedTreatmentSelections(newSelections);
-              }}
+              value={formState.seedTreatmentProducts?.[index]?.product || ''}
+              onChange={(e) =>
+                handleProductChange(index, 'seedTreatment', 'product', e.target.value)
+              }
+              className="w-full border p-2 rounded"
             >
               <option value="">Select Product</option>
-              {productsSeedTreatment.map(p => (
-                <option key={p["Product Name"]} value={p["Product Name"]}>{renderProductOption(p)}</option>
-              ))}
-            </select>
-            <select
-              className="w-1/3 border p-2 text-black"
-              value={sel?.applicationMethod || appMethodsSeed[0]}
-              onChange={(e) => {
-                const newSelections = [...seedTreatmentSelections];
-                if (newSelections[i]) newSelections[i]!.applicationMethod = e.target.value;
-                setSeedTreatmentSelections(newSelections);
-              }}
-            >
-              {appMethodsSeed.map(method => (
-                <option key={method} value={method}>{method}</option>
+              {productsSeedTreatment.map((product) => (
+                <option key={product['Product Name']} value={product['Product Name']}>
+                  {product['Product Name']}
+                </option>
               ))}
             </select>
           </div>
-        ))}
-      </div>
-
-      <div>
-        <h3 className="font-bold text-yellow-400 text-lg mt-6 mb-2">In-Furrow / Foliar Products</h3>
-        {foliarSelections.map((sel, i) => (
-          <div key={i} className="flex gap-2 mt-2">
+          <div>
+            <label className="block font-semibold text-gray-700">Application Method</label>
             <select
-              className="w-2/3 border p-2 text-black"
-              value={sel?.product["Product Name"] || ""}
-              onChange={(e) => {
-                const product = productsInFurrow.find(p => p["Product Name"] === e.target.value);
-                const newSelections = [...foliarSelections];
-                newSelections[i] = product ? { product, applicationMethod: appMethodsFoliar[0] } : null;
-                setFoliarSelections(newSelections);
-              }}
+              value={formState.seedTreatmentProducts?.[index]?.applicationMethod || ''}
+              onChange={(e) =>
+                handleProductChange(index, 'seedTreatment', 'applicationMethod', e.target.value)
+              }
+              className="w-full border p-2 rounded"
+            >
+              <option value="Seed Treatment">Seed Treatment</option>
+            </select>
+          </div>
+        </div>
+      ))}
+
+      {[0, 1, 2, 3].map((index) => (
+        <div key={index} className="grid grid-cols-2 gap-4 mb-2">
+          <div>
+            <label className="block font-semibold text-gray-700">In-Furrow / Foliar Product {index + 1}</label>
+            <select
+              value={formState.inFurrowFoliarProducts?.[index]?.product || ''}
+              onChange={(e) =>
+                handleProductChange(index, 'inFurrowFoliar', 'product', e.target.value)
+              }
+              className="w-full border p-2 rounded"
             >
               <option value="">Select Product</option>
-              {productsInFurrow.map(p => (
-                <option key={p["Product Name"]} value={p["Product Name"]}>{renderProductOption(p)}</option>
-              ))}
-            </select>
-            <select
-              className="w-1/3 border p-2 text-black"
-              value={sel?.applicationMethod || appMethodsFoliar[0]}
-              onChange={(e) => {
-                const newSelections = [...foliarSelections];
-                if (newSelections[i]) newSelections[i]!.applicationMethod = e.target.value;
-                setFoliarSelections(newSelections);
-              }}
-            >
-              {appMethodsFoliar.map(method => (
-                <option key={method} value={method}>{method}</option>
+              {productsInFurrow.map((product) => (
+                <option key={product['Product Name']} value={product['Product Name']}>
+                  {product['Product Name']}
+                </option>
               ))}
             </select>
           </div>
-        ))}
+          <div>
+            <label className="block font-semibold text-gray-700">Application Method</label>
+            <select
+              value={formState.inFurrowFoliarProducts?.[index]?.applicationMethod || ''}
+              onChange={(e) =>
+                handleProductChange(index, 'inFurrowFoliar', 'applicationMethod', e.target.value)
+              }
+              className="w-full border p-2 rounded"
+            >
+              <option value="In-Furrow">In-Furrow</option>
+              <option value="Foliar">Foliar</option>
+            </select>
+          </div>
+        </div>
+      ))}
+
+      <div className="grid grid-cols-2 gap-4 mt-6">
+        <div>
+          <label className="block font-semibold text-gray-700">Dealer Discount (Optional)</label>
+          <input
+            type="number"
+            name="dealerDiscount"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Grower Discount (Optional)</label>
+          <input
+            type="number"
+            name="growerDiscount"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Market Price (Optional)</label>
+          <input
+            type="number"
+            name="marketPrice"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block font-semibold text-gray-700">Crop Price Unit</label>
+          <select
+            name="cropPriceUnit"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          >
+            <option value="$/bu">$/bu</option>
+            <option value="$/lb">$/lb</option>
+            <option value="$/cwt">$/cwt</option>
+            <option value="$/ton">$/ton</option>
+          </select>
+        </div>
       </div>
 
-      <button
-        type="button"
-        onClick={handleCalculateClick}
-        className="mt-6 bg-blue-600 text-white px-6 py-2 rounded shadow"
-      >
+      <button type="submit" className="mt-6 px-6 py-2 bg-blue-600 text-white rounded">
         Calculate
       </button>
     </form>
