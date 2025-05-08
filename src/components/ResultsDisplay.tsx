@@ -1,84 +1,148 @@
 // src/components/ResultsDisplay.tsx
-
 "use client";
-
-import React from "react";
-import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
+import React, { useRef } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import { formatNumber } from "../utils/formatNumber";
 
+interface CalculationResult {
+  [key: string]: string | number;
+}
+
 interface ResultsDisplayProps {
-  seedResults: SeedTreatmentResult[];
-  foliarResults: FoliarProductResult[];
-  roi: ROIResults | null;
+  seedTreatmentResults: CalculationResult[];
+  inFurrowFoliarResults: CalculationResult[];
+  totalCostPerAcre: number;
+  totalUndiscountedCost: number;
+  totalDiscountedCost: number;
+  breakevenYield: number | null;
+  roi2: number | null;
+  roi3: number | null;
+  roi4: number | null;
+  roi5: number | null;
   cropPriceUnit: string;
-  growerName: string;
-  dealerRep: string;
-  programCost: number;
+}
+
+function formatSeedCount(value: number): string {
+  if (value < 500_000) return formatNumber(value);
+  if (value < 1_000_000) return `~${(value / 1_000).toFixed(1)} thousand`;
+  if (value < 1_000_000_000) return `~${(value / 1_000_000).toFixed(1)} million`;
+  if (value < 1_000_000_000_000) return `~${(value / 1_000_000_000).toFixed(1)} billion`;
+  return `~${(value / 1_000_000_000_000).toFixed(1)} trillion`;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
-  seedResults,
-  foliarResults,
-  roi,
+  seedTreatmentResults,
+  inFurrowFoliarResults,
+  totalCostPerAcre,
+  totalUndiscountedCost,
+  totalDiscountedCost,
+  breakevenYield,
+  roi2,
+  roi3,
+  roi4,
+  roi5,
   cropPriceUnit,
-  growerName,
-  dealerRep,
-  programCost
 }) => {
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  const downloadPDF = () => {
+    if (!resultRef.current) return;
+    html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "pt", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const margin = 20;
+      const imgWidth = pageWidth - margin * 2;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
+      pdf.save("YieldMaster_Calculation.pdf");
+    });
+  };
+
+  if (!seedTreatmentResults?.length) return null;
+
   return (
-    <div className="mt-6">
-      <div className="flex justify-between items-center mb-2">
-        <h2 className="text-xl font-bold text-black">Calculation Results</h2>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 text-sm bg-gray-100 p-4 rounded shadow">
-        <div><span className="font-semibold text-yellow-600">Grower Name:</span> {growerName}</div>
-        <div><span className="font-semibold text-yellow-600">Dealer/Rep Name:</span> {dealerRep}</div>
-      </div>
-
-      {/* Seed Treatment Results */}
-      {seedResults.map((res, index) => (
-        <div key={index} className="mt-6 border border-gray-400 p-4 bg-white shadow">
-          <h3 className="text-md font-bold text-blue-700 mb-2">{res.productName} ({res.applicationMethod})</h3>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div><span className="font-semibold text-yellow-600">Application Rate:</span> {res.applicationRate} {res.rateUnit}</div>
-            <div><span className="font-semibold text-yellow-600">Total Product Needed:</span> {formatNumber(res.totalProductNeeded)}</div>
-            <div><span className="font-semibold text-yellow-600">Total Product Units to Order:</span> {res.totalProductUnits} – {res.productPackageString}</div>
-            <div><span className="font-semibold text-yellow-600">Product Cost per Ounce:</span> ${formatNumber(res.productCostPerOz)}</div>
-            <div><span className="font-semibold text-yellow-600">Total Cost to Grower (MSRP):</span> ${formatNumber(res.totalCostToGrower)}</div>
-            <div><span className="font-semibold text-yellow-600">Total Discounted Cost to Grower:</span> ${formatNumber(res.totalDiscountedCostToGrower)}</div>
-            <div><span className="font-semibold text-yellow-600">Product Cost per Unit of Treated Seed:</span> ${formatNumber(res.costPerUnitSeed)}</div>
-            <div><span className="font-semibold text-yellow-600">Individual Cost of Seed Treatment per Acre:</span> ${formatNumber(res.costPerAcre)}</div>
+    <div ref={resultRef} className="bg-zinc-800 p-6 mt-8 rounded border border-zinc-700 text-white">
+      <h2 className="text-xl font-bold text-blue-400 mb-4">Seed Treatment Calculations</h2>
+      {seedTreatmentResults.map((result, idx) => (
+        <div key={idx} className="mb-6 border border-zinc-700 bg-zinc-900 p-4 rounded">
+          <h3 className="text-lg font-bold text-yellow-400 mb-2">{result.productName}</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Seeds to be Treated:</span> &nbsp; {formatSeedCount(Number(result.totalSeeds))}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Weight of Seeds:</span> &nbsp; {formatNumber(result.totalWeight)} lbs</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Units to be Treated:</span> &nbsp; {formatNumber(result.totalUnits)}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Number of Seeds per Unit:</span> &nbsp; {formatNumber(result.seedsPerUnit)}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Application Rate:</span> &nbsp; {result.applicationRate} {result.rateUnit}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Amount of Product Needed:</span> &nbsp; {formatNumber(result.totalProductNeeded)} {String(result.rateUnit).split("/")[0]}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Product Units to Order:</span> &nbsp; {result.totalProductUnits} – {result.productPackageString}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Product Cost per Ounce:</span> &nbsp; ${formatNumber(result.productCostPerOz)}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Cost to Grower (MSRP):</span> &nbsp; ${formatNumber(result.totalCostToGrower)}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Discounted Cost to Grower:</span> &nbsp; ${formatNumber(result.discountedCostToGrower)}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Product Cost per Unit of Treated Seed:</span> &nbsp; ${formatNumber(result.costPerUnitSeed)}</div>
+            <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Individual Cost of Seed Treatment per Acre:</span> &nbsp; ${formatNumber(result.costPerAcre)}</div>
           </div>
         </div>
       ))}
 
-      {/* In-Furrow / Foliar Results */}
-      {foliarResults.map((res, index) => (
-        <div key={index} className="mt-6 border border-gray-400 p-4 bg-white shadow">
-          <h3 className="text-md font-bold text-blue-700 mb-2">{res.productName} ({res.applicationMethod})</h3>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div><span className="font-semibold text-yellow-600">Application Rate:</span> {res.applicationRate}</div>
-            <div><span className="font-semibold text-yellow-600">Total Product Needed:</span> {formatNumber(res.totalProductNeeded)}</div>
-            <div><span className="font-semibold text-yellow-600">Total Product Units to Order:</span> {res.totalProductUnits} – {res.productPackageString}</div>
-            <div><span className="font-semibold text-yellow-600">Product Cost per Ounce:</span> ${formatNumber(res.productCostPerOz)}</div>
-            <div><span className="font-semibold text-yellow-600">Total Cost to Grower (MSRP):</span> ${formatNumber(res.totalCostToGrower)}</div>
-            <div><span className="font-semibold text-yellow-600">Total Discounted Cost to Grower:</span> ${formatNumber(res.totalDiscountedCostToGrower)}</div>
-            <div><span className="font-semibold text-yellow-600">Individual Cost per Acre:</span> ${formatNumber(res.individualCostPerAcre)}</div>
-          </div>
-        </div>
-      ))}
+      {inFurrowFoliarResults.length > 0 && (
+        <>
+          <h2 className="text-xl font-bold text-blue-400 mb-4 mt-8">In-Furrow / Foliar Product Costs</h2>
+          {inFurrowFoliarResults.map((result, idx) => (
+            <div key={idx} className="mb-6 border border-zinc-700 bg-zinc-900 p-4 rounded">
+              <h3 className="text-lg font-bold text-yellow-400 mb-2">{result.productName} ({result.applicationMethod})</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Application Rate:</span> &nbsp; {result.applicationRate} {result.rateUnit}</div>
+                <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Amount of Product Needed:</span> &nbsp; {formatNumber(result.totalProductNeeded)} {String(result.rateUnit).split("/")[0]}</div>
+                <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Product Units to Order:</span> &nbsp; {result.totalProductUnits} – {result.productPackageString}</div>
+                <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Product Cost per Ounce:</span> &nbsp; ${formatNumber(result.productCostPerOz)}</div>
+                <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Cost to Grower (MSRP):</span> &nbsp; ${formatNumber(result.totalCostToGrower)}</div>
+                <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Discounted Cost to Grower:</span> &nbsp; ${formatNumber(result.discountedCostToGrower)}</div>
+                <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Individual Cost per Acre:</span> &nbsp; ${formatNumber(result.costPerAcre)}</div>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
 
-      {/* Program Cost + ROI */}
-      <div className="mt-6 border border-gray-400 p-4 bg-white shadow">
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div><span className="font-semibold text-yellow-600">Total Biological Program Cost per Acre:</span> ${formatNumber(programCost)}</div>
-          <div><span className="font-semibold text-yellow-600">Breakeven Yield per Acre:</span> {formatNumber(roi?.breakeven ?? 0)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield Needed for 2:1 ROI:</span> {formatNumber(roi?.roi2 ?? 0)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield Needed for 3:1 ROI:</span> {formatNumber(roi?.roi3 ?? 0)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield Needed for 4:1 ROI:</span> {formatNumber(roi?.roi4 ?? 0)} {cropPriceUnit}/acre</div>
-          <div><span className="font-semibold text-yellow-600">Yield Needed for 5:1 ROI:</span> {formatNumber(roi?.roi5 ?? 0)} {cropPriceUnit}/acre</div>
+      <h2 className="text-xl font-bold text-blue-400 mt-8 mb-2">Total YMS Biological Program Cost</h2>
+      <div className="grid grid-cols-2 gap-4 border border-zinc-700 bg-zinc-900 p-4 rounded">
+        <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Undiscounted Total Cost:</span> &nbsp; ${formatNumber(totalUndiscountedCost)}</div>
+        <div className="min-h-[48px] flex items-center"><span className="text-yellow-600 font-semibold">Total Discounted Cost:</span> &nbsp; ${formatNumber(totalDiscountedCost)}</div>
+        <div className="min-h-[48px] flex items-center col-span-2"><span className="text-yellow-600 font-semibold">Program Cost per Acre:</span> &nbsp; ${formatNumber(totalCostPerAcre)}</div>
+      </div>
+
+      <h2 className="text-xl font-bold text-blue-400 mt-8 mb-2">ROI Calculations</h2>
+      <div className="grid grid-cols-5 gap-4 border border-zinc-700 bg-zinc-900 p-4 rounded text-center">
+        <div className="min-h-[48px] flex flex-col justify-center">
+          <span className="text-yellow-600 font-semibold">Breakeven</span>
+          {breakevenYield !== null ? formatNumber(breakevenYield) : "N/A"} {cropPriceUnit}
         </div>
+        <div className="min-h-[48px] flex flex-col justify-center">
+          <span className="text-yellow-600 font-semibold">ROI 2:1</span>
+          {roi2 !== null ? formatNumber(roi2) : "N/A"} {cropPriceUnit}
+        </div>
+        <div className="min-h-[48px] flex flex-col justify-center">
+          <span className="text-yellow-600 font-semibold">ROI 3:1</span>
+          {roi3 !== null ? formatNumber(roi3) : "N/A"} {cropPriceUnit}
+        </div>
+        <div className="min-h-[48px] flex flex-col justify-center">
+          <span className="text-yellow-600 font-semibold">ROI 4:1</span>
+          {roi4 !== null ? formatNumber(roi4) : "N/A"} {cropPriceUnit}
+        </div>
+        <div className="min-h-[48px] flex flex-col justify-center">
+          <span className="text-yellow-600 font-semibold">ROI 5:1</span>
+          {roi5 !== null ? formatNumber(roi5) : "N/A"} {cropPriceUnit}
+        </div>
+      </div>
+
+      <div className="text-center mt-8">
+        <button
+          onClick={downloadPDF}
+          className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white"
+        >
+          Download PDF
+        </button>
       </div>
     </div>
   );

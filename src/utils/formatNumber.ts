@@ -1,8 +1,7 @@
 // src/utils/formatNumber.ts
-
-export function formatNumber(value: number): string {
-  return value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+export const formatNumber = (n: number, decimals = 0): string => {
+  return n.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
   });
-}
+};
