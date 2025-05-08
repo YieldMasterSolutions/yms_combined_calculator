@@ -26,8 +26,8 @@ interface FormData {
   acres: number;  // acres is now mandatory
   seedingRate: number;  // seedingRate is now mandatory and should always be a number
   rateUnit: string;
-  dealerDiscount: number;
-  growerDiscount: number;
+  dealerDiscount?: number;  // Optional
+  growerDiscount?: number;  // Optional
   seedTreatmentProducts: { product: ProductData }[];
   foliarProducts: { product: ProductData; applicationMethod: string }[];
   marketPrice: number;
