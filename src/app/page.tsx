@@ -63,9 +63,15 @@ export default function Home() {
       rep
     } = formData;
 
+    // Validate mandatory fields
     if (!acres || acres <= 0) {
       alert("Acres is a mandatory field and must be a positive number.");
       return; // Stop the calculation if acres is invalid
+    }
+
+    if (!seedingRate || seedingRate <= 0) {
+      alert("Seeding Rate is a mandatory field and must be a positive number.");
+      return; // Stop the calculation if seedingRate is invalid
     }
 
     const seedsPerPound = seedsPerPoundOverride ?? 0;
@@ -84,7 +90,7 @@ export default function Home() {
     const seedResults = calculateSeedTreatmentData(
       seedType,
       acres,
-      seedingRate ?? 0, // Default to 0 if undefined
+      seedingRate,  // Pass seedingRate directly, no default value
       rateUnit,
       dealerDiscount,
       growerDiscount,
