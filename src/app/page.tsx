@@ -23,14 +23,14 @@ import {
 
 interface FormData {
   seedType: string;
-  acres: number | undefined;
-  seedingRate: number | undefined;
+  acres: number;  // acres is now mandatory
+  seedingRate: number;  // seedingRate is now mandatory and should always be a number
   rateUnit: string;
-  dealerDiscount: number | undefined;
-  growerDiscount: number | undefined;
+  dealerDiscount: number;
+  growerDiscount: number;
   seedTreatmentProducts: { product: ProductData }[];
   foliarProducts: { product: ProductData; applicationMethod: string }[];
-  marketPrice: number | undefined;
+  marketPrice: number;
   priceUnit: string;
   seedsPerPoundOverride?: number;
   grower: string;
