@@ -17,15 +17,15 @@ import {
   calculateProgramCost,
   calculateROI,
 } from '../utils/calculations';
-import { SeedTreatmentResult, ROIResult } from '../utils/calculations';
+import { SeedTreatmentResult, FoliarProductResult, ROIResults } from '../utils/calculations';
 import Image from 'next/image';
 
 export default function Home() {
   const [formData, setFormData] = useState<any>(null);
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<SeedTreatmentResult[]>([]);
-  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<InFurrowFoliarResult[]>([]);
+  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<FoliarProductResult[]>([]);
   const [programCost, setProgramCost] = useState<number>(0);
-  const [roi, setRoi] = useState<ROIResult | null>(null);
+  const [roi, setRoi] = useState<ROIResults | null>(null);
 
   const handleFormSubmit = (data: any) => {
     setFormData(data);
