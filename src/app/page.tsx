@@ -34,24 +34,27 @@ export default function CombinedCalculator() {
   const [roi4, setRoi4] = useState<number | null>(null);
   const [roi5, setRoi5] = useState<number | null>(null);
 
-  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState<{
-    product: ProductData;
-    applicationMethod: string;
-  }[]>([{ product: {} as ProductData, applicationMethod: "" }, { product: {} as ProductData, applicationMethod: "" }]);
+  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState(
+    Array(2).fill({ product: {} as ProductData, applicationMethod: "" })
+  );
+
+  const [selectedFoliarProducts, setSelectedFoliarProducts] = useState(
+    Array(4).fill({ product: {} as ProductData, applicationMethod: "" })
+  );
 
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const handleProductChange = (index: number, productName: string) => {
-    const updated = [...selectedSeedTreatmentProducts];
+  const handleProductChange = (index: number, productName: string, type: "seed" | "foliar") => {
+    const target = type === "seed" ? [...selectedSeedTreatmentProducts] : [...selectedFoliarProducts];
     const match = [...productsSeedTreatment, ...productsInFurrowFoliar].find(p => p["Product Name"] === productName);
-    if (match) updated[index] = { ...updated[index], product: match };
-    setSelectedSeedTreatmentProducts(updated);
+    if (match) target[index] = { ...target[index], product: match };
+    type === "seed" ? setSelectedSeedTreatmentProducts(target) : setSelectedFoliarProducts(target);
   };
 
-  const handleAppTypeChange = (index: number, method: string) => {
-    const updated = [...selectedSeedTreatmentProducts];
-    updated[index] = { ...updated[index], applicationMethod: method };
-    setSelectedSeedTreatmentProducts(updated);
+  const handleAppTypeChange = (index: number, method: string, type: "seed" | "foliar") => {
+    const target = type === "seed" ? [...selectedSeedTreatmentProducts] : [...selectedFoliarProducts];
+    target[index] = { ...target[index], applicationMethod: method };
+    type === "seed" ? setSelectedSeedTreatmentProducts(target) : setSelectedFoliarProducts(target);
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -79,25 +82,16 @@ export default function CombinedCalculator() {
     const spp = getSeedsPerPound();
     const lpu = getLbsPerUnit();
 
-    const seedResultSet = calculateProductCosts(
-      acresNum,
-      productsSeedTreatment,
-      dealer,
-      grower,
-      seedType,
-      spp,
-      lpu
-    );
+    const selectedSeedProducts = selectedSeedTreatmentProducts
+      .filter(p => p.product && p.product["Product Name"])
+      .map(p => p.product);
 
-    const foliarResultSet = calculateProductCosts(
-      acresNum,
-      productsInFurrowFoliar,
-      dealer,
-      grower,
-      seedType,
-      spp,
-      lpu
-    );
+    const selectedFoliarProductsFiltered = selectedFoliarProducts
+      .filter(p => p.product && p.product["Product Name"] && (p.applicationMethod === "In-Furrow" || p.applicationMethod === "Foliar"))
+      .map(p => p.product);
+
+    const seedResultSet = calculateProductCosts(acresNum, selectedSeedProducts, dealer, grower, seedType, spp, lpu);
+    const foliarResultSet = calculateProductCosts(acresNum, selectedFoliarProductsFiltered, dealer, grower, seedType, spp, lpu);
 
     setSeedResults(seedResultSet.productsData);
     setFoliarResults(foliarResultSet.productsData);
@@ -133,10 +127,7 @@ export default function CombinedCalculator() {
   };
 
   return (
-    <div
-      className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
-      ref={resultRef}
-    >
+    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <Image src="/YMSLogo5.png" alt="YMS Logo" width={160} height={80} className="mx-auto mb-4" />
         <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
@@ -165,6 +156,7 @@ export default function CombinedCalculator() {
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
         selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
+        selectedFoliarProducts={selectedFoliarProducts}
         handleProductChange={handleProductChange}
         handleAppTypeChange={handleAppTypeChange}
         onSubmit={handleFormSubmit}
@@ -176,7 +168,8 @@ export default function CombinedCalculator() {
       </div>
       {(seedResults.length > 0 || foliarResults.length > 0) && (
         <ResultsDisplay
-          productsData={[...seedResults, ...foliarResults]}
+          seedTreatmentResults={seedResults}
+          inFurrowFoliarResults={foliarResults}
           totalCostPerAcre={totalCostPerAcre}
           totalUndiscountedCost={totalUndiscountedCost}
           totalDiscountedCost={totalDiscountedCost}
