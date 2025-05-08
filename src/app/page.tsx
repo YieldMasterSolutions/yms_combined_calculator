@@ -71,7 +71,7 @@ export default function Home() {
     );
 
     const roiResult = marketPrice
-      ? calculateROI(totalProgramCost, Number(marketPrice), cropPriceUnit)
+      ? calculateROI(Number(marketPrice), totalProgramCost)
       : null;
 
     setSeedTreatmentResults(seedTreatmentResults);
