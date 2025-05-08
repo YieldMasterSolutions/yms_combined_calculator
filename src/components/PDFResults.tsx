@@ -31,7 +31,7 @@ const PDFResults = forwardRef<HTMLDivElement, PDFResultsProps>(
           <div key={idx} className="mb-4">
             <h2 className="font-bold text-blue-700">{res.productName} ({res.applicationMethod})</h2>
             <ul>
-              <li>Application Rate: {res.applicationRate} {res.rateUnit}</li>
+              <li>Application Rate: {res.applicationRate}</li>
               <li>Total Product Needed: {formatNumber(res.totalProductNeeded)}</li>
               <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
               <li>Product Cost per Ounce: ${formatNumber(res.productCostPerOz)}</li>
