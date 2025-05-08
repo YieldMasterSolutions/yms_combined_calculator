@@ -11,6 +11,12 @@ export interface ProductCalculation {
   individualCostPerAcre: number;
   applicationRate?: number;
   rateUnit?: string;
+  totalProductNeeded?: number;
+  totalProductUnits?: number;
+  productCostPerOz?: number;
+  totalCostToGrower?: number;
+  costPerUnitSeed?: number;
+  discountedCostToGrower?: number;
 }
 
 export function calculateProductData(
@@ -56,8 +62,8 @@ export function calculateProductData(
 
   const packageSize = product["Package Size"];
   const costPerPackage = (costPerUnit ?? 0) * packageSize;
-  const requiredTotal = acres * (applicationRate || 0);
-  const packagesNeeded = Math.ceil(requiredTotal / packageSize);
+  const totalProductNeeded = acres * (applicationRate || 0);
+  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountFactor = 1 - ((dealerDiscount + growerDiscount) / 100);
   const discountedTotalCostToGrower = originalTotalCostToGrower * discountFactor;
@@ -72,7 +78,13 @@ export function calculateProductData(
     discountedTotalCostToGrower,
     individualCostPerAcre,
     applicationRate,
-    rateUnit
+    rateUnit,
+    totalProductNeeded,
+    totalProductUnits: packagesNeeded,
+    productCostPerOz: costPerUnit,
+    totalCostToGrower: originalTotalCostToGrower,
+    costPerUnitSeed: individualCostPerAcre,
+    discountedCostToGrower
   };
 }
 
