@@ -10,6 +10,7 @@ import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import { calculateProductCosts, ProductCalculation } from "../utils/calculations";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
+import { ProductData } from "../utils/data";
 
 export default function CombinedCalculator() {
   const [seedType, setSeedType] = useState("");
@@ -17,6 +18,7 @@ export default function CombinedCalculator() {
   const [seedingRate, setSeedingRate] = useState("");
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
   const [overrideSeeds, setOverrideSeeds] = useState("");
+  const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
   const [marketPrice, setMarketPrice] = useState("");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
@@ -32,7 +34,25 @@ export default function CombinedCalculator() {
   const [roi4, setRoi4] = useState<number | null>(null);
   const [roi5, setRoi5] = useState<number | null>(null);
 
+  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState<{
+    product: ProductData;
+    applicationMethod: string;
+  }[]>([{ product: {} as ProductData, applicationMethod: "" }, { product: {} as ProductData, applicationMethod: "" }]);
+
   const resultRef = useRef<HTMLDivElement>(null);
+
+  const handleProductChange = (index: number, productName: string) => {
+    const updated = [...selectedSeedTreatmentProducts];
+    const match = [...productsSeedTreatment, ...productsInFurrowFoliar].find(p => p["Product Name"] === productName);
+    if (match) updated[index] = { ...updated[index], product: match };
+    setSelectedSeedTreatmentProducts(updated);
+  };
+
+  const handleAppTypeChange = (index: number, method: string) => {
+    const updated = [...selectedSeedTreatmentProducts];
+    updated[index] = { ...updated[index], applicationMethod: method };
+    setSelectedSeedTreatmentProducts(updated);
+  };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,6 +153,8 @@ export default function CombinedCalculator() {
         setSeedingRateUnit={setSeedingRateUnit}
         overrideSeeds={overrideSeeds}
         setOverrideSeeds={setOverrideSeeds}
+        seedsPerUnitOverride={seedsPerUnitOverride}
+        setSeedsPerUnitOverride={setSeedsPerUnitOverride}
         marketPrice={marketPrice}
         setMarketPrice={setMarketPrice}
         dealerDiscount={dealerDiscount}
@@ -142,6 +164,9 @@ export default function CombinedCalculator() {
         seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
+        selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
+        handleProductChange={handleProductChange}
+        handleAppTypeChange={handleAppTypeChange}
         onSubmit={handleFormSubmit}
       />
       <div className="text-center">
