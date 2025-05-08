@@ -11,6 +11,7 @@ import {
   productsSeedTreatment,
   productsInFurrowFoliar,
   ProductData,
+  FormData,
 } from "../utils/data";
 import {
   calculateSeedTreatmentData,
@@ -22,23 +23,6 @@ import {
   ROIResults,
 } from "../utils/calculations";
 import Image from "next/image";
-
-interface FormData {
-  seedType: string;
-  acres: number;
-  seedingRate: number;
-  rateUnit: string;
-  dealerDiscount: number;
-  growerDiscount: number;
-  marketPrice?: number;
-  cropPriceUnit?: string;
-  seedsPerPoundOverride: number;
-  lbsPerUnit: number;
-  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
-  inFurrowFoliarProducts: { product: ProductData; applicationMethod: string }[];
-  growerName?: string;
-  repName?: string;
-}
 
 export default function Home() {
   const [formData, setFormData] = useState<FormData | null>(null);
@@ -60,7 +44,6 @@ export default function Home() {
       dealerDiscount,
       growerDiscount,
       marketPrice,
-      cropPriceUnit,
       seedsPerPoundOverride,
       lbsPerUnit,
     } = data;
@@ -110,8 +93,6 @@ export default function Home() {
 
       <CalculatorForm
         seedTypes={seedTypes}
-        productsSeedTreatment={productsSeedTreatment}
-        productsInFurrow={productsInFurrowFoliar}
         onSubmit={handleFormSubmit}
       />
 

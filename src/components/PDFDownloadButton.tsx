@@ -1,31 +1,11 @@
-// src/components/PDFDownloadButton.tsx
+// src/components/PDFResults.tsx
 
-"use client";
-
-import React, { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
-import PDFResults from "./PDFResults";
+import React, { forwardRef } from "react";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
-import { ProductData } from "../utils/data";
+import { formatNumber } from "../utils/formatNumber";
+import { FormData } from "../utils/data";
 
-interface FormData {
-  seedType: string;
-  acres: number;
-  seedingRate: number;
-  rateUnit: string;
-  dealerDiscount: number;
-  growerDiscount: number;
-  marketPrice?: number;
-  cropPriceUnit?: string;
-  seedsPerPoundOverride: number;
-  lbsPerUnit: number;
-  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
-  inFurrowFoliarProducts: { product: ProductData; applicationMethod: string }[];
-  growerName?: string;
-  repName?: string;
-}
-
-interface PDFDownloadButtonProps {
+interface PDFResultsProps {
   formData: FormData;
   seedTreatmentResults: SeedTreatmentResult[];
   inFurrowFoliarResults: FoliarProductResult[];
@@ -33,43 +13,70 @@ interface PDFDownloadButtonProps {
   roi: ROIResults | null;
 }
 
-const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
-  formData,
-  seedTreatmentResults,
-  inFurrowFoliarResults,
-  programCost,
-  roi,
-}) => {
-  const componentRef = useRef(null);
+const PDFResults = forwardRef<HTMLDivElement, PDFResultsProps>(
+  ({ formData, seedTreatmentResults, inFurrowFoliarResults, programCost, roi }, ref) => {
+    return (
+      <div ref={ref} className="p-6 text-sm">
+        <h1 className="text-lg font-bold mb-4">YMS Combined Calculator – PDF Summary</h1>
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: "YMS_Calculator_Results",
-    removeAfterPrint: true,
-  });
+        <div className="mb-4">
+          <p><strong>Grower Name:</strong> {formData?.growerName}</p>
+          <p><strong>Rep Name:</strong> {formData?.repName}</p>
+          <p><strong>Seed Type:</strong> {formData?.seedType}</p>
+          <p><strong>Rate Unit:</strong> {formData?.rateUnit}</p>
+          <p><strong>Seeding Rate:</strong> {formData?.seedingRate}</p>
+          <p><strong>Acres:</strong> {formData?.acres}</p>
+        </div>
 
-  return (
-    <div className="mt-4">
-      <button
-        onClick={handlePrint}
-        className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
-      >
-        Download PDF
-      </button>
+        {seedTreatmentResults.map((res, idx) => (
+          <div key={idx} className="mb-4">
+            <h2 className="font-bold text-blue-700">{res.productName} ({res.applicationMethod})</h2>
+            <ul>
+              <li>Application Rate: {res.applicationRate} {res.rateUnit}</li>
+              <li>Total Product Needed: {formatNumber(res.totalProductNeeded)}</li>
+              <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
+              <li>Product Cost per Ounce: ${formatNumber(res.productCostPerOz)}</li>
+              <li>Total Cost to Grower (MSRP): ${formatNumber(res.totalCostToGrower)}</li>
+              <li>Total Discounted Cost to Grower: ${formatNumber(res.totalDiscountedCostToGrower)}</li>
+              <li>Cost per Unit of Treated Seed: ${formatNumber(res.costPerUnitSeed)}</li>
+              <li>Cost per Acre: ${formatNumber(res.costPerAcre)}</li>
+            </ul>
+          </div>
+        ))}
 
-      {/* Hidden PDF Rendered Content */}
-      <div style={{ display: "none" }}>
-        <PDFResults
-          ref={componentRef}
-          formData={formData}
-          seedTreatmentResults={seedTreatmentResults}
-          inFurrowFoliarResults={inFurrowFoliarResults}
-          programCost={programCost}
-          roi={roi}
-        />
+        {inFurrowFoliarResults.map((res, idx) => (
+          <div key={idx} className="mb-4">
+            <h2 className="font-bold text-blue-700">{res.productName} ({res.applicationMethod})</h2>
+            <ul>
+              <li>Application Rate: {res.applicationRate}</li>
+              <li>Total Product Needed: {formatNumber(res.totalProductNeeded)}</li>
+              <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
+              <li>Product Cost per Ounce: ${formatNumber(res.productCostPerOz)}</li>
+              <li>Total Cost to Grower (MSRP): ${formatNumber(res.totalCostToGrower)}</li>
+              <li>Total Discounted Cost to Grower: ${formatNumber(res.totalDiscountedCostToGrower)}</li>
+              <li>Cost per Acre: ${formatNumber(res.individualCostPerAcre)}</li>
+            </ul>
+          </div>
+        ))}
+
+        {roi && (
+          <div className="mt-6">
+            <h2 className="font-bold text-blue-700">ROI Summary</h2>
+            <ul>
+              <li>Total Program Cost per Acre: ${formatNumber(programCost)}</li>
+              <li>Breakeven Yield: {formatNumber(roi.breakeven)} {formData?.cropPriceUnit}/acre</li>
+              <li>2:1 ROI: {formatNumber(roi.roi2)} {formData?.cropPriceUnit}/acre</li>
+              <li>3:1 ROI: {formatNumber(roi.roi3)} {formData?.cropPriceUnit}/acre</li>
+              <li>4:1 ROI: {formatNumber(roi.roi4)} {formData?.cropPriceUnit}/acre</li>
+              <li>5:1 ROI: {formatNumber(roi.roi5)} {formData?.cropPriceUnit}/acre</li>
+            </ul>
+          </div>
+        )}
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
-export default PDFDownloadButton;
+PDFResults.displayName = "PDFResults";
+
+export default PDFResults;

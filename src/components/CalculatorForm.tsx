@@ -1,14 +1,7 @@
 // src/components/CalculatorForm.tsx
 
 import React, { useState } from "react";
-import { SeedType } from "../utils/data";
-
-interface FormData {
-  seedType: string;
-  acres: number;
-  seedingRate: number;
-  rateUnit: string;
-}
+import { SeedType, FormData } from "../utils/data";
 
 interface CalculatorFormProps {
   seedTypes: SeedType[];
@@ -24,6 +17,16 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     acres: 0,
     seedingRate: 0,
     rateUnit: "",
+    dealerDiscount: 0,
+    growerDiscount: 0,
+    seedsPerPoundOverride: 0,
+    lbsPerUnit: 50,
+    seedTreatmentProducts: [],
+    inFurrowFoliarProducts: [],
+    marketPrice: undefined,
+    cropPriceUnit: "",
+    growerName: "",
+    repName: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

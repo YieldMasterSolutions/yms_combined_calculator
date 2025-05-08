@@ -9,7 +9,7 @@ export interface ProductData {
   "Package Size": number;
   "Package Units": string;
   "Package Type": string;
-  "Application Method"?: string; // e.g., "Seed Treatment", "In-Furrow", etc.
+  "Application Method"?: string;
   "Product Form"?: "Liquid" | "Dry";
   "Application Rate Unit"?: "oz/unit" | "fl oz/unit" | "fl oz/acre" | "g/acre";
 }
@@ -20,18 +20,24 @@ export interface SeedType {
   "Lbs/Unit": number;
 }
 
-export interface FoliarProductResult {
-  productName: string;
-  applicationRate: number;
-  totalProductNeeded: number;
-  totalProductUnits: number;
-  productPackageString: string;
-  productCostPerOz: number;
-  totalCostToGrower: number;
-  totalDiscountedCostToGrower: number;
-  individualCostPerAcre: number;
-  applicationMethod: string;
+export interface FormData {
+  seedType: string;
+  acres: number;
+  seedingRate: number;
+  rateUnit: string;
+  dealerDiscount: number;
+  growerDiscount: number;
+  marketPrice?: number;
+  cropPriceUnit?: string;
+  seedsPerPoundOverride: number;
+  lbsPerUnit: number;
+  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
+  inFurrowFoliarProducts: { product: ProductData; applicationMethod: string }[];
+  growerName?: string;
+  repName?: string;
 }
+
+// (rest of seedTypes, productsSeedTreatment, and productsInFurrowFoliar arrays remain unchanged)
 
 export const seedTypes: SeedType[] = [
   { "Seed Type": "Alfalfa", "Seeds/lb": "210000", "Lbs/Unit": 50 },
