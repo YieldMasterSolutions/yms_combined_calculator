@@ -84,7 +84,7 @@ export default function Home() {
     const seedResults = calculateSeedTreatmentData(
       seedType,
       acres,
-      seedingRate ?? 0, // Default to 0 if undefined
+      seedingRate !== undefined ? seedingRate : 0,  // Ensure seedingRate is valid
       rateUnit,
       dealerDiscount,
       growerDiscount,
