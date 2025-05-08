@@ -42,9 +42,10 @@ export default function Home() {
       marketPrice,
       cropPriceUnit,
       seedsPerPoundOverride,
+      lbsPerUnit,
     } = data;
 
-    if (!acres || !seedingRate) return; // Ensure required fields are provided
+    if (!acres || !seedingRate) return;
 
     const seedTreatmentResults = calculateSeedTreatmentData(
       seedType,
@@ -55,7 +56,7 @@ export default function Home() {
       Number(growerDiscount) || 0,
       seedTreatmentProducts,
       Number(seedsPerPoundOverride || 0),
-      Number(data.lbsPerUnit)
+      Number(lbsPerUnit)
     );
 
     const inFurrowFoliarResults = calculateAllFoliarProductCosts(
@@ -93,10 +94,13 @@ export default function Home() {
         onSubmit={handleFormSubmit}
       />
       <ResultsDisplay
-        seedTreatmentResults={seedTreatmentResults}
-        inFurrowFoliarResults={inFurrowFoliarResults}
+        seedResults={seedTreatmentResults}
+        foliarResults={inFurrowFoliarResults}
         programCost={programCost}
         roi={roi}
+        cropPriceUnit={formData?.cropPriceUnit || ''}
+        growerName={formData?.growerName || ''}
+        dealerRep={formData?.repName || ''}
       />
       {formData && (
         <div className="mt-6">
