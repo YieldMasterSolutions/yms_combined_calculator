@@ -1,24 +1,24 @@
 // src/app/page.tsx
 
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import CalculatorForm from '../components/CalculatorForm';
-import ResultsDisplay from '../components/ResultsDisplay';
-import PDFDownloadButton from '../components/PDFDownloadButton';
+import React, { useState } from "react";
+import CalculatorForm from "../components/CalculatorForm";
+import ResultsDisplay from "../components/ResultsDisplay";
+import PDFDownloadButton from "../components/PDFDownloadButton";
 import {
   seedTypes,
   productsSeedTreatment,
   productsInFurrowFoliar,
-} from '../utils/data';
+} from "../utils/data";
 import {
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
   calculateProgramCost,
   calculateROI,
-} from '../utils/calculations';
-import { SeedTreatmentResult, FoliarProductResult, ROIResults } from '../utils/calculations';
-import Image from 'next/image';
+} from "../utils/calculations";
+import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
+import Image from "next/image";
 
 export default function Home() {
   const [formData, setFormData] = useState<any>(null);
@@ -87,21 +87,24 @@ export default function Home() {
         <h1 className="text-2xl font-bold text-blue-800">YMS Combined Calculator</h1>
         <Image src="/YMSlogo5.png" alt="YMS Logo" width={120} height={60} />
       </div>
+
       <CalculatorForm
         seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
         onSubmit={handleFormSubmit}
       />
+
       <ResultsDisplay
         seedResults={seedTreatmentResults}
         foliarResults={inFurrowFoliarResults}
         programCost={programCost}
         roi={roi}
-        cropPriceUnit={formData?.cropPriceUnit || ''}
-        growerName={formData?.growerName || ''}
-        dealerRep={formData?.repName || ''}
+        cropPriceUnit={formData?.cropPriceUnit || ""}
+        growerName={formData?.growerName || ""}
+        dealerRep={formData?.repName || ""}
       />
+
       {formData && (
         <div className="mt-6">
           <PDFDownloadButton
