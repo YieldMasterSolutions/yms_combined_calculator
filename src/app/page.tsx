@@ -54,7 +54,8 @@ export default function Home() {
       Number(dealerDiscount) || 0,
       Number(growerDiscount) || 0,
       seedTreatmentProducts,
-      seedsPerPoundOverride ? Number(seedsPerPoundOverride) : undefined
+      seedsPerPoundOverride ? Number(seedsPerPoundOverride) : undefined,
+      Number(data.lbsPerUnit)
     );
 
     const inFurrowFoliarResults = calculateAllFoliarProductCosts(
