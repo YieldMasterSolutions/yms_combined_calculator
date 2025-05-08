@@ -14,8 +14,8 @@ interface CalculatorFormProps {
 
 interface FormData {
   seedType: string;
-  acres?: number;
-  seedingRate: number;
+  acres: number;  // acres is now mandatory
+  seedingRate: number;  // seedingRate is now mandatory and should always be a number
   rateUnit: string;
   dealerDiscount?: number;
   growerDiscount?: number;
@@ -57,6 +57,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   const selectedSeed = seedTypes.find((s) => s["Seed Type"] === selectedSeedType);
 
   const handleCalculateClick = () => {
+    // Validate mandatory fields
+    if (acres <= 0 || seedingRate <= 0) {
+      alert("Both Acres and Seeding Rate are mandatory fields and must be positive numbers.");
+      return; // Stop the calculation if acres or seedingRate is invalid
+    }
+
     const selectedSeedTreatments = seedTreatmentSelections.filter((p): p is ProductSelection => p !== null);
     const selectedFoliarProducts = foliarSelections.filter((p): p is ProductSelection => p !== null);
 
@@ -100,7 +106,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           </select>
         </label>
         <label>
-          Acres:
+          Acres*:
           <input type="number" className="w-full border p-2 text-black" value={acres} onChange={e => setAcres(parseFloat(e.target.value))} />
         </label>
         <label>
