@@ -63,6 +63,11 @@ export default function Home() {
       rep
     } = formData;
 
+    if (!acres || acres <= 0) {
+      alert("Acres is a mandatory field and must be a positive number.");
+      return; // Stop the calculation if acres is invalid
+    }
+
     const seedsPerPound = seedsPerPoundOverride ?? 0;
     const selectedSeed = seedTypes.find(seed => seed["Seed Type"] === seedType);
     const lbsPerUnit = selectedSeed?.["Lbs/Unit"] ?? 50;
@@ -76,12 +81,10 @@ export default function Home() {
       applicationMethod: "Planter Box"
     }));
 
-    const acresValue = acres ?? 0;
-
     const seedResults = calculateSeedTreatmentData(
       seedType,
-      acresValue,
-      seedingRate,
+      acres,
+      seedingRate ?? 0, // Default to 0 if undefined
       rateUnit,
       dealerDiscount,
       growerDiscount,
