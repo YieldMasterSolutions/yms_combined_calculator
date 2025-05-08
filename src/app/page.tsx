@@ -8,10 +8,7 @@ import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 import {
   seedTypes,
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-  ProductData,
-  FormData,
+  FormData
 } from "../utils/data";
 import {
   calculateSeedTreatmentData,
