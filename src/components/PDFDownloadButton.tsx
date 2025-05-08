@@ -8,63 +8,49 @@ import PDFResults from "./PDFResults";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
 
 interface PDFDownloadButtonProps {
-  seedResults: SeedTreatmentResult[];
-  foliarResults: FoliarProductResult[];
-  roi: ROIResults;
-  cropPriceUnit: string;
-  growerName: string;
-  dealerRep: string;
+  formData: any;
+  seedTreatmentResults: SeedTreatmentResult[];
+  inFurrowFoliarResults: FoliarProductResult[];
   programCost: number;
+  roi: ROIResults | null;
 }
 
 const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
-  seedResults,
-  foliarResults,
-  roi,
-  cropPriceUnit,
-  growerName,
-  dealerRep,
+  formData,
+  seedTreatmentResults,
+  inFurrowFoliarResults,
   programCost,
+  roi,
 }) => {
-  const componentRef = useRef<HTMLDivElement>(null);
+  const componentRef = useRef(null);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: "YMS_Calculator_Results",
+    removeAfterPrint: true,
   });
 
   return (
-    <>
-      <div
-        style={{
-          visibility: "hidden",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          height: 0,
-          overflow: "hidden",
-        }}
-      >
-        <div ref={componentRef}>
-          <PDFResults
-            seedResults={seedResults}
-            foliarResults={foliarResults}
-            roi={roi}
-            cropPriceUnit={cropPriceUnit}
-            growerName={growerName}
-            dealerRep={dealerRep}
-            programCost={programCost}
-          />
-        </div>
-      </div>
-
+    <div className="mt-4">
       <button
-        onClick={() => handlePrint?.()}
-        className="bg-green-600 text-white px-4 py-2 rounded shadow"
+        onClick={handlePrint}
+        className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
       >
         Download PDF
       </button>
-    </>
+
+      {/* Hidden PDF Rendered Content */}
+      <div style={{ display: "none" }}>
+        <PDFResults
+          ref={componentRef}
+          formData={formData}
+          seedTreatmentResults={seedTreatmentResults}
+          inFurrowFoliarResults={inFurrowFoliarResults}
+          programCost={programCost}
+          roi={roi}
+        />
+      </div>
+    </div>
   );
 };
 
