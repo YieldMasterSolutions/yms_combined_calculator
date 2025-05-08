@@ -18,9 +18,7 @@ import {
   calculateROI,
 } from '../utils/calculations';
 import { SeedTreatmentResult, InFurrowFoliarResult, ROIResult } from '../utils/calculations';
-
 import Image from 'next/image';
-import ymsLogo from '../../public/YMS Logo.png';
 
 export default function Home() {
   const [formData, setFormData] = useState<any>(null);
@@ -85,7 +83,7 @@ export default function Home() {
     <main className="min-h-screen bg-gray-100 p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-blue-800">YMS Combined Calculator</h1>
-        <Image src={ymsLogo} alt="YMS Logo" width={120} height={60} />
+        <Image src="/YMSlogo5.png" alt="YMS Logo" width={120} height={60} />
       </div>
       <CalculatorForm
         seedTypes={seedTypes}
