@@ -8,7 +8,7 @@ import Image from "next/image";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
-import { calculateProductCosts } from "../utils/calculations";
+import { calculateProductCosts, ProductCalculation } from "../utils/calculations";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 
 export default function CombinedCalculator() {
@@ -21,8 +21,8 @@ export default function CombinedCalculator() {
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
 
-  const [seedResults, setSeedResults] = useState([]);
-  const [foliarResults, setFoliarResults] = useState([]);
+  const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
+  const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
   const [totalCostPerAcre, setTotalCostPerAcre] = useState(0);
   const [totalUndiscountedCost, setTotalUndiscountedCost] = useState(0);
   const [totalDiscountedCost, setTotalDiscountedCost] = useState(0);
