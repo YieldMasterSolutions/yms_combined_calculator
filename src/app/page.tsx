@@ -1,4 +1,4 @@
-// src/app/page.tsx
+]// src/app/page.tsx
 
 'use client';
 
@@ -60,9 +60,9 @@ export default function Home() {
 
     const inFurrowFoliarResults = calculateAllFoliarProductCosts(
       Number(acres),
-      inFurrowFoliarProducts,
       Number(dealerDiscount) || 0,
-      Number(growerDiscount) || 0
+      Number(growerDiscount) || 0,
+      inFurrowFoliarProducts
     );
 
     const totalProgramCost = calculateProgramCost(
