@@ -59,8 +59,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           >
             <option value="">Select Seed Type</option>
             {seedTypes.map((seed) => (
-              <option key={seed.label} value={seed.label}>
-                {seed.label}
+              <option key={seed} value={seed}>
+                {seed}
               </option>
             ))}
           </select>
