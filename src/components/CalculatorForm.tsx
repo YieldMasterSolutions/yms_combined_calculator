@@ -57,7 +57,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   selectedSeedTreatmentProducts,
   selectedFoliarProducts,
   handleProductChange,
-  handleAppTypeChange,
+  handleAppTypeChange
 }) => {
   const getDefaultSeedsPerLb = (): string => {
     const found = seedTypes.find((s) => s["Seed Type"] === seedType);
@@ -79,7 +79,115 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       onSubmit={onSubmit}
       className="grid grid-cols-2 gap-4 bg-zinc-800 p-6 rounded border border-zinc-700 text-white"
     >
-      {/* All form JSX remains unchanged */}
+      <div>
+        <label className="block mb-1 font-semibold">Seed Type</label>
+        <select
+          value={seedType}
+          onChange={(e) => setSeedType(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          required
+        >
+          <option value="">Select Seed Type</option>
+          {seedTypes.map((s, i) => (
+            <option key={i} value={s["Seed Type"]}>{s["Seed Type"]}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Acres</label>
+        <input
+          type="number"
+          value={acres}
+          onChange={(e) => setAcres(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Seeding Rate</label>
+        <input
+          type="number"
+          value={seedingRate}
+          onChange={(e) => setSeedingRate(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Seeding Rate Unit</label>
+        <select
+          value={seedingRateUnit}
+          onChange={(e) => setSeedingRateUnit(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        >
+          <option value="seeds/acre">Seeds/acre</option>
+          <option value="lbs/acre">Lbs/acre</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Override Seeds per Pound (optional)</label>
+        <input
+          type="number"
+          value={overrideSeeds}
+          onChange={(e) => setOverrideSeeds(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        />
+        <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerLb()}</p>
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Override Seeds per Unit (optional)</label>
+        <input
+          type="number"
+          value={seedsPerUnitOverride}
+          onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        />
+        <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Market Price ($)</label>
+        <input
+          type="number"
+          value={marketPrice}
+          onChange={(e) => setMarketPrice(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
+        <input
+          type="number"
+          value={dealerDiscount}
+          onChange={(e) => setDealerDiscount(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        />
+      </div>
+
+      <div>
+        <label className="block mb-1 font-semibold">Grower Discount (%)</label>
+        <input
+          type="number"
+          value={growerDiscount}
+          onChange={(e) => setGrowerDiscount(e.target.value)}
+          className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+        />
+      </div>
+
+      <div className="col-span-2 text-center">
+        <button
+          type="submit"
+          className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg"
+        >
+          Calculate
+        </button>
+      </div>
     </form>
   );
 };
