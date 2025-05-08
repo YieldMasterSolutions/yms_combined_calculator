@@ -17,7 +17,7 @@ import {
   calculateProgramCost,
   calculateROI,
 } from '../utils/calculations';
-import { SeedTreatmentResult, InFurrowFoliarResult, ROIResult } from '../utils/calculations';
+import { SeedTreatmentResult, ROIResult } from '../utils/calculations';
 import Image from 'next/image';
 
 export default function Home() {
