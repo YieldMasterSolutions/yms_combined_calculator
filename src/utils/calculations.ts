@@ -14,6 +14,7 @@ export interface SeedTreatmentResult {
   costPerUnitSeed: number;
   costPerAcre: number;
   totalUnitsToTreat: number;
+  totalUnits: number;
   rateUnit: string;
   productForm: string;
   applicationMethod: string;
@@ -82,6 +83,7 @@ export function calculateSeedTreatmentData(
       costPerUnitSeed,
       costPerAcre,
       totalUnitsToTreat: unitsToTreat,
+      totalUnits,
       rateUnit: product["Application Rate Unit"] || "",
       productForm: product["Product Form"] || "",
       applicationMethod,

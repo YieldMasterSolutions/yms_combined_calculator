@@ -10,24 +10,44 @@ import {
   seedTypes,
   productsSeedTreatment,
   productsInFurrowFoliar,
+  ProductData,
 } from "../utils/data";
 import {
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
   calculateProgramCost,
   calculateROI,
+  SeedTreatmentResult,
+  FoliarProductResult,
+  ROIResults,
 } from "../utils/calculations";
-import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
 import Image from "next/image";
 
+interface FormData {
+  seedType: string;
+  acres: number;
+  seedingRate: number;
+  rateUnit: string;
+  dealerDiscount: number;
+  growerDiscount: number;
+  marketPrice?: number;
+  cropPriceUnit?: string;
+  seedsPerPoundOverride: number;
+  lbsPerUnit: number;
+  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
+  inFurrowFoliarProducts: { product: ProductData; applicationMethod: string }[];
+  growerName?: string;
+  repName?: string;
+}
+
 export default function Home() {
-  const [formData, setFormData] = useState<any>(null);
+  const [formData, setFormData] = useState<FormData | null>(null);
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<SeedTreatmentResult[]>([]);
   const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<FoliarProductResult[]>([]);
   const [programCost, setProgramCost] = useState<number>(0);
   const [roi, setRoi] = useState<ROIResults | null>(null);
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: FormData) => {
     setFormData(data);
 
     const {
@@ -49,20 +69,20 @@ export default function Home() {
 
     const seedTreatmentResults = calculateSeedTreatmentData(
       seedType,
-      Number(acres),
-      Number(seedingRate),
+      acres,
+      seedingRate,
       rateUnit,
-      Number(dealerDiscount) || 0,
-      Number(growerDiscount) || 0,
+      dealerDiscount || 0,
+      growerDiscount || 0,
       seedTreatmentProducts,
-      Number(seedsPerPoundOverride || 0),
-      Number(lbsPerUnit)
+      seedsPerPoundOverride || 0,
+      lbsPerUnit
     );
 
     const inFurrowFoliarResults = calculateAllFoliarProductCosts(
-      Number(acres),
-      Number(dealerDiscount) || 0,
-      Number(growerDiscount) || 0,
+      acres,
+      dealerDiscount || 0,
+      growerDiscount || 0,
       inFurrowFoliarProducts
     );
 
@@ -72,7 +92,7 @@ export default function Home() {
     );
 
     const roiResult = marketPrice
-      ? calculateROI(Number(marketPrice), totalProgramCost)
+      ? calculateROI(marketPrice, totalProgramCost)
       : null;
 
     setSeedTreatmentResults(seedTreatmentResults);
