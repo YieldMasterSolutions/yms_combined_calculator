@@ -105,6 +105,60 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         />
       </div>
 
+      {[0, 1].map((index) => (
+        <div key={index}>
+          <label className="block mb-1 font-semibold">Seed Treatment Product {index + 1}</label>
+          <select
+            value={selectedSeedTreatmentProducts[index]?.product?.["Product Name"] || ""}
+            onChange={(e) => handleProductChange(index, e.target.value, "seed")}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-2"
+          >
+            <option value="">Select Product</option>
+            {productsSeedTreatment.map((p, i) => (
+              <option key={i} value={p["Product Name"]}>
+                {`${p["Product Name"]} – ${p["Product Form"]} – ${p["Application Method"]}`}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedSeedTreatmentProducts[index]?.applicationMethod || ""}
+            onChange={(e) => handleAppTypeChange(index, e.target.value, "seed")}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          >
+            <option value="">Select Application Method</option>
+            <option value="Planter Box">Planter Box</option>
+            <option value="Seed Coating">Liquid Seed Coating</option>
+          </select>
+        </div>
+      ))}
+
+      {[0, 1, 2, 3].map((index) => (
+        <div key={index}>
+          <label className="block mb-1 font-semibold">In-Furrow / Foliar Product {index + 1}</label>
+          <select
+            value={selectedFoliarProducts[index]?.product?.["Product Name"] || ""}
+            onChange={(e) => handleProductChange(index, e.target.value, "foliar")}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-2"
+          >
+            <option value="">Select Product</option>
+            {productsInFurrow.map((p, i) => (
+              <option key={i} value={p["Product Name"]}>
+                {`${p["Product Name"]} – ${p["Product Form"]} – ${p["Application Method"]}`}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedFoliarProducts[index]?.applicationMethod || ""}
+            onChange={(e) => handleAppTypeChange(index, e.target.value, "foliar")}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          >
+            <option value="">Select Application Method</option>
+            <option value="In-Furrow">In-Furrow</option>
+            <option value="Foliar">Foliar</option>
+          </select>
+        </div>
+      ))}
+
       <div>
         <label className="block mb-1 font-semibold">Seeding Rate</label>
         <input
