@@ -54,7 +54,7 @@ export default function Home() {
       Number(dealerDiscount) || 0,
       Number(growerDiscount) || 0,
       seedTreatmentProducts,
-      seedsPerPoundOverride ? Number(seedsPerPoundOverride) : undefined,
+      Number(seedsPerPoundOverride || 0),
       Number(data.lbsPerUnit)
     );
 
