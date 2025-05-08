@@ -3,9 +3,27 @@
 import React, { forwardRef } from "react";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
+import { ProductData } from "../utils/data";
+
+interface FormData {
+  seedType: string;
+  acres: number;
+  seedingRate: number;
+  rateUnit: string;
+  dealerDiscount: number;
+  growerDiscount: number;
+  marketPrice?: number;
+  cropPriceUnit?: string;
+  seedsPerPoundOverride: number;
+  lbsPerUnit: number;
+  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
+  inFurrowFoliarProducts: { product: ProductData; applicationMethod: string }[];
+  growerName?: string;
+  repName?: string;
+}
 
 interface PDFResultsProps {
-  formData: any;
+  formData: FormData;
   seedTreatmentResults: SeedTreatmentResult[];
   inFurrowFoliarResults: FoliarProductResult[];
   programCost: number;
@@ -75,5 +93,7 @@ const PDFResults = forwardRef<HTMLDivElement, PDFResultsProps>(
     );
   }
 );
+
+PDFResults.displayName = "PDFResults";
 
 export default PDFResults;

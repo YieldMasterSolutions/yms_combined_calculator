@@ -6,9 +6,27 @@ import React, { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import PDFResults from "./PDFResults";
 import { SeedTreatmentResult, FoliarProductResult, ROIResults } from "../utils/calculations";
+import { ProductData } from "../utils/data";
+
+interface FormData {
+  seedType: string;
+  acres: number;
+  seedingRate: number;
+  rateUnit: string;
+  dealerDiscount: number;
+  growerDiscount: number;
+  marketPrice?: number;
+  cropPriceUnit?: string;
+  seedsPerPoundOverride: number;
+  lbsPerUnit: number;
+  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
+  inFurrowFoliarProducts: { product: ProductData; applicationMethod: string }[];
+  growerName?: string;
+  repName?: string;
+}
 
 interface PDFDownloadButtonProps {
-  formData: any;
+  formData: FormData;
   seedTreatmentResults: SeedTreatmentResult[];
   inFurrowFoliarResults: FoliarProductResult[];
   programCost: number;
@@ -33,7 +51,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
   return (
     <div className="mt-4">
       <button
-        onClick={() => handlePrint?.()}
+        onClick={handlePrint}
         className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
       >
         Download PDF

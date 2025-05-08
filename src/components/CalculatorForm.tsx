@@ -1,43 +1,37 @@
 // src/components/CalculatorForm.tsx
 
 import React, { useState } from "react";
-import { ProductData, SeedType } from "../utils/data";
+import { SeedType } from "../utils/data";
+
+interface FormData {
+  seedType: string;
+  acres: number;
+  seedingRate: number;
+  rateUnit: string;
+}
 
 interface CalculatorFormProps {
   seedTypes: SeedType[];
-  productsSeedTreatment: ProductData[];
-  productsInFurrow: ProductData[];
-  onSubmit: (data: any) => void;
+  onSubmit: (data: FormData) => void;
 }
 
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
   seedTypes,
-  productsSeedTreatment,
-  productsInFurrow,
   onSubmit,
 }) => {
-  const [formState, setFormState] = useState<any>({
-    seedTreatmentProducts: [],
-    inFurrowFoliarProducts: [],
+  const [formState, setFormState] = useState<FormData>({
+    seedType: "",
+    acres: 0,
+    seedingRate: 0,
+    rateUnit: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormState((prev: any) => ({ ...prev, [name]: value }));
-  };
-
-  const handleProductChange = (
-    index: number,
-    type: "seedTreatment" | "inFurrowFoliar",
-    key: "product" | "applicationMethod",
-    value: any
-  ) => {
-    setFormState((prev: any) => {
-      const listKey = type === "seedTreatment" ? "seedTreatmentProducts" : "inFurrowFoliarProducts";
-      const updatedList = [...(prev[listKey] || [])];
-      updatedList[index] = { ...updatedList[index], [key]: value };
-      return { ...prev, [listKey]: updatedList };
-    });
+    setFormState((prev) => ({
+      ...prev,
+      [name]: name === "acres" || name === "seedingRate" ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -59,7 +53,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           >
             <option value="">Select Seed Type</option>
             {seedTypes.map((seed) => (
-              <option key={seed["Seed Type"]} value={seed["Seed Type"]}>{seed["Seed Type"]}</option>
+              <option key={seed["Seed Type"]} value={seed["Seed Type"]}>
+                {seed["Seed Type"]}
+              </option>
             ))}
           </select>
         </div>
