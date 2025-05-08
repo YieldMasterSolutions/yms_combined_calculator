@@ -26,8 +26,9 @@ interface CalculatorFormProps {
   productsSeedTreatment: ProductData[];
   productsInFurrow: ProductData[];
   selectedSeedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
-  handleProductChange: (index: number, productName: string) => void;
-  handleAppTypeChange: (index: number, method: string) => void;
+  selectedFoliarProducts: { product: ProductData; applicationMethod: string }[];
+  handleProductChange: (index: number, productName: string, type: "seed" | "foliar") => void;
+  handleAppTypeChange: (index: number, method: string, type: "seed" | "foliar") => void;
 }
 
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
@@ -54,6 +55,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   productsSeedTreatment,
   productsInFurrow,
   selectedSeedTreatmentProducts,
+  selectedFoliarProducts,
   handleProductChange,
   handleAppTypeChange,
 }) => {
@@ -110,7 +112,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <label className="block mb-1 font-semibold">Seed Treatment Product {index + 1}</label>
           <select
             value={selectedSeedTreatmentProducts[index]?.product?.["Product Name"] || ""}
-            onChange={(e) => handleProductChange(index, e.target.value)}
+            onChange={(e) => handleProductChange(index, e.target.value, "seed")}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-2"
           >
             <option value="">Select Product</option>
@@ -122,7 +124,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           </select>
           <select
             value={selectedSeedTreatmentProducts[index]?.applicationMethod || ""}
-            onChange={(e) => handleAppTypeChange(index, e.target.value)}
+            onChange={(e) => handleAppTypeChange(index, e.target.value, "seed")}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           >
             <option value="">Select Application Method</option>
@@ -136,7 +138,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div key={index}>
           <label className="block mb-1 font-semibold">In-Furrow / Foliar Product {index + 1}</label>
           <select
-            onChange={(e) => handleProductChange(index + 2, e.target.value)}
+            value={selectedFoliarProducts[index]?.product?.["Product Name"] || ""}
+            onChange={(e) => handleProductChange(index, e.target.value, "foliar")}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded mb-2"
           >
             <option value="">Select Product</option>
@@ -147,7 +150,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             ))}
           </select>
           <select
-            onChange={(e) => handleAppTypeChange(index + 2, e.target.value)}
+            value={selectedFoliarProducts[index]?.applicationMethod || ""}
+            onChange={(e) => handleAppTypeChange(index, e.target.value, "foliar")}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           >
             <option value="">Select Application Method</option>
