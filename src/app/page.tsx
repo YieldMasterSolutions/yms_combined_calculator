@@ -14,7 +14,7 @@ import {
 import {
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
-  calculateTotalProgramCost,
+  calculateProgramCost,
   calculateROI,
 } from '../utils/calculations';
 import { SeedTreatmentResult, InFurrowFoliarResult, ROIResult } from '../utils/calculations';
@@ -64,7 +64,7 @@ export default function Home() {
       Number(growerDiscount) || 0
     );
 
-    const totalProgramCost = calculateTotalProgramCost(
+    const totalProgramCost = calculateProgramCost(
       seedTreatmentResults,
       inFurrowFoliarResults
     );
