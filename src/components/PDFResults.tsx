@@ -31,18 +31,14 @@ const PDFResults = forwardRef<HTMLDivElement, PDFResultsProps>(
           <div key={idx} className="mb-4">
             <h2 className="font-bold text-blue-700">{res.productName} ({res.applicationMethod})</h2>
             <ul>
-              <li>Total Seeds to Treat: {formatNumber(res.totalSeeds)}</li>
-              <li>Total Weight of Seeds: {formatNumber(res.totalWeight)} lbs</li>
-              <li>Total Seed Units: {formatNumber(res.totalUnits)}</li>
-              <li>Seeds per Unit: {formatNumber(res.seedsPerUnit)}</li>
               <li>Application Rate: {res.applicationRate} {res.rateUnit}</li>
               <li>Total Product Needed: {formatNumber(res.totalProductNeeded)}</li>
               <li>Total Product Units to Order: {res.totalProductUnits} – {res.productPackageString}</li>
               <li>Product Cost per Ounce: ${formatNumber(res.productCostPerOz)}</li>
               <li>Total Cost to Grower (MSRP): ${formatNumber(res.totalCostToGrower)}</li>
               <li>Total Discounted Cost to Grower: ${formatNumber(res.totalDiscountedCostToGrower)}</li>
-              <li>Cost per Unit of Treated Seed: ${formatNumber(res.productCostPerUnitSeed)}</li>
-              <li>Cost per Acre: ${formatNumber(res.individualCostPerAcre)}</li>
+              <li>Cost per Unit of Treated Seed: ${formatNumber(res.costPerUnitSeed)}</li>
+              <li>Cost per Acre: ${formatNumber(res.costPerAcre)}</li>
             </ul>
           </div>
         ))}
