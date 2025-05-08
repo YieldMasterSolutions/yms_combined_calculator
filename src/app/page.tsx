@@ -1,154 +1,112 @@
 // src/app/page.tsx
 
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import CalculatorForm from "../components/CalculatorForm";
-import ResultsDisplay from "../components/ResultsDisplay";
-import PDFDownloadButton from "../components/PDFDownloadButton";
-import {
-  calculateSeedTreatmentData,
-  calculateAllFoliarProductCosts,
-  calculateROI,
-  SeedTreatmentResult,
-  FoliarProductResult,
-  ROIResults
-} from "../utils/calculations";
+import React, { useState } from 'react';
+import CalculatorForm from '../components/CalculatorForm';
+import ResultsDisplay from '../components/ResultsDisplay';
+import PDFDownloadButton from '../components/PDFDownloadButton';
 import {
   seedTypes,
   productsSeedTreatment,
   productsInFurrowFoliar,
-  ProductData
-} from "../utils/data";
+} from '../utils/data';
+import {
+  calculateSeedTreatmentData,
+  calculateAllFoliarProductCosts,
+  calculateTotalProgramCost,
+  calculateROI,
+} from '../utils/calculations';
+import { SeedTreatmentResult, InFurrowFoliarResult, ROIResult } from '../utils/calculations';
 
-interface FormData {
-  seedType: string;
-  acres: number;  // acres is now mandatory
-  seedingRate: number;  // seedingRate is now mandatory and should always be a number
-  rateUnit: string;
-  dealerDiscount?: number;  // Optional
-  growerDiscount?: number;  // Optional
-  seedTreatmentProducts: { product: ProductData }[];
-  foliarProducts: { product: ProductData; applicationMethod: string }[];
-  marketPrice: number;
-  priceUnit: string;
-  seedsPerPoundOverride?: number;
-  grower: string;
-  rep: string;
-}
+import Image from 'next/image';
+import ymsLogo from '../../public/YMS Logo.png';
 
 export default function Home() {
-  const [seedResults, setSeedResults] = useState<SeedTreatmentResult[]>([]);
-  const [foliarResults, setFoliarResults] = useState<FoliarProductResult[]>([]);
-  const [roiResults, setRoiResults] = useState<ROIResults | null>(null);
-  const [cropPriceUnit, setCropPriceUnit] = useState("bu");
-  const [growerName, setGrowerName] = useState("");
-  const [dealerRep, setDealerRep] = useState("");
-  const [programCost, setProgramCost] = useState(0);
+  const [formData, setFormData] = useState<any>(null);
+  const [seedTreatmentResults, setSeedTreatmentResults] = useState<SeedTreatmentResult[]>([]);
+  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<InFurrowFoliarResult[]>([]);
+  const [programCost, setProgramCost] = useState<number>(0);
+  const [roi, setRoi] = useState<ROIResult | null>(null);
 
-  const handleCalculate = (formData: FormData) => {
+  const handleFormSubmit = (data: any) => {
+    setFormData(data);
+
     const {
-      seedType,
       acres,
       seedingRate,
-      rateUnit,
-      dealerDiscount,
-      growerDiscount,
-      seedTreatmentProducts,
-      foliarProducts,
-      marketPrice,
-      priceUnit,
-      seedsPerPoundOverride,
-      grower,
-      rep
-    } = formData;
-
-    // Validate mandatory fields
-    if (!acres || acres <= 0) {
-      alert("Acres is a mandatory field and must be a positive number.");
-      return; // Stop the calculation if acres is invalid
-    }
-
-    if (!seedingRate || seedingRate <= 0) {
-      alert("Seeding Rate is a mandatory field and must be a positive number.");
-      return; // Stop the calculation if seedingRate is invalid
-    }
-
-    const seedsPerPound = seedsPerPoundOverride ?? 0;
-    const selectedSeed = seedTypes.find(seed => seed["Seed Type"] === seedType);
-    const lbsPerUnit = selectedSeed?.["Lbs/Unit"] ?? 50;
-
-    setGrowerName(grower);
-    setDealerRep(rep);
-    setCropPriceUnit(priceUnit);
-
-    const seedTreatmentWithMethod = seedTreatmentProducts.map(p => ({
-      ...p,
-      applicationMethod: "Planter Box"
-    }));
-
-    const seedResults = calculateSeedTreatmentData(
       seedType,
-      acres,
-      seedingRate,  // Pass seedingRate directly, no default value
       rateUnit,
+      seedTreatmentProducts,
+      inFurrowFoliarProducts,
       dealerDiscount,
       growerDiscount,
-      seedTreatmentWithMethod,
-      seedsPerPound,
-      lbsPerUnit
+      marketPrice,
+      cropPriceUnit,
+      seedsPerPoundOverride,
+    } = data;
+
+    if (!acres || !seedingRate) return; // Ensure required fields are provided
+
+    const seedTreatmentResults = calculateSeedTreatmentData(
+      seedType,
+      Number(acres),
+      Number(seedingRate),
+      rateUnit,
+      Number(dealerDiscount) || 0,
+      Number(growerDiscount) || 0,
+      seedTreatmentProducts,
+      seedsPerPoundOverride ? Number(seedsPerPoundOverride) : undefined
     );
 
-    const foliarResults = calculateAllFoliarProductCosts(
-      acres,
-      dealerDiscount,
-      growerDiscount,
-      foliarProducts
+    const inFurrowFoliarResults = calculateAllFoliarProductCosts(
+      Number(acres),
+      inFurrowFoliarProducts,
+      Number(dealerDiscount) || 0,
+      Number(growerDiscount) || 0
     );
 
-    const totalSeedCost = seedResults.reduce((sum, item) => sum + item.costPerAcre, 0);
-    const totalFoliarCost = foliarResults.reduce((sum, item) => sum + item.individualCostPerAcre, 0);
-    const totalProgramCost = totalSeedCost + totalFoliarCost;
+    const totalProgramCost = calculateTotalProgramCost(
+      seedTreatmentResults,
+      inFurrowFoliarResults
+    );
 
-    setSeedResults(seedResults);
-    setFoliarResults(foliarResults);
+    const roiResult = marketPrice
+      ? calculateROI(totalProgramCost, Number(marketPrice), cropPriceUnit)
+      : null;
+
+    setSeedTreatmentResults(seedTreatmentResults);
+    setInFurrowFoliarResults(inFurrowFoliarResults);
     setProgramCost(totalProgramCost);
-
-    const roi = calculateROI(totalProgramCost, marketPrice);
-    setRoiResults(roi);
+    setRoi(roiResult);
   };
 
   return (
-    <main className="max-w-6xl mx-auto p-4 text-base bg-neutral-950 text-white min-h-screen">
-      <h1 className="text-4xl font-bold text-center mb-2 text-yellow-400">YMS Combined Calculator</h1>
-      <h2 className="text-xl text-center mb-6 text-stone-300">Biological Program Calculator</h2>
-
+    <main className="min-h-screen bg-gray-100 p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-blue-800">YMS Combined Calculator</h1>
+        <Image src={ymsLogo} alt="YMS Logo" width={120} height={60} />
+      </div>
       <CalculatorForm
         seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
-        onCalculate={handleCalculate}
+        onSubmit={handleFormSubmit}
       />
-
-      {(seedResults.length > 0 || foliarResults.length > 0) && roiResults && (
-        <div className="mt-10">
+      <ResultsDisplay
+        seedTreatmentResults={seedTreatmentResults}
+        inFurrowFoliarResults={inFurrowFoliarResults}
+        programCost={programCost}
+        roi={roi}
+      />
+      {formData && (
+        <div className="mt-6">
           <PDFDownloadButton
-            seedResults={seedResults}
-            foliarResults={foliarResults}
-            roi={roiResults}
-            cropPriceUnit={cropPriceUnit}
-            growerName={growerName}
-            dealerRep={dealerRep}
+            formData={formData}
+            seedTreatmentResults={seedTreatmentResults}
+            inFurrowFoliarResults={inFurrowFoliarResults}
             programCost={programCost}
-          />
-          <ResultsDisplay
-            seedResults={seedResults}
-            inFurrowFoliarResults={foliarResults}
-            roi={roiResults}
-            cropPriceUnit={cropPriceUnit}
-            growerName={growerName}
-            dealerRep={dealerRep}
-            programCost={programCost}
+            roi={roi}
           />
         </div>
       )}
