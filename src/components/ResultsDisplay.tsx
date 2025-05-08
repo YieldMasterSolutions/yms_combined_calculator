@@ -49,45 +49,49 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     });
   };
 
+  const renderProductResult = (result: ProductCalculation) => (
+    <div className="mb-6 border border-zinc-700 bg-zinc-900 p-4 rounded">
+      <h3 className="text-lg font-bold text-yellow-400 mb-2">{result.productName}</h3>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="min-h-[48px] flex items-center">
+          <span className="text-yellow-600 font-semibold">Application Rate:</span>&nbsp;
+          {formatNumber(result.applicationRate ?? 0)} {result.rateUnit}
+        </div>
+        <div className="min-h-[48px] flex items-center">
+          <span className="text-yellow-600 font-semibold">Total Amount of Product Needed:</span>&nbsp;
+          {formatNumber(result.totalProductNeeded ?? 0)} {String(result.rateUnit ?? "").split("/")[0]}
+        </div>
+        <div className="min-h-[48px] flex items-center">
+          <span className="text-yellow-600 font-semibold">Total Product Units to Order:</span>&nbsp;
+          {result.totalProductUnits} – {result.productPackageString}
+        </div>
+        <div className="min-h-[48px] flex items-center">
+          <span className="text-yellow-600 font-semibold">Product Cost per Ounce:</span>&nbsp;
+          ${formatNumber(result.productCostPerOz ?? 0)}
+        </div>
+        <div className="min-h-[48px] flex items-center">
+          <span className="text-yellow-600 font-semibold">Total Cost to Grower (MSRP):</span>&nbsp;
+          ${formatNumber(result.totalCostToGrower ?? 0)}
+        </div>
+        <div className="min-h-[48px] flex items-center">
+          <span className="text-yellow-600 font-semibold">Total Discounted Cost to Grower:</span>&nbsp;
+          ${formatNumber(result.discountedCostToGrower ?? 0)}
+        </div>
+        <div className="min-h-[48px] flex items-center">
+          <span className="text-yellow-600 font-semibold">Individual Cost per Acre:</span>&nbsp;
+          ${formatNumber(result.individualCostPerAcre ?? 0)}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div ref={resultRef} className="bg-zinc-800 p-6 mt-8 rounded border border-zinc-700 text-white">
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-xl font-bold text-blue-400 mb-4">Seed Treatment Calculations</h2>
           {seedTreatmentResults.map((result, idx) => (
-            <div key={idx} className="mb-6 border border-zinc-700 bg-zinc-900 p-4 rounded">
-              <h3 className="text-lg font-bold text-yellow-400 mb-2">{result.productName}</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Application Rate:</span> &nbsp;
-                  {formatNumber(result.applicationRate ?? 0)} {result.rateUnit}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Amount of Product Needed:</span> &nbsp;
-                  {formatNumber(result.totalProductNeeded ?? 0)} {String(result.rateUnit ?? "").split("/")[0]}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Product Units to Order:</span> &nbsp;
-                  {formatNumber(result.totalProductUnits ?? 0)} – {result.productPackageString}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Product Cost per Ounce:</span> &nbsp;
-                  ${formatNumber(result.productCostPerOz ?? 0)}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Cost to Grower (MSRP):</span> &nbsp;
-                  ${formatNumber(result.totalCostToGrower ?? 0)}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Discounted Cost to Grower:</span> &nbsp;
-                  ${formatNumber(result.discountedCostToGrower ?? 0)}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Individual Cost per Acre:</span> &nbsp;
-                  ${formatNumber(result.costPerUnitSeed ?? 0)}
-                </div>
-              </div>
-            </div>
+            <div key={idx}>{renderProductResult(result)}</div>
           ))}
         </>
       )}
@@ -96,39 +100,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <>
           <h2 className="text-xl font-bold text-blue-400 mb-4">In-Furrow / Foliar Product Costs</h2>
           {inFurrowFoliarResults.map((result, idx) => (
-            <div key={idx} className="mb-6 border border-zinc-700 bg-zinc-900 p-4 rounded">
-              <h3 className="text-lg font-bold text-yellow-400 mb-2">{result.productName}</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Application Rate:</span> &nbsp;
-                  {formatNumber(result.applicationRate ?? 0)} {result.rateUnit}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Amount of Product Needed:</span> &nbsp;
-                  {formatNumber(result.totalProductNeeded ?? 0)} {String(result.rateUnit ?? "").split("/")[0]}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Product Units to Order:</span> &nbsp;
-                  {formatNumber(result.totalProductUnits ?? 0)} – {result.productPackageString}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Product Cost per Ounce:</span> &nbsp;
-                  ${formatNumber(result.productCostPerOz ?? 0)}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Cost to Grower (MSRP):</span> &nbsp;
-                  ${formatNumber(result.totalCostToGrower ?? 0)}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Total Discounted Cost to Grower:</span> &nbsp;
-                  ${formatNumber(result.discountedCostToGrower ?? 0)}
-                </div>
-                <div className="min-h-[48px] flex items-center">
-                  <span className="text-yellow-600 font-semibold">Individual Cost per Acre:</span> &nbsp;
-                  ${formatNumber(result.costPerUnitSeed ?? 0)}
-                </div>
-              </div>
-            </div>
+            <div key={idx}>{renderProductResult(result)}</div>
           ))}
         </>
       )}
@@ -136,15 +108,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <h2 className="text-xl font-bold text-blue-400 mt-8 mb-2">Total YMS Biological Program Cost</h2>
       <div className="grid grid-cols-2 gap-4 border border-zinc-700 bg-zinc-900 p-4 rounded">
         <div className="min-h-[48px] flex items-center">
-          <span className="text-yellow-600 font-semibold">Undiscounted Total Cost:</span> &nbsp;
+          <span className="text-yellow-600 font-semibold">Undiscounted Total Cost:</span>&nbsp;
           ${formatNumber(totalUndiscountedCost)}
         </div>
         <div className="min-h-[48px] flex items-center">
-          <span className="text-yellow-600 font-semibold">Total Discounted Cost:</span> &nbsp;
+          <span className="text-yellow-600 font-semibold">Total Discounted Cost:</span>&nbsp;
           ${formatNumber(totalDiscountedCost)}
         </div>
         <div className="min-h-[48px] flex items-center col-span-2">
-          <span className="text-yellow-600 font-semibold">Program Cost per Acre:</span> &nbsp;
+          <span className="text-yellow-600 font-semibold">Program Cost per Acre:</span>&nbsp;
           ${formatNumber(totalCostPerAcre)}
         </div>
       </div>
