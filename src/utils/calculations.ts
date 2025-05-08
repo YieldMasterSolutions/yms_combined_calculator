@@ -9,6 +9,8 @@ export interface ProductCalculation {
   originalTotalCostToGrower: number;
   discountedTotalCostToGrower: number;
   individualCostPerAcre: number;
+  applicationRate?: number;
+  rateUnit?: string;
 }
 
 export function calculateProductData(
@@ -22,31 +24,23 @@ export function calculateProductData(
 ): ProductCalculation {
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
+  let rateUnit: string | undefined;
 
-  // Handle liquid (fl oz/acre)
   if (product["Application Rate in Fluid Ounces"]) {
     applicationRate = product["Application Rate in Fluid Ounces"];
     costPerUnit = product["Product Cost per fl oz"];
-  }
-
-  // Handle dry (oz/acre)
-  else if (product["Application Rate in Ounces"]) {
+    rateUnit = "fl oz/acre";
+  } else if (product["Application Rate in Ounces"]) {
     applicationRate = product["Application Rate in Ounces"];
     costPerUnit = product["Product Cost per oz"];
-  }
-
-  // Handle dry (g/acre)
-  else if (product["Application Rate in Grams"]) {
+    rateUnit = "oz/acre";
+  } else if (product["Application Rate in Grams"]) {
     applicationRate = product["Application Rate in Grams"];
     costPerUnit = product["Product Cost per gram"];
-  }
-
-  // Handle seed treatment (oz/unit of seed)
-  else if (product["Application Rate in Ounces per Unit"]) {
-    // Calculate seeds/unit based on crop type
+    rateUnit = "g/acre";
+  } else if (product["Application Rate in Ounces per Unit"]) {
     let seedsPerUnit: number;
     const seed = seedType.toLowerCase();
-
     if (seed === "corn") {
       seedsPerUnit = 80000;
     } else if (seed === "soybeans") {
@@ -54,10 +48,10 @@ export function calculateProductData(
     } else {
       seedsPerUnit = seedsPerPound * lbsPerUnit;
     }
-
     const totalUnits = (acres * seedingRatePerAcre(seedType, seedsPerPound, lbsPerUnit)) / seedsPerUnit;
     applicationRate = product["Application Rate in Ounces per Unit"] * totalUnits;
     costPerUnit = product["Product Cost per oz"];
+    rateUnit = "oz/unit";
   }
 
   const packageSize = product["Package Size"];
@@ -76,11 +70,12 @@ export function calculateProductData(
     productPackageString,
     originalTotalCostToGrower,
     discountedTotalCostToGrower,
-    individualCostPerAcre
+    individualCostPerAcre,
+    applicationRate,
+    rateUnit
   };
 }
 
-// Helper function to determine seed rate multiplier (used in oz/unit logic)
 function seedingRatePerAcre(
   seedType: string,
   seedsPerPound: number,
