@@ -236,6 +236,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           />
         </div>
       </div>
+
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded"
+        >
+          Calculate Program Cost
+        </button>
+      </div>
     </form>
   );
 };

@@ -48,13 +48,21 @@ export default function CombinedCalculator() {
     const target = type === "seed" ? [...selectedSeedTreatmentProducts] : [...selectedFoliarProducts];
     const match = [...productsSeedTreatment, ...productsInFurrowFoliar].find(p => p["Product Name"] === productName);
     if (match) target[index] = { ...target[index], product: match };
-    type === "seed" ? setSelectedSeedTreatmentProducts(target) : setSelectedFoliarProducts(target);
+    if (type === "seed") {
+      setSelectedSeedTreatmentProducts(target);
+    } else {
+      setSelectedFoliarProducts(target);
+    }
   };
 
   const handleAppTypeChange = (index: number, method: string, type: "seed" | "foliar") => {
     const target = type === "seed" ? [...selectedSeedTreatmentProducts] : [...selectedFoliarProducts];
     target[index] = { ...target[index], applicationMethod: method };
-    type === "seed" ? setSelectedSeedTreatmentProducts(target) : setSelectedFoliarProducts(target);
+    if (type === "seed") {
+      setSelectedSeedTreatmentProducts(target);
+    } else {
+      setSelectedFoliarProducts(target);
+    }
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
