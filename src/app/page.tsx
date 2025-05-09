@@ -4,7 +4,13 @@
 import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import Image from "next/image";
+<Image
+  src="/yms_combined_calculator/YMSLogo5.png"
+  alt="YMSlogo1.png"
+  width={160}
+  height={80}
+  className="mx-auto mb-4"
+/>
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
@@ -141,8 +147,8 @@ export default function CombinedCalculator() {
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <Image
-          src="/yms_combined_calculator/YMSLogo5.PNG"
-          alt="YMS Logo"
+          src="/yms_combined_calculator/YMSLogo5.png"
+          alt="YMSlogo1.png"
           width={160}
           height={80}
           className="mx-auto mb-4"
