@@ -15,7 +15,7 @@ export interface ProductData {
   "Package Size": number;
   "Package Units": string;
   "Package Type": string;
-  "Application Rate Unit"?: "oz/unit" | "fl oz/unit" | "fl oz/acre" | "g/acre";
+  "Application Rate Unit"?: "oz/unit" | "fl oz/unit" | "fl oz/acre" | "oz/acre" | "g/acre";
 }
 
 export interface SeedType {
