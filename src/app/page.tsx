@@ -48,29 +48,18 @@ export default function CombinedCalculator() {
     const target = type === "seed" ? [...selectedSeedTreatmentProducts] : [...selectedFoliarProducts];
     const match = [...productsSeedTreatment, ...productsInFurrowFoliar].find(p => p["Product Name"] === productName);
     if (match) target[index] = { ...target[index], product: match };
-    if (type === "seed") {
-      setSelectedSeedTreatmentProducts(target);
-    } else {
-      setSelectedFoliarProducts(target);
-    }
+    type === "seed" ? setSelectedSeedTreatmentProducts(target) : setSelectedFoliarProducts(target);
   };
 
   const handleAppTypeChange = (index: number, method: string, type: "seed" | "foliar") => {
     const target = type === "seed" ? [...selectedSeedTreatmentProducts] : [...selectedFoliarProducts];
     target[index] = { ...target[index], applicationMethod: method };
-    if (type === "seed") {
-      setSelectedSeedTreatmentProducts(target);
-    } else {
-      setSelectedFoliarProducts(target);
-    }
+    type === "seed" ? setSelectedSeedTreatmentProducts(target) : setSelectedFoliarProducts(target);
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!seedType || !acres || !seedingRate || !marketPrice) {
-      console.error("Missing required inputs.");
-      return;
-    }
+    if (!seedType || !acres || !seedingRate || !marketPrice) return;
 
     const acresNum = parseFloat(acres);
     const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
@@ -169,11 +158,6 @@ export default function CombinedCalculator() {
         handleAppTypeChange={handleAppTypeChange}
         onSubmit={handleFormSubmit}
       />
-      <div className="text-center">
-        <button onClick={handleFormSubmit} className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full text-lg">
-          Calculate Combined Results
-        </button>
-      </div>
       {(seedResults.length > 0 || foliarResults.length > 0) && (
         <ResultsDisplay
           seedTreatmentResults={seedResults}

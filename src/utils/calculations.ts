@@ -31,38 +31,43 @@ export function calculateProductData(
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
   let rateUnit: string | undefined;
+  let totalProductNeeded: number = 0;
 
-  if (product["Application Rate in Fluid Ounces"]) {
-    applicationRate = product["Application Rate in Fluid Ounces"];
+  const applicationRateUnit = product["Application Rate Unit"];
+
+  if (applicationRateUnit === "fl oz/acre") {
+    applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"];
     rateUnit = "fl oz/acre";
-  } else if (product["Application Rate in Ounces"]) {
-    applicationRate = product["Application Rate in Ounces"];
+    totalProductNeeded = acres * applicationRate;
+  } else if (applicationRateUnit === "oz/acre") {
+    applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per oz"];
     rateUnit = "oz/acre";
-  } else if (product["Application Rate in Grams"]) {
-    applicationRate = product["Application Rate in Grams"];
+    totalProductNeeded = acres * applicationRate;
+  } else if (applicationRateUnit === "g/acre") {
+    applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per gram"];
     rateUnit = "g/acre";
-  } else if (product["Application Rate in Ounces per Unit"]) {
-    let seedsPerUnit: number;
-    const seed = seedType.toLowerCase();
-    if (seed === "corn") {
-      seedsPerUnit = 80000;
-    } else if (seed === "soybeans") {
-      seedsPerUnit = 140000;
-    } else {
-      seedsPerUnit = seedsPerPound * lbsPerUnit;
-    }
-    const totalUnits = (acres * seedingRatePerAcre(seedType, seedsPerPound, lbsPerUnit)) / seedsPerUnit;
-    applicationRate = product["Application Rate in Ounces per Unit"] * totalUnits;
-    costPerUnit = product["Product Cost per oz"];
-    rateUnit = "oz/unit";
+    totalProductNeeded = acres * applicationRate;
+  } else if (applicationRateUnit === "oz/unit" || applicationRateUnit === "fl oz/unit") {
+    const seedsPerUnit =
+      seedType.toLowerCase() === "corn"
+        ? 80000
+        : seedType.toLowerCase() === "soybeans"
+        ? 140000
+        : seedsPerPound * lbsPerUnit;
+    const unitsToTreat = (acres * seedingRatePerAcre(seedType, seedsPerPound, lbsPerUnit)) / seedsPerUnit;
+    applicationRate = product["Application Rate"];
+    costPerUnit = applicationRateUnit === "oz/unit"
+      ? product["Product Cost per oz"]
+      : product["Product Cost per fl oz"];
+    rateUnit = applicationRateUnit;
+    totalProductNeeded = unitsToTreat * applicationRate;
   }
 
   const packageSize = product["Package Size"];
   const costPerPackage = (costPerUnit ?? 0) * packageSize;
-  const totalProductNeeded = acres * (applicationRate || 0);
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const originalTotalCostToGrower = packagesNeeded * costPerPackage;
   const discountFactor = 1 - ((dealerDiscount + growerDiscount) / 100);
@@ -71,21 +76,21 @@ export function calculateProductData(
   const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Package Type"]}`;
 
   return {
-  productName: product["Product Name"],
-  packagesNeeded,
-  productPackageString,
-  originalTotalCostToGrower,
-  discountedTotalCostToGrower,
-  individualCostPerAcre,
-  applicationRate,
-  rateUnit,
-  totalProductNeeded,
-  totalProductUnits: packagesNeeded,
-  productCostPerOz: costPerUnit,
-  totalCostToGrower: originalTotalCostToGrower,
-  costPerUnitSeed: individualCostPerAcre,
-  discountedCostToGrower: discountedTotalCostToGrower
-};
+    productName: product["Product Name"],
+    packagesNeeded,
+    productPackageString,
+    originalTotalCostToGrower,
+    discountedTotalCostToGrower,
+    individualCostPerAcre,
+    applicationRate,
+    rateUnit,
+    totalProductNeeded,
+    totalProductUnits: packagesNeeded,
+    productCostPerOz: costPerUnit,
+    totalCostToGrower: originalTotalCostToGrower,
+    costPerUnitSeed: individualCostPerAcre,
+    discountedCostToGrower: discountedTotalCostToGrower
+  };
 }
 
 function seedingRatePerAcre(

@@ -41,8 +41,6 @@ export interface FormData {
   repName?: string;
 }
 
-// (rest of seedTypes, productsSeedTreatment, and productsInFurrowFoliar arrays remain unchanged)
-
 export const seedTypes: SeedType[] = [
   { "Seed Type": "Alfalfa", "Seeds/lb": "210000", "Lbs/Unit": 50 },
   { "Seed Type": "Barley", "Seeds/lb": "14500", "Lbs/Unit": 50 },
