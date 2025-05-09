@@ -105,11 +105,19 @@ export default function CombinedCalculator() {
     setTotalDiscountedCost(totalDiscounted);
 
     const mp = parseFloat(marketPrice);
-    setBreakevenYield(mp > 0 ? totalCost / mp : null);
-    setRoi2(mp > 0 ? (2 * totalCost) / mp : null);
-    setRoi3(mp > 0 ? (3 * totalCost) / mp : null);
-    setRoi4(mp > 0 ? (4 * totalCost) / mp : null);
-    setRoi5(mp > 0 ? (5 * totalCost) / mp : null);
+    if (mp > 0) {
+      setBreakevenYield(totalCost / mp);
+      setRoi2((2 * totalCost) / mp);
+      setRoi3((3 * totalCost) / mp);
+      setRoi4((4 * totalCost) / mp);
+      setRoi5((5 * totalCost) / mp);
+    } else {
+      setBreakevenYield(null);
+      setRoi2(null);
+      setRoi3(null);
+      setRoi4(null);
+      setRoi5(null);
+    }
   };
 
   const downloadPDF = () => {

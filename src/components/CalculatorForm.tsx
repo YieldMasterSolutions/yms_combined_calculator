@@ -143,6 +143,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           />
           <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
         </div>
+        <div>
+          <label className="block mb-1 font-semibold">Market Price ($/unit)</label>
+          <input
+            type="number"
+            value={marketPrice}
+            onChange={(e) => setMarketPrice(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+        </div>
       </div>
 
       <h2 className="text-xl font-bold text-blue-400">Product Inputs</h2>
