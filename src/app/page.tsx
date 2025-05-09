@@ -89,6 +89,7 @@ export default function CombinedCalculator() {
 
     const spp = getSeedsPerPound();
     const lpu = getLbsPerUnit();
+    const sRate = parseFloat(seedingRate);
 
     const selectedSeedProducts = selectedSeedTreatmentProducts
       .filter(p => p.product && p.product["Product Name"])
@@ -98,8 +99,8 @@ export default function CombinedCalculator() {
       .filter(p => p.product && p.product["Product Name"] && (p.applicationMethod === "In-Furrow" || p.applicationMethod === "Foliar"))
       .map(p => p.product);
 
-    const seedResultSet = calculateProductCosts(acresNum, selectedSeedProducts, dealer, grower, seedType, spp, lpu);
-    const foliarResultSet = calculateProductCosts(acresNum, selectedFoliarProductsFiltered, dealer, grower, seedType, spp, lpu);
+    const seedResultSet = calculateProductCosts(acresNum, selectedSeedProducts, dealer, grower, seedType, spp, lpu, sRate, seedingRateUnit);
+    const foliarResultSet = calculateProductCosts(acresNum, selectedFoliarProductsFiltered, dealer, grower, seedType, spp, lpu, sRate, seedingRateUnit);
 
     setSeedResults(seedResultSet.productsData);
     setFoliarResults(foliarResultSet.productsData);
