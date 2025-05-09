@@ -19,9 +19,13 @@ export default function CombinedCalculator() {
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
   const [overrideSeeds, setOverrideSeeds] = useState("");
   const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
+
   const [marketPrice, setMarketPrice] = useState("");
+  const [marketPriceUnit, setMarketPriceUnit] = useState("/acre");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
+  const [dealerName, setDealerName] = useState("");
+  const [growerName, setGrowerName] = useState("");
 
   const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -75,6 +79,7 @@ export default function CombinedCalculator() {
     const acresNum = parseFloat(acres);
     const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
     const grower = growerDiscount ? parseFloat(growerDiscount) : 0;
+    const sRate = parseFloat(seedingRate);
 
     const getSeedsPerPound = (): number => {
       if (overrideSeeds) return parseFloat(overrideSeeds);
@@ -89,7 +94,6 @@ export default function CombinedCalculator() {
 
     const spp = getSeedsPerPound();
     const lpu = getLbsPerUnit();
-    const sRate = parseFloat(seedingRate);
 
     const selectedSeedProducts = selectedSeedTreatmentProducts
       .filter(p => p.product && p.product["Product Name"])
@@ -157,10 +161,16 @@ export default function CombinedCalculator() {
         setSeedsPerUnitOverride={setSeedsPerUnitOverride}
         marketPrice={marketPrice}
         setMarketPrice={setMarketPrice}
+        marketPriceUnit={marketPriceUnit}
+        setMarketPriceUnit={setMarketPriceUnit}
         dealerDiscount={dealerDiscount}
         setDealerDiscount={setDealerDiscount}
         growerDiscount={growerDiscount}
         setGrowerDiscount={setGrowerDiscount}
+        dealerName={dealerName}
+        setDealerName={setDealerName}
+        growerName={growerName}
+        setGrowerName={setGrowerName}
         seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
@@ -182,7 +192,7 @@ export default function CombinedCalculator() {
           roi3={roi3}
           roi4={roi4}
           roi5={roi5}
-          cropPriceUnit={marketPrice ? "/acre" : ""}
+          cropPriceUnit={marketPriceUnit}
         />
       )}
       <div className="text-center">
