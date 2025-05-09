@@ -159,7 +159,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         {[0, 1].map((index) => (
           <div key={index} className="flex flex-col gap-2">
             <label className="block font-semibold">Seed Treatment Product {index + 1}</label>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <select
                 value={selectedSeedTreatmentProducts[index]?.product?.["Product Name"] || ""}
                 onChange={(e) => handleProductChange(index, e.target.value, "seed")}
@@ -188,7 +188,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         {[0, 1, 2, 3].map((index) => (
           <div key={index} className="flex flex-col gap-2">
             <label className="block font-semibold">In-Furrow / Foliar Product {index + 1}</label>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <select
                 value={selectedFoliarProducts[index]?.product?.["Product Name"] || ""}
                 onChange={(e) => handleProductChange(index, e.target.value, "foliar")}
