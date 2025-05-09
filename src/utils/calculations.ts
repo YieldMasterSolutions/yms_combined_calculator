@@ -25,13 +25,6 @@ export interface ProductCalculation {
   seedsPerUnit?: number;
 }
 
-function seedingRatePerAcre(seedType: string, seedsPerPound: number, lbsPerUnit: number): number {
-  const seed = seedType.toLowerCase();
-  if (seed === "corn") return 80000;
-  if (seed === "soybeans") return 140000;
-  return seedsPerPound * lbsPerUnit;
-}
-
 export function calculateProductData(
   acres: number,
   product: ProductData,
@@ -39,20 +32,17 @@ export function calculateProductData(
   growerDiscount: number = 0,
   seedType: string,
   seedsPerPound: number,
-  lbsPerUnit: number
+  lbsPerUnit: number,
+  seedingRate: number,
+  seedingRateUnit: string
 ): ProductCalculation {
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
   let rateUnit: string | undefined;
   let totalProductNeeded: number = 0;
-  let seedsPerUnit: number = 0;
-  let totalSeeds: number = 0;
-  let totalWeight: number = 0;
-  let unitsToBeTreated: number = 0;
 
-  const applicationRateUnit = product["Application Rate Unit"];
-  
-  // Set seeding data
+  // Determine seedsPerUnit
+  let seedsPerUnit: number;
   if (seedType.toLowerCase() === "corn") {
     seedsPerUnit = 80000;
   } else if (seedType.toLowerCase() === "soybeans") {
@@ -61,11 +51,21 @@ export function calculateProductData(
     seedsPerUnit = seedsPerPound * lbsPerUnit;
   }
 
-  totalSeeds = acres * seedingRatePerAcre(seedType, seedsPerPound, lbsPerUnit);
-  totalWeight = totalSeeds / seedsPerPound;
-  unitsToBeTreated = totalSeeds / seedsPerUnit;
+  // Calculate totalSeeds and totalWeight based on unit
+  let totalSeeds: number;
+  let totalWeight: number;
+  if (seedingRateUnit === "seeds/acre") {
+    totalSeeds = seedingRate * acres;
+    totalWeight = totalSeeds / seedsPerPound;
+  } else {
+    totalWeight = seedingRate * acres;
+    totalSeeds = totalWeight * seedsPerPound;
+  }
+
+  const unitsToBeTreated = totalSeeds / seedsPerUnit;
 
   // Determine application rate and total product needed
+  const applicationRateUnit = product["Application Rate Unit"];
   if (applicationRateUnit === "fl oz/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"];
@@ -93,7 +93,7 @@ export function calculateProductData(
     totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
   }
 
-  // Pricing and rounding
+  // Pricing
   const packageSize = product["Package Size"];
   const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Package Type"]}`;
   const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
@@ -102,7 +102,6 @@ export function calculateProductData(
   const totalCostToGrower = packagesNeeded * productCostPerPackage;
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedCostToGrower = totalCostToGrower * discountFactor;
-
   const individualCostPerAcre = ((applicationRate ?? 0) * (costPerUnit ?? 0)) * discountFactor;
   const productCostPerUnitSeed = (discountedCostToGrower / acres) || 0;
 
@@ -111,7 +110,7 @@ export function calculateProductData(
     packagesNeeded,
     productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower: discountedCostToGrower,
+    discountedTotalCostToGrower,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
@@ -137,7 +136,9 @@ export function calculateProductCosts(
   growerDiscount: number = 0,
   seedType: string,
   seedsPerPound: number,
-  lbsPerUnit: number
+  lbsPerUnit: number,
+  seedingRate: number,
+  seedingRateUnit: string
 ): {
   productsData: ProductCalculation[];
   totalCostPerAcre: number;
@@ -145,7 +146,17 @@ export function calculateProductCosts(
   totalDiscountedCost: number;
 } {
   const productsData = selectedProducts.map((product) =>
-    calculateProductData(acres, product, dealerDiscount, growerDiscount, seedType, seedsPerPound, lbsPerUnit)
+    calculateProductData(
+      acres,
+      product,
+      dealerDiscount,
+      growerDiscount,
+      seedType,
+      seedsPerPound,
+      lbsPerUnit,
+      seedingRate,
+      seedingRateUnit
+    )
   );
 
   const totalCostPerAcre = productsData.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
