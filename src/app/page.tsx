@@ -139,18 +139,19 @@ export default function CombinedCalculator() {
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
-        <picture>
-  <source srcSet="/yms_combined_calculator/YMSLogo5.png" type="image/png" />
-  <source srcSet="/yms_combined_calculator/YMSlogo1.jpg" type="image/jpeg" />
-  <source srcSet="/yms_combined_calculator/YMSlogo2.gif" type="image/gif" />
-  <img
-    src="/yms_combined_calculator/YMSLogo5.png"
-    alt="YMS Logo"
-    width="160"
-    height="80"
-    className="mx-auto mb-4"
-  />
-</picture>
+     <div className="text-center mb-6">
+  <picture>
+    <source srcSet="/yms_combined_calculator/YMSLogo5.png" type="image/png" />
+    <source srcSet="/yms_combined_calculator/YMSLogo1.jpg" type="image/jpeg" />
+    <img
+      src="/yms_combined_calculator/yms-logo.png"
+      alt="YMS Logo"
+      width="160"
+      height="80"
+      className="mx-auto mb-4"
+    />
+  </picture>
+</div>
         <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
         <p className="text-3xl font-bold text-zinc-400">YMS Combined Calculator</p>
       </div>
