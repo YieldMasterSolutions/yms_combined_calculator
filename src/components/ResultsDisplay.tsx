@@ -1,194 +1,248 @@
-// src/components/ResultsDisplay.tsx
-"use client";
+// src/components/CalculatorForm.tsx
+import React from "react";
+import { ProductData, SeedType } from "../utils/data";
 
-import React, { useRef } from "react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-import { formatNumber } from "../utils/formatNumber";
-import { ProductCalculation } from "../utils/calculations";
-
-interface ResultsDisplayProps {
-  seedTreatmentResults: ProductCalculation[];
-  inFurrowFoliarResults: ProductCalculation[];
-  totalCostPerAcre: number;
-  totalUndiscountedCost: number;
-  totalDiscountedCost: number;
-  breakevenYield: number | null;
-  roi2: number | null;
-  roi3: number | null;
-  roi4: number | null;
-  roi5: number | null;
-  cropPriceUnit: string;
+interface CalculatorFormProps {
+  seedType: string;
+  setSeedType: (value: string) => void;
+  acres: string;
+  setAcres: (value: string) => void;
+  seedingRate: string;
+  setSeedingRate: (value: string) => void;
+  seedingRateUnit: string;
+  setSeedingRateUnit: (value: string) => void;
+  overrideSeeds: string;
+  setOverrideSeeds: (value: string) => void;
+  seedsPerUnitOverride: string;
+  setSeedsPerUnitOverride: (value: string) => void;
+  marketPrice: string;
+  setMarketPrice: (value: string) => void;
+  dealerDiscount: string;
+  setDealerDiscount: (value: string) => void;
+  growerDiscount: string;
+  setGrowerDiscount: (value: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  seedTypes: SeedType[];
+  productsSeedTreatment: ProductData[];
+  productsInFurrow: ProductData[];
+  selectedSeedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
+  selectedFoliarProducts: { product: ProductData; applicationMethod: string }[];
+  handleProductChange: (index: number, productName: string, type: "seed" | "foliar") => void;
+  handleAppTypeChange: (index: number, method: string, type: "seed" | "foliar") => void;
 }
 
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
-  seedTreatmentResults,
-  inFurrowFoliarResults,
-  totalCostPerAcre,
-  totalUndiscountedCost,
-  totalDiscountedCost,
-  breakevenYield,
-  roi2,
-  roi3,
-  roi4,
-  roi5,
-  cropPriceUnit,
+const CalculatorForm: React.FC<CalculatorFormProps> = ({
+  seedType,
+  setSeedType,
+  acres,
+  setAcres,
+  seedingRate,
+  setSeedingRate,
+  seedingRateUnit,
+  setSeedingRateUnit,
+  overrideSeeds,
+  setOverrideSeeds,
+  seedsPerUnitOverride,
+  setSeedsPerUnitOverride,
+  marketPrice,
+  setMarketPrice,
+  dealerDiscount,
+  setDealerDiscount,
+  growerDiscount,
+  setGrowerDiscount,
+  onSubmit,
+  seedTypes,
+  productsSeedTreatment,
+  productsInFurrow,
+  selectedSeedTreatmentProducts,
+  selectedFoliarProducts,
+  handleProductChange,
+  handleAppTypeChange,
 }) => {
-  const resultRef = useRef<HTMLDivElement>(null);
-
-  const downloadPDF = () => {
-    if (!resultRef.current) return;
-    html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "pt", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const margin = 20;
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-      pdf.save("YieldMaster_Calculation.pdf");
-    });
+  const getDefaultSeedsPerLb = (): string => {
+    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
+    return found ? found["Seeds/lb"] : "N/A";
   };
 
-  const renderSeedSummary = (result: ProductCalculation) => (
-    <div className="mb-6 border border-zinc-700 bg-zinc-900 p-4 rounded">
-      <h3 className="text-lg font-bold text-yellow-400 mb-4">Seed Treatment Calculations</h3>
-      <div className="grid grid-cols-2 gap-4 text-white">
-        <div>
-          <span className="text-yellow-500 font-semibold">Total Number of Seeds to be Treated:</span>{" "}
-          {formatNumber(result.totalSeeds ?? 0, 2)}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Total Weight of Seeds to be Treated:</span>{" "}
-          {formatNumber(result.totalWeight ?? 0, 2)} lbs
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Total Number of Units to be Treated:</span>{" "}
-          {formatNumber(result.unitsToBeTreated ?? 0, 2)}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Number of Seeds per Unit:</span>{" "}
-          {formatNumber(result.seedsPerUnit ?? 0, 2)}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderProductResult = (result: ProductCalculation) => (
-    <div className="mb-6 border border-zinc-700 bg-zinc-900 p-4 rounded">
-      <h3 className="text-lg font-bold text-yellow-400 mb-2">{result.productName}</h3>
-      <div className="grid grid-cols-2 gap-4 text-white">
-        <div>
-          <span className="text-yellow-500 font-semibold">Application Rate:</span>{" "}
-          {formatNumber(result.applicationRate ?? 0, 2)} {result.rateUnit}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Total Amount of Product Needed:</span>{" "}
-          {formatNumber(result.totalProductNeeded ?? 0, 2)} {String(result.rateUnit ?? "").split("/")[0]}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Total Product Units to Order:</span>{" "}
-          {formatNumber(result.totalProductUnits ?? 0, 0)} – {result.productPackageString}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Product Cost per Ounce:</span>{" "}
-          ${formatNumber(result.productCostPerOz ?? 0, 2)}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Total Cost to Grower (MSRP):</span>{" "}
-          ${formatNumber(result.totalCostToGrower ?? 0, 2)}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Total Discounted Cost to Grower:</span>{" "}
-          ${formatNumber(result.discountedCostToGrower ?? 0, 2)}
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">Individual Cost per Acre:</span>{" "}
-          ${formatNumber(result.individualCostPerAcre ?? 0, 2)}
-        </div>
-      </div>
-    </div>
-  );
+  const getDefaultSeedsPerUnit = (): string => {
+    if (seedType.toLowerCase() === "corn") return "80000";
+    if (seedType.toLowerCase() === "soybeans") return "140000";
+    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
+    if (!found) return "N/A";
+    const seedsPerLb = parseFloat(found["Seeds/lb"]);
+    const lbsPerUnit = parseFloat(String(found["Lbs/Unit"]));
+    return seedsPerLb && lbsPerUnit ? Math.round(seedsPerLb * lbsPerUnit).toString() : "N/A";
+  };
 
   return (
-    <div ref={resultRef} className="bg-zinc-800 p-6 mt-8 rounded border border-zinc-700 text-white">
-      {seedTreatmentResults.length > 0 && (
-        <>
-          <h2 className="text-xl font-bold text-blue-400 mb-4">Seed Calculations</h2>
-          {seedTreatmentResults.map((result, idx) => (
-            <div key={idx}>{renderSeedSummary(result)}</div>
-          ))}
-        </>
-      )}
-
-      {seedTreatmentResults.length > 0 && (
-        <>
-          <h2 className="text-xl font-bold text-blue-400 mb-4">Seed Treatment Costs</h2>
-          {seedTreatmentResults.map((result, idx) => (
-            <div key={idx}>{renderProductResult(result)}</div>
-          ))}
-        </>
-      )}
-
-      {inFurrowFoliarResults.length > 0 && (
-        <>
-          <h2 className="text-xl font-bold text-blue-400 mb-4">In-Furrow / Foliar Product Costs</h2>
-          {inFurrowFoliarResults.map((result, idx) => (
-            <div key={idx}>{renderProductResult(result)}</div>
-          ))}
-        </>
-      )}
-
-      <h2 className="text-xl font-bold text-blue-400 mt-8 mb-2">Total Program Costs</h2>
-      <div className="grid grid-cols-2 gap-4 border border-zinc-700 bg-zinc-900 p-4 rounded">
+    <form onSubmit={onSubmit} className="space-y-6 text-white">
+      <h2 className="text-xl font-bold text-blue-400">Crop Inputs</h2>
+      <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
         <div>
-          <span className="text-yellow-500 font-semibold">Undiscounted Total Cost:</span>{" "}
-          ${formatNumber(totalUndiscountedCost, 2)}
+          <label className="block mb-1 font-semibold">Seed Type</label>
+          <select
+            value={seedType}
+            onChange={(e) => setSeedType(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+            required
+          >
+            <option value="">Select Seed Type</option>
+            {seedTypes.map((s, i) => (
+              <option key={i} value={s["Seed Type"]}>{s["Seed Type"]}</option>
+            ))}
+          </select>
         </div>
         <div>
-          <span className="text-yellow-500 font-semibold">Total Discounted Cost:</span>{" "}
-          ${formatNumber(totalDiscountedCost, 2)}
+          <label className="block mb-1 font-semibold">Acres</label>
+          <input
+            type="number"
+            value={acres}
+            onChange={(e) => setAcres(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+            required
+          />
         </div>
-        <div className="col-span-2">
-          <span className="text-yellow-500 font-semibold">Program Cost per Acre:</span>{" "}
-          ${formatNumber(totalCostPerAcre, 2)}
+        <div>
+          <label className="block mb-1 font-semibold">Seeding Rate</label>
+          <input
+            type="number"
+            value={seedingRate}
+            onChange={(e) => setSeedingRate(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+            required
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Seeding Rate Unit</label>
+          <select
+            value={seedingRateUnit}
+            onChange={(e) => setSeedingRateUnit(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          >
+            <option value="seeds/acre">Seeds/acre</option>
+            <option value="lbs/acre">Lbs/acre</option>
+          </select>
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Override Seeds/lb (optional)</label>
+          <input
+            type="number"
+            value={overrideSeeds}
+            onChange={(e) => setOverrideSeeds(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+          <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerLb()}</p>
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Override Seeds/unit (optional)</label>
+          <input
+            type="number"
+            value={seedsPerUnitOverride}
+            onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+          <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Market Price ($/unit)</label>
+          <input
+            type="number"
+            value={marketPrice}
+            onChange={(e) => setMarketPrice(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
         </div>
       </div>
 
-      <h2 className="text-xl font-bold text-blue-400 mt-8 mb-2">ROI Calculations</h2>
-      <div className="grid grid-cols-5 gap-4 border border-zinc-700 bg-zinc-900 p-4 rounded text-center">
+      <h2 className="text-xl font-bold text-blue-400">Product Inputs</h2>
+      <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
+        {[0, 1].map((index) => (
+          <div key={`seed-${index}`} className="col-span-2">
+            <label className="block font-semibold mb-1">Seed Treatment Product {index + 1}</label>
+            <select
+              value={selectedSeedTreatmentProducts[index]?.product?.["Product Name"] || ""}
+              onChange={(e) => handleProductChange(index, e.target.value, "seed")}
+              className="w-full p-2 mb-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Select Product</option>
+              {productsSeedTreatment.map((p, i) => (
+                <option key={i} value={p["Product Name"]}>
+                  {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedSeedTreatmentProducts[index]?.applicationMethod || ""}
+              onChange={(e) => handleAppTypeChange(index, e.target.value, "seed")}
+              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Method</option>
+              <option value="Planter Box">Planter Box</option>
+              <option value="Seed Coating">Seed Coating</option>
+            </select>
+          </div>
+        ))}
+
+        {[0, 1, 2, 3].map((index) => (
+          <div key={`foliar-${index}`} className="col-span-2">
+            <label className="block font-semibold mb-1">In-Furrow / Foliar Product {index + 1}</label>
+            <select
+              value={selectedFoliarProducts[index]?.product?.["Product Name"] || ""}
+              onChange={(e) => handleProductChange(index, e.target.value, "foliar")}
+              className="w-full p-2 mb-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Select Product</option>
+              {productsInFurrow.map((p, i) => (
+                <option key={i} value={p["Product Name"]}>
+                  {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedFoliarProducts[index]?.applicationMethod || ""}
+              onChange={(e) => handleAppTypeChange(index, e.target.value, "foliar")}
+              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Method</option>
+              <option value="In-Furrow">In-Furrow</option>
+              <option value="Foliar">Foliar</option>
+            </select>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="text-xl font-bold text-blue-400">Dealer and Grower Info (Optional)</h2>
+      <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
         <div>
-          <span className="text-yellow-500 font-semibold">Breakeven</span>
-          <div>{breakevenYield !== null ? formatNumber(breakevenYield, 2) : "N/A"} {cropPriceUnit}</div>
+          <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
+          <input
+            type="number"
+            value={dealerDiscount}
+            onChange={(e) => setDealerDiscount(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
         </div>
         <div>
-          <span className="text-yellow-500 font-semibold">ROI 2:1</span>
-          <div>{roi2 !== null ? formatNumber(roi2, 2) : "N/A"} {cropPriceUnit}</div>
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">ROI 3:1</span>
-          <div>{roi3 !== null ? formatNumber(roi3, 2) : "N/A"} {cropPriceUnit}</div>
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">ROI 4:1</span>
-          <div>{roi4 !== null ? formatNumber(roi4, 2) : "N/A"} {cropPriceUnit}</div>
-        </div>
-        <div>
-          <span className="text-yellow-500 font-semibold">ROI 5:1</span>
-          <div>{roi5 !== null ? formatNumber(roi5, 2) : "N/A"} {cropPriceUnit}</div>
+          <label className="block mb-1 font-semibold">Grower Discount (%)</label>
+          <input
+            type="number"
+            value={growerDiscount}
+            onChange={(e) => setGrowerDiscount(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
         </div>
       </div>
 
-      <div className="text-center mt-8">
+      <div className="flex justify-end">
         <button
-          onClick={downloadPDF}
-          className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white"
+          type="submit"
+          className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded"
         >
-          Download PDF
+          Calculate Program Cost
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 
-export default ResultsDisplay;
+export default CalculatorForm;
