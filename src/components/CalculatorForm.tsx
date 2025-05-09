@@ -1,252 +1,162 @@
-// src/components/CalculatorForm.tsx
-import React from "react";
-import { ProductData, SeedType } from "../utils/data";
+// src/utils/calculations.ts
 
-interface CalculatorFormProps {
-  seedType: string;
-  setSeedType: (value: string) => void;
-  acres: string;
-  setAcres: (value: string) => void;
-  seedingRate: string;
-  setSeedingRate: (value: string) => void;
-  seedingRateUnit: string;
-  setSeedingRateUnit: (value: string) => void;
-  overrideSeeds: string;
-  setOverrideSeeds: (value: string) => void;
-  seedsPerUnitOverride: string;
-  setSeedsPerUnitOverride: (value: string) => void;
-  marketPrice: string;
-  setMarketPrice: (value: string) => void;
-  dealerDiscount: string;
-  setDealerDiscount: (value: string) => void;
-  growerDiscount: string;
-  setGrowerDiscount: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  seedTypes: SeedType[];
-  productsSeedTreatment: ProductData[];
-  productsInFurrow: ProductData[];
-  selectedSeedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
-  selectedFoliarProducts: { product: ProductData; applicationMethod: string }[];
-  handleProductChange: (index: number, productName: string, type: "seed" | "foliar") => void;
-  handleAppTypeChange: (index: number, method: string, type: "seed" | "foliar") => void;
+import { ProductData } from "./data";
+
+export interface ProductCalculation {
+  productName: string;
+  packagesNeeded: number;
+  productPackageString: string;
+  originalTotalCostToGrower: number;
+  discountedTotalCostToGrower: number;
+  individualCostPerAcre: number;
+  applicationRate?: number;
+  rateUnit?: string;
+  totalProductNeeded?: number;
+  totalProductUnits?: number;
+  productCostPerOz?: number;
+  totalCostToGrower?: number;
+  costPerUnitSeed?: number;
+  discountedCostToGrower?: number;
+  productCostPerPackage?: number;
+  productCostPerUnitSeed?: number;
+  totalSeeds?: number;
+  totalWeight?: number;
+  unitsToBeTreated?: number;
+  seedsPerUnit?: number;
 }
 
-const CalculatorForm: React.FC<CalculatorFormProps> = ({
-  seedType,
-  setSeedType,
-  acres,
-  setAcres,
-  seedingRate,
-  setSeedingRate,
-  seedingRateUnit,
-  setSeedingRateUnit,
-  overrideSeeds,
-  setOverrideSeeds,
-  seedsPerUnitOverride,
-  setSeedsPerUnitOverride,
-  marketPrice,
-  setMarketPrice,
-  dealerDiscount,
-  setDealerDiscount,
-  growerDiscount,
-  setGrowerDiscount,
-  onSubmit,
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrow,
-  selectedSeedTreatmentProducts,
-  selectedFoliarProducts,
-  handleProductChange,
-  handleAppTypeChange,
-}) => {
-  const getDefaultSeedsPerLb = (): string => {
-    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
-    return found ? found["Seeds/lb"] : "N/A";
+export function calculateProductData(
+  acres: number,
+  product: ProductData,
+  dealerDiscount: number = 0,
+  growerDiscount: number = 0,
+  seedType: string,
+  seedsPerPound: number,
+  lbsPerUnit: number,
+  seedingRate: number,
+  seedingRateUnit: string
+): ProductCalculation {
+  let applicationRate: number | undefined;
+  let costPerUnit: number | undefined;
+  let rateUnit: string | undefined;
+  let totalProductNeeded: number = 0;
+
+  // Determine seedsPerUnit
+  let seedsPerUnit: number = 0;
+  if (seedType.toLowerCase() === "corn") {
+    seedsPerUnit = 80000;
+  } else if (seedType.toLowerCase() === "soybeans") {
+    seedsPerUnit = 140000;
+  } else {
+    seedsPerUnit = seedsPerPound * lbsPerUnit;
+  }
+
+  // Calculate totalSeeds and totalWeight based on seedingRateUnit
+  let totalSeeds: number;
+  let totalWeight: number;
+  if (seedingRateUnit === "seeds/acre") {
+    totalSeeds = seedingRate * acres;
+    totalWeight = totalSeeds / seedsPerPound;
+  } else {
+    totalWeight = seedingRate * acres;
+    totalSeeds = totalWeight * seedsPerPound;
+  }
+
+  const unitsToBeTreated = totalSeeds / seedsPerUnit;
+
+  // Determine product type
+  const applicationRateUnit = product["Application Rate Unit"];
+  if (applicationRateUnit === "fl oz/acre") {
+    applicationRate = product["Application Rate"];
+    costPerUnit = product["Product Cost per fl oz"];
+    rateUnit = "fl oz/acre";
+    totalProductNeeded = acres * (applicationRate ?? 0);
+  } else if (applicationRateUnit === "oz/acre") {
+    applicationRate = product["Application Rate"];
+    costPerUnit = product["Product Cost per oz"];
+    rateUnit = "oz/acre";
+    totalProductNeeded = acres * (applicationRate ?? 0);
+  } else if (applicationRateUnit === "g/acre") {
+    applicationRate = product["Application Rate"];
+    costPerUnit = product["Product Cost per gram"];
+    rateUnit = "g/acre";
+    totalProductNeeded = acres * (applicationRate ?? 0);
+  } else if (applicationRateUnit === "oz/unit") {
+    applicationRate = product["Application Rate"];
+    costPerUnit = product["Product Cost per oz"];
+    rateUnit = "oz/unit";
+    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
+  } else if (applicationRateUnit === "fl oz/unit") {
+    applicationRate = product["Application Rate"];
+    costPerUnit = product["Product Cost per fl oz"];
+    rateUnit = "fl oz/unit";
+    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
+  }
+
+  const packageSize = product["Package Size"];
+  const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
+  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
+  const totalCostToGrower = packagesNeeded * productCostPerPackage;
+
+  const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
+  const discountedCostToGrower = totalCostToGrower * discountFactor;
+  const individualCostPerAcre = ((applicationRate ?? 0) * (costPerUnit ?? 0)) * discountFactor;
+
+  const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Package Type"]}`;
+  const productCostPerUnitSeed = (discountedCostToGrower / acres) || 0;
+
+  return {
+    productName: product["Product Name"],
+    packagesNeeded,
+    productPackageString,
+    originalTotalCostToGrower: totalCostToGrower,
+    discountedTotalCostToGrower,
+    individualCostPerAcre,
+    applicationRate,
+    rateUnit,
+    totalProductNeeded,
+    totalProductUnits: packagesNeeded,
+    productCostPerOz: costPerUnit,
+    totalCostToGrower,
+    costPerUnitSeed: productCostPerUnitSeed,
+    discountedCostToGrower,
+    productCostPerPackage,
+    productCostPerUnitSeed,
+    totalSeeds,
+    totalWeight,
+    unitsToBeTreated,
+    seedsPerUnit,
   };
+}
 
-  const getDefaultSeedsPerUnit = (): string => {
-    if (seedType.toLowerCase() === "corn") return "80000";
-    if (seedType.toLowerCase() === "soybeans") return "140000";
-    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
-    if (!found) return "N/A";
-    const seedsPerLb = parseFloat(found["Seeds/lb"]);
-    const lbsPerUnit = parseFloat(String(found["Lbs/Unit"]));
-    return seedsPerLb && lbsPerUnit ? Math.round(seedsPerLb * lbsPerUnit).toString() : "N/A";
-  };
-
-  return (
-    <form onSubmit={onSubmit} className="space-y-6 text-white">
-      <h2 className="text-xl font-bold text-blue-400">Crop Inputs</h2>
-      <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
-        <div>
-          <label className="block mb-1 font-semibold">Seed Type</label>
-          <select
-            value={seedType}
-            onChange={(e) => setSeedType(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            required
-          >
-            <option value="">Select Seed Type</option>
-            {seedTypes.map((s, i) => (
-              <option key={i} value={s["Seed Type"]}>{s["Seed Type"]}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Acres</label>
-          <input
-            type="number"
-            value={acres}
-            onChange={(e) => setAcres(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            required
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Seeding Rate</label>
-          <input
-            type="number"
-            value={seedingRate}
-            onChange={(e) => setSeedingRate(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            required
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Seeding Rate Unit</label>
-          <select
-            value={seedingRateUnit}
-            onChange={(e) => setSeedingRateUnit(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          >
-            <option value="seeds/acre">Seeds/acre</option>
-            <option value="lbs/acre">Lbs/acre</option>
-          </select>
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Override Seeds/lb (optional)</label>
-          <input
-            type="number"
-            value={overrideSeeds}
-            onChange={(e) => setOverrideSeeds(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-          <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerLb()}</p>
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Override Seeds/unit (optional)</label>
-          <input
-            type="number"
-            value={seedsPerUnitOverride}
-            onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-          <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Market Price ($/unit)</label>
-          <input
-            type="number"
-            value={marketPrice}
-            onChange={(e) => setMarketPrice(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-        </div>
-      </div>
-
-      <h2 className="text-xl font-bold text-blue-400">Product Inputs</h2>
-      <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
-        {[0, 1].map((index) => (
-          <div key={index} className="flex flex-col gap-2">
-            <label className="block font-semibold">Seed Treatment Product {index + 1}</label>
-            <div className="flex items-center gap-2">
-              <select
-                value={selectedSeedTreatmentProducts[index]?.product?.["Product Name"] || ""}
-                onChange={(e) => handleProductChange(index, e.target.value, "seed")}
-                className="flex-1 p-2 bg-gray-800 border border-gray-700 rounded"
-              >
-                <option value="">Select Product</option>
-                {productsSeedTreatment.map((p, i) => (
-                  <option key={i} value={p["Product Name"]}>
-                    {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedSeedTreatmentProducts[index]?.applicationMethod || ""}
-                onChange={(e) => handleAppTypeChange(index, e.target.value, "seed")}
-                className="w-40 p-2 bg-gray-800 border border-gray-700 rounded"
-              >
-                <option value="">Method</option>
-                <option value="Planter Box">Planter Box</option>
-                <option value="Seed Coating">Seed Coating</option>
-              </select>
-            </div>
-          </div>
-        ))}
-
-        {[0, 1, 2, 3].map((index) => (
-          <div key={index} className="flex flex-col gap-2">
-            <label className="block font-semibold">In-Furrow / Foliar Product {index + 1}</label>
-            <div className="flex items-center gap-2">
-              <select
-                value={selectedFoliarProducts[index]?.product?.["Product Name"] || ""}
-                onChange={(e) => handleProductChange(index, e.target.value, "foliar")}
-                className="flex-1 p-2 bg-gray-800 border border-gray-700 rounded"
-              >
-                <option value="">Select Product</option>
-                {productsInFurrow.map((p, i) => (
-                  <option key={i} value={p["Product Name"]}>
-                    {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={selectedFoliarProducts[index]?.applicationMethod || ""}
-                onChange={(e) => handleAppTypeChange(index, e.target.value, "foliar")}
-                className="w-40 p-2 bg-gray-800 border border-gray-700 rounded"
-              >
-                <option value="">Method</option>
-                <option value="In-Furrow">In-Furrow</option>
-                <option value="Foliar">Foliar</option>
-              </select>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <h2 className="text-xl font-bold text-blue-400">Dealer and Grower Info (Optional)</h2>
-      <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
-        <div>
-          <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
-          <input
-            type="number"
-            value={dealerDiscount}
-            onChange={(e) => setDealerDiscount(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Grower Discount (%)</label>
-          <input
-            type="number"
-            value={growerDiscount}
-            onChange={(e) => setGrowerDiscount(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-        </div>
-      </div>
-
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded"
-        >
-          Calculate Program Cost
-        </button>
-      </div>
-    </form>
+export function calculateProductCosts(
+  acres: number,
+  selectedProducts: ProductData[],
+  dealerDiscount: number = 0,
+  growerDiscount: number = 0,
+  seedType: string,
+  seedsPerPound: number,
+  lbsPerUnit: number,
+  seedingRate: number,
+  seedingRateUnit: string
+): {
+  productsData: ProductCalculation[];
+  totalCostPerAcre: number;
+  totalUndiscountedCost: number;
+  totalDiscountedCost: number;
+} {
+  const productsData = selectedProducts.map((product) =>
+    calculateProductData(acres, product, dealerDiscount, growerDiscount, seedType, seedsPerPound, lbsPerUnit, seedingRate, seedingRateUnit)
   );
-};
 
-export default CalculatorForm;
+  const totalCostPerAcre = productsData.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
+  const totalUndiscountedCost = productsData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0);
+  const totalDiscountedCost = productsData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
+
+  return {
+    productsData,
+    totalCostPerAcre,
+    totalUndiscountedCost,
+    totalDiscountedCost,
+  };
+}
