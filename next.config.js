@@ -1,8 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: 'export',
-  basePath: '/yms_combined_calculator',
-  assetPrefix: '/yms_combined_calculator/',
-};
+﻿const isProd = process.env.NODE_ENV === 'production';
 
-module.exports = nextConfig;
+module.exports = {
+  basePath: isProd ? '/yms_combined_calculator' : '',
+  assetPrefix: isProd ? '/yms_combined_calculator/' : '',
+  images: {
+    unoptimized: true,
+  },
+};
