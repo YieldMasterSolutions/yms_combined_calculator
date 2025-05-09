@@ -59,7 +59,10 @@ export default function CombinedCalculator() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!seedType || !acres || !seedingRate || !marketPrice) return;
+    if (!seedType || !acres || !seedingRate || !marketPrice) {
+      console.warn("Missing required inputs");
+      return;
+    }
 
     const acresNum = parseFloat(acres);
     const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
