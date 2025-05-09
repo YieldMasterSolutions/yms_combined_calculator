@@ -220,7 +220,71 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* Product Inputs & Submit go here below */}
+      <h2 className="text-xl font-bold text-blue-400">Product Inputs</h2>
+      <div className="grid grid-cols-1 gap-6 bg-zinc-800 p-4 rounded border border-zinc-700">
+        {[0, 1].map((index) => (
+          <div key={`seed-${index}`}>
+            <label className="block font-semibold mb-1">Seed Treatment Product {index + 1}</label>
+            <select
+              value={selectedSeedTreatmentProducts[index]?.product?.["Product Name"] || ""}
+              onChange={(e) => handleProductChange(index, e.target.value, "seed")}
+              className="w-full p-2 mb-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Select Product</option>
+              {productsSeedTreatment.map((p, i) => (
+                <option key={i} value={p["Product Name"]}>
+                  {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedSeedTreatmentProducts[index]?.applicationMethod || ""}
+              onChange={(e) => handleAppTypeChange(index, e.target.value, "seed")}
+              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Method</option>
+              <option value="Planter Box">Planter Box</option>
+              <option value="Seed Coating">Seed Coating</option>
+            </select>
+          </div>
+        ))}
+
+        {[0, 1, 2, 3].map((index) => (
+          <div key={`foliar-${index}`}>
+            <label className="block font-semibold mb-1">In-Furrow / Foliar Product {index + 1}</label>
+            <select
+              value={selectedFoliarProducts[index]?.product?.["Product Name"] || ""}
+              onChange={(e) => handleProductChange(index, e.target.value, "foliar")}
+              className="w-full p-2 mb-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Select Product</option>
+              {productsInFurrow.map((p, i) => (
+                <option key={i} value={p["Product Name"]}>
+                  {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedFoliarProducts[index]?.applicationMethod || ""}
+              onChange={(e) => handleAppTypeChange(index, e.target.value, "foliar")}
+              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+            >
+              <option value="">Method</option>
+              <option value="In-Furrow">In-Furrow</option>
+              <option value="Foliar">Foliar</option>
+            </select>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded"
+        >
+          Calculate Program Cost
+        </button>
+      </div>
     </form>
   );
 };
