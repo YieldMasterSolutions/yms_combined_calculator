@@ -51,8 +51,7 @@ export function calculateProductData(
   let unitsToBeTreated: number = 0;
 
   const applicationRateUnit = product["Application Rate Unit"];
-  const isSeedTreatment = applicationRateUnit?.includes("/unit");
-
+  
   // Set seeding data
   if (seedType.toLowerCase() === "corn") {
     seedsPerUnit = 80000;
