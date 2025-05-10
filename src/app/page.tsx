@@ -136,19 +136,21 @@ export default function CombinedCalculator() {
     });
   };
 
+  const prefix = process.env.NODE_ENV === "production" ? "/yms_combined_calculator" : "";
+
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <picture>
-          <source srcSet="/yms-logo.png" type="image/png" />
-          <source srcSet="/YMSLogo5.png" type="image/png" />
-          <source srcSet="/ymsLogo2.png" type="image/png" />
-          <source srcSet="/ymslogo3.png" type="image/png" />
-          <source srcSet="/YMSlogo1.jpg" type="image/jpeg" />
-          <source srcSet="/YMSlogo2.gif" type="image/gif" />
-          <source srcSet="/YMSlogo3.tif" type="image/tiff" />
+          <source srcSet={`${prefix}/yms-logo.png`} type="image/png" />
+          <source srcSet={`${prefix}/YMSLogo5.png`} type="image/png" />
+          <source srcSet={`${prefix}/ymsLogo2.png`} type="image/png" />
+          <source srcSet={`${prefix}/ymslogo3.png`} type="image/png" />
+          <source srcSet={`${prefix}/YMSlogo1.jpg`} type="image/jpeg" />
+          <source srcSet={`${prefix}/YMSlogo2.gif`} type="image/gif" />
+          <source srcSet={`${prefix}/YMSlogo3.tif`} type="image/tiff" />
           <img
-            src="/YMSlogo4.svg"
+            src={`${prefix}/YMSlogo4.svg`}
             alt="YMS Logo"
             width="160"
             height="80"
