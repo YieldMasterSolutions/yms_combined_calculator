@@ -155,8 +155,8 @@ export default function CombinedCalculator() {
             className="mx-auto mb-4"
           />
         </picture>
-        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight font-futura">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-zinc-400 font-futura">YMS Combined Calculator</p>
+        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
+        <p className="text-3xl font-bold text-zinc-400">YMS Combined Calculator</p>
       </div>
 
       <CalculatorForm
