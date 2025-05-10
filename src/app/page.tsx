@@ -140,15 +140,15 @@ export default function CombinedCalculator() {
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <picture>
-          <source srcSet="/yms_combined_calculator/yms-logo.png" type="image/png" />
-          <source srcSet="/yms_combined_calculator/YMSlogo5.png" type="image/png" />
-          <source srcSet="/yms_combined_calculator/ymsLogo2.png" type="image/png" />
-          <source srcSet="/yms_combined_calculator/ymslogo3.png" type="image/png" />
-          <source srcSet="/yms_combined_calculator/YMSlogo1.jpg" type="image/jpeg" />
-          <source srcSet="/yms_combined_calculator/YMSlogo2.gif" type="image/gif" />
-          <source srcSet="/yms_combined_calculator/YMSlogo3.tif" type="image/tiff" />
+          <source srcSet="/yms-logo.png" type="image/png" />
+          <source srcSet="/YMSLogo5.png" type="image/png" />
+          <source srcSet="/ymsLogo2.png" type="image/png" />
+          <source srcSet="/ymslogo3.png" type="image/png" />
+          <source srcSet="/YMSlogo1.jpg" type="image/jpeg" />
+          <source srcSet="/YMSlogo2.gif" type="image/gif" />
+          <source srcSet="/YMSlogo3.tif" type="image/tiff" />
           <img
-            src="/yms_combined_calculator/YMSlogo4.svg"
+            src="/YMSlogo4.svg"
             alt="YMS Logo"
             width="160"
             height="80"
