@@ -156,13 +156,61 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <p className="text-sm text-[#b3b5b8] mt-1">Default: {getDefaultSeedsPerUnit()}</p>
         </div>
         <div>
-          <label className="block mb-1 font-semibold">Market Price ($/unit)</label>
+          <label className="block mb-1 font-semibold">Grower Name</label>
+          <input
+            type="text"
+            value={growerName}
+            onChange={(e) => setGrowerName(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Dealer/Rep Name</label>
+          <input
+            type="text"
+            value={dealerName}
+            onChange={(e) => setDealerName(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
+          <input
+            type="number"
+            value={dealerDiscount}
+            onChange={(e) => setDealerDiscount(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Grower Discount (%)</label>
+          <input
+            type="number"
+            value={growerDiscount}
+            onChange={(e) => setGrowerDiscount(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Market Price</label>
           <input
             type="number"
             value={marketPrice}
             onChange={(e) => setMarketPrice(e.target.value)}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Price Unit</label>
+          <select
+            value={marketPriceUnit}
+            onChange={(e) => setMarketPriceUnit(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          >
+            <option value="/acre">/acre</option>
+            <option value="/bushel">/bushel</option>
+            <option value="/ton">/ton</option>
+          </select>
         </div>
       </div>
     </form>
