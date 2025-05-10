@@ -141,16 +141,22 @@ export default function CombinedCalculator() {
       <div className="text-center mb-6">
         <picture>
           <source srcSet="/yms-logo.png" type="image/png" />
+          <source srcSet="/YMSLogo5.png" type="image/png" />
+          <source srcSet="/ymsLogo2.png" type="image/png" />
+          <source srcSet="/ymslogo3.png" type="image/png" />
+          <source srcSet="/YMSlogo1.jpg" type="image/jpeg" />
+          <source srcSet="/YMSlogo2.gif" type="image/gif" />
+          <source srcSet="/YMSlogo3.tif" type="image/tiff" />
           <img
-            src="/YMSLogo5.png"
+            src="/YMSlogo4.svg"
             alt="YMS Logo"
             width="160"
             height="80"
             className="mx-auto mb-4"
           />
         </picture>
-        <h1 className="text-5xl font-bold text-[#39803c] tracking-tight">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-[#b3b5b8]">YMS Combined Calculator</p>
+        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight font-futura">YieldMaster Solutions</h1>
+        <p className="text-3xl font-bold text-zinc-400 font-futura">YMS Combined Calculator</p>
       </div>
 
       <CalculatorForm
@@ -205,7 +211,7 @@ export default function CombinedCalculator() {
       )}
 
       <div className="text-center">
-        <button onClick={downloadPDF} className="bg-[#49a248] hover:bg-green-600 px-6 py-2 rounded-full text-white">
+        <button onClick={downloadPDF} className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white">
           Download Combined PDF
         </button>
       </div>
