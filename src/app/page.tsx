@@ -136,29 +136,21 @@ export default function CombinedCalculator() {
     });
   };
 
-  const prefix = process.env.NODE_ENV === "production" ? "/yms_combined_calculator" : "";
-
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <picture>
-          <source srcSet={`${prefix}/yms-logo.png`} type="image/png" />
-          <source srcSet={`${prefix}/YMSLogo5.png`} type="image/png" />
-          <source srcSet={`${prefix}/ymsLogo2.png`} type="image/png" />
-          <source srcSet={`${prefix}/ymslogo3.png`} type="image/png" />
-          <source srcSet={`${prefix}/YMSlogo1.jpg`} type="image/jpeg" />
-          <source srcSet={`${prefix}/YMSlogo2.gif`} type="image/gif" />
-          <source srcSet={`${prefix}/YMSlogo3.tif`} type="image/tiff" />
+          <source srcSet="/yms-logo.png" type="image/png" />
           <img
-            src={`${prefix}/YMSlogo4.svg`}
+            src="/YMSLogo5.png"
             alt="YMS Logo"
             width="160"
             height="80"
             className="mx-auto mb-4"
           />
         </picture>
-        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-zinc-400">YMS Combined Calculator</p>
+        <h1 className="text-5xl font-bold text-[#39803c] tracking-tight">YieldMaster Solutions</h1>
+        <p className="text-3xl font-bold text-[#b3b5b8]">YMS Combined Calculator</p>
       </div>
 
       <CalculatorForm
@@ -213,7 +205,7 @@ export default function CombinedCalculator() {
       )}
 
       <div className="text-center">
-        <button onClick={downloadPDF} className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white">
+        <button onClick={downloadPDF} className="bg-[#49a248] hover:bg-green-600 px-6 py-2 rounded-full text-white">
           Download Combined PDF
         </button>
       </div>

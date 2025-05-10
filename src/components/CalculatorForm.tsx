@@ -88,7 +88,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 text-white">
-      <h2 className="text-xl font-bold text-blue-400">Crop Inputs</h2>
+      <h2 className="text-xl font-bold text-[#39803c]">Crop Inputs</h2>
       <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
         <div>
           <label className="block mb-1 font-semibold">Seed Type</label>
@@ -143,7 +143,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             onChange={(e) => setOverrideSeeds(e.target.value)}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           />
-          <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerLb()}</p>
+          <p className="text-sm text-[#b3b5b8] mt-1">Default: {getDefaultSeedsPerLb()}</p>
         </div>
         <div>
           <label className="block mb-1 font-semibold">Override Seeds/unit (optional)</label>
@@ -153,52 +153,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           />
-          <p className="text-sm text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
-        </div>
-      </div>
-
-      <h2 className="text-xl font-bold text-blue-400">Discount & Market Price Inputs</h2>
-      <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
-        <div>
-          <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
-          <input
-            type="number"
-            value={dealerDiscount}
-            onChange={(e) => setDealerDiscount(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
+          <p className="text-sm text-[#b3b5b8] mt-1">Default: {getDefaultSeedsPerUnit()}</p>
         </div>
         <div>
-          <label className="block mb-1 font-semibold">Dealer / Rep Name</label>
-          <input
-            type="text"
-            value={dealerName}
-            onChange={(e) => setDealerName(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            placeholder="Optional"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Grower Discount (%)</label>
-          <input
-            type="number"
-            value={growerDiscount}
-            onChange={(e) => setGrowerDiscount(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Grower Name</label>
-          <input
-            type="text"
-            value={growerName}
-            onChange={(e) => setGrowerName(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            placeholder="Optional"
-          />
-        </div>
-        <div>
-          <label className="block mb-1 font-semibold">Market Price ($)</label>
+          <label className="block mb-1 font-semibold">Market Price ($/unit)</label>
           <input
             type="number"
             value={marketPrice}
@@ -206,84 +164,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           />
         </div>
-        <div>
-          <label className="block mb-1 font-semibold">Price Unit</label>
-          <select
-            value={marketPriceUnit}
-            onChange={(e) => setMarketPriceUnit(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          >
-            <option value="/acre">$/acre</option>
-            <option value="/bushel">$/bushel</option>
-            <option value="/unit">$/unit</option>
-          </select>
-        </div>
-      </div>
-
-      <h2 className="text-xl font-bold text-blue-400">Product Inputs</h2>
-      <div className="grid grid-cols-1 gap-6 bg-zinc-800 p-4 rounded border border-zinc-700">
-        {[0, 1].map((index) => (
-          <div key={`seed-${index}`}>
-            <label className="block font-semibold mb-1">Seed Treatment Product {index + 1}</label>
-            <select
-              value={selectedSeedTreatmentProducts[index]?.product?.["Product Name"] || ""}
-              onChange={(e) => handleProductChange(index, e.target.value, "seed")}
-              className="w-full p-2 mb-2 bg-gray-800 border border-gray-700 rounded"
-            >
-              <option value="">Select Product</option>
-              {productsSeedTreatment.map((p, i) => (
-                <option key={i} value={p["Product Name"]}>
-                  {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedSeedTreatmentProducts[index]?.applicationMethod || ""}
-              onChange={(e) => handleAppTypeChange(index, e.target.value, "seed")}
-              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            >
-              <option value="">Method</option>
-              <option value="Planter Box">Planter Box</option>
-              <option value="Seed Coating">Seed Coating</option>
-            </select>
-          </div>
-        ))}
-
-        {[0, 1, 2, 3].map((index) => (
-          <div key={`foliar-${index}`}>
-            <label className="block font-semibold mb-1">In-Furrow / Foliar Product {index + 1}</label>
-            <select
-              value={selectedFoliarProducts[index]?.product?.["Product Name"] || ""}
-              onChange={(e) => handleProductChange(index, e.target.value, "foliar")}
-              className="w-full p-2 mb-2 bg-gray-800 border border-gray-700 rounded"
-            >
-              <option value="">Select Product</option>
-              {productsInFurrow.map((p, i) => (
-                <option key={i} value={p["Product Name"]}>
-                  {`${p["Product Name"]} – ${p["Application Method"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedFoliarProducts[index]?.applicationMethod || ""}
-              onChange={(e) => handleAppTypeChange(index, e.target.value, "foliar")}
-              className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-            >
-              <option value="">Method</option>
-              <option value="In-Furrow">In-Furrow</option>
-              <option value="Foliar">Foliar</option>
-            </select>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded"
-        >
-          Calculate Program Cost
-        </button>
       </div>
     </form>
   );
