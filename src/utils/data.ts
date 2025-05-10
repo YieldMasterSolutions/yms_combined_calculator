@@ -1,3 +1,65 @@
+// src/utils/data.ts
+
+export interface ProductData {
+  "Product Name": string;
+  "Product Form"?: "Liquid" | "Dry";
+  "Application Method"?: string;
+  "Application Rate"?: number;
+  "Application Rate in Fluid Ounces"?: number;
+  "Application Rate in Ounces"?: number;
+  "Application Rate in Grams"?: number;
+  "Application Rate in Ounces per Unit"?: number;
+  "Product Cost per fl oz"?: number;
+  "Product Cost per oz"?: number;
+  "Product Cost per gram"?: number;
+  "Package Size": number;
+  "Package Units": string;
+  "Package Type": string;
+  "Application Rate Unit"?: "oz/unit" | "fl oz/unit" | "fl oz/acre" | "oz/acre" | "g/acre";
+}
+
+export interface SeedType {
+  "Seed Type": string;
+  "Seeds/lb": string;
+  "Lbs/Unit": number;
+}
+
+export interface FormData {
+  seedType: string;
+  acres: number;
+  seedingRate: number;
+  rateUnit: string;
+  dealerDiscount: number;
+  growerDiscount: number;
+  marketPrice?: number;
+  cropPriceUnit?: string;
+  seedsPerPoundOverride: number;
+  lbsPerUnit: number;
+  seedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
+  inFurrowFoliarProducts: { product: ProductData; applicationMethod: string }[];
+  growerName?: string;
+  repName?: string;
+}
+
+export const seedTypes: SeedType[] = [
+  { "Seed Type": "Alfalfa", "Seeds/lb": "210000", "Lbs/Unit": 50 },
+  { "Seed Type": "Barley", "Seeds/lb": "14500", "Lbs/Unit": 50 },
+  { "Seed Type": "Canola", "Seeds/lb": "130000", "Lbs/Unit": 50 },
+  { "Seed Type": "Corn", "Seeds/lb": "1778", "Lbs/Unit": 45 },
+  { "Seed Type": "Flax", "Seeds/lb": "85000", "Lbs/Unit": 50 },
+  { "Seed Type": "Lentils", "Seeds/lb": "16500", "Lbs/Unit": 50 },
+  { "Seed Type": "Peas", "Seeds/lb": "4000", "Lbs/Unit": 50 },
+  { "Seed Type": "Potatoes", "Seeds/lb": "6", "Lbs/Unit": 50 },
+  { "Seed Type": "Edible Beans", "Seeds/lb": "1250", "Lbs/Unit": 50 },
+  { "Seed Type": "Sorghum", "Seeds/lb": "15500", "Lbs/Unit": 50 },
+  { "Seed Type": "Soybeans", "Seeds/lb": "2800", "Lbs/Unit": 50 },
+  { "Seed Type": "Sugarbeets", "Seeds/lb": "2000", "Lbs/Unit": 50 },
+  { "Seed Type": "Sunflower", "Seeds/lb": "6500", "Lbs/Unit": 50 },
+  { "Seed Type": "Peanuts (Medium)", "Seeds/lb": "650", "Lbs/Unit": 50 },
+  { "Seed Type": "Peanuts (Small)", "Seeds/lb": "1100", "Lbs/Unit": 50 },
+  { "Seed Type": "Wheat", "Seeds/lb": "18000", "Lbs/Unit": 50 }
+];
+
 export const productsSeedTreatment: ProductData[] = [
   {
     "Product Name": "Soyfx ST",
@@ -53,5 +115,96 @@ export const productsSeedTreatment: ProductData[] = [
     "Application Method": "Planter Box Treatment",
     "Product Form": "Dry",
     "Application Rate Unit": "oz/unit"
+  }
+];
+
+export const productsInFurrowFoliar: ProductData[] = [
+  {
+    "Product Name": "Soyfx SC",
+    "Application Rate": 16,
+    "Product Cost per fl oz": 0.75,
+    "Package Size": 320,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "Podfx SC",
+    "Application Rate": 16,
+    "Product Cost per fl oz": 0.75,
+    "Package Size": 320,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "N-Physis WG",
+    "Application Rate": 5,
+    "Product Cost per gram": 2.99,
+    "Package Size": 200,
+    "Package Units": "grams",
+    "Package Type": "Box",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Dry",
+    "Application Rate Unit": "g/acre"
+  },
+  {
+    "Product Name": "Envita WG",
+    "Application Rate": 5,
+    "Product Cost per gram": 2.99,
+    "Package Size": 200,
+    "Package Units": "grams",
+    "Package Type": "Box",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Dry",
+    "Application Rate Unit": "g/acre"
+  },
+  {
+    "Product Name": "Envita SC",
+    "Application Rate": 0.8,
+    "Product Cost per fl oz": 18.69,
+    "Package Size": 32,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "Nutriquire Liquid",
+    "Application Rate": 32,
+    "Product Cost per fl oz": 0.44,
+    "Package Size": 320,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "Nutriquire Liquid Tote",
+    "Application Rate": 32,
+    "Product Cost per fl oz": 0.44,
+    "Package Size": 35200,
+    "Package Units": "fl oz",
+    "Package Type": "Tote",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
+  },
+  {
+    "Product Name": "NueNutri Liquid",
+    "Application Rate": 32,
+    "Product Cost per fl oz": 0.34,
+    "Package Size": 320,
+    "Package Units": "fl oz",
+    "Package Type": "Jug",
+    "Application Method": "In-Furrow or Foliar",
+    "Product Form": "Liquid",
+    "Application Rate Unit": "fl oz/acre"
   }
 ];
