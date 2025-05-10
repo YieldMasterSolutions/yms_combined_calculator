@@ -140,15 +140,12 @@ export default function CombinedCalculator() {
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <picture>
-          <source srcSet="/yms-logo.png" type="image/png" />
-          <source srcSet="/YMSLogo5.png" type="image/png" />
-          <source srcSet="/ymsLogo2.png" type="image/png" />
-          <source srcSet="/ymslogo3.png" type="image/png" />
-          <source srcSet="/YMSlogo1.jpg" type="image/jpeg" />
-          <source srcSet="/YMSlogo2.gif" type="image/gif" />
-          <source srcSet="/YMSlogo3.tif" type="image/tiff" />
+          <source srcSet="/yms_combined_calculator/ymslogo5.png" type="image/png" />
+          <source srcSet="/yms_combined_calculator/yms-logo.png" type="image/png" />
+          <source srcSet="/yms_combined_calculator/YMSlogo2.png" type="image/png" />
+          <source srcSet="/yms_combined_calculator/YMSlogo5.PNG" type="image/png" />
           <img
-            src="/YMSlogo4.svg"
+            src="/yms_combined_calculator/ymslogo5.png"
             alt="YMS Logo"
             width="160"
             height="80"
@@ -156,7 +153,7 @@ export default function CombinedCalculator() {
           />
         </picture>
         <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-zinc-400">YMS Combined Calculator</p>
+        <p className="text-3xl font-bold text-zinc-400">Product Calculator</p>
       </div>
 
       <CalculatorForm

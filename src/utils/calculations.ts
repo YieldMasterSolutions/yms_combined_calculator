@@ -99,27 +99,27 @@ export function calculateProductData(
   const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
 
-  const totalCostToGrower = packagesNeeded * productCostPerPackage;
+  const undiscountedCost = totalProductNeeded * (costPerUnit ?? 0);
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
-  const discountedCostToGrower = totalCostToGrower * discountFactor;
-  const individualCostPerAcre = ((applicationRate ?? 0) * (costPerUnit ?? 0)) * discountFactor;
-  const productCostPerUnitSeed = (discountedCostToGrower / acres) || 0;
+  const discountedCost = undiscountedCost * discountFactor;
+  const individualCostPerAcre = (undiscountedCost / acres) * discountFactor;
+  const productCostPerUnitSeed = discountedCost / acres;
 
   return {
     productName: product["Product Name"],
     packagesNeeded,
     productPackageString,
-    originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower: discountedCostToGrower, // ✅ corrected line
+    originalTotalCostToGrower: undiscountedCost,
+    discountedTotalCostToGrower: discountedCost,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
     totalProductNeeded,
     totalProductUnits: packagesNeeded,
     productCostPerOz: costPerUnit,
-    totalCostToGrower,
+    totalCostToGrower: undiscountedCost,
     costPerUnitSeed: productCostPerUnitSeed,
-    discountedCostToGrower,
+    discountedCostToGrower: discountedCost,
     productCostPerPackage,
     productCostPerUnitSeed,
     totalSeeds,
