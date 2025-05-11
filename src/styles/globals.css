@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Print Overrides */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .bg-zinc-800 {
+    background-color: white !important;
+  }
+
+  .text-white {
+    color: black !important;
+  }
+
+  .text-yellow-400 {
+    color: black !important;
+  }
+
+  .text-[#39803c] {
+    color: black !important;
+  }
+
+  .border-gray-700 {
+    border-color: #ccc !important;
+  }
+
+  .bg-gradient-to-b {
+    background-image: none !important;
+  }
+
+  .text-zinc-400 {
+    color: black !important;
+  }
+
+  button {
+    display: none !important;
+  }
+}
