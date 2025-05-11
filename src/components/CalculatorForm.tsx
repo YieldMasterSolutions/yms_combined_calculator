@@ -1,4 +1,5 @@
 // src/components/CalculatorForm.tsx
+
 import React from "react";
 import { ProductData, SeedType } from "../utils/data";
 
@@ -75,6 +76,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     const found = seedTypes.find((s) => s["Seed Type"] === seedType);
     return found ? found["Seeds/lb"] : "N/A";
   };
+  void getDefaultSeedsPerLb;
 
   const getDefaultSeedsPerUnit = (): string => {
     if (seedType.toLowerCase() === "corn") return "80000";
@@ -85,6 +87,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     const lbsPerUnit = parseFloat(String(found["Lbs/Unit"]));
     return seedsPerLb && lbsPerUnit ? Math.round(seedsPerLb * lbsPerUnit).toString() : "N/A";
   };
+  void getDefaultSeedsPerUnit;
 
   const getProductLabel = (p: ProductData) => {
     return `${p["Product Name"]} – ${p["Product Form"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`;
@@ -92,12 +95,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 text-white">
-      {/* Crop Inputs */}
-      {/* ... Crop Inputs content remains unchanged ... */}
-
-      {/* Discount & Market Price Inputs */}
-      {/* ... Discount & Market Price Inputs content remains unchanged ... */}
-
       <h2 className="text-xl font-bold text-[#39803c]">Seed Treatment Products</h2>
       <div className="grid grid-cols-1 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
         {[0, 1].map((i) => (
