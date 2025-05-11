@@ -4,6 +4,7 @@ import { ProductData } from "./data";
 
 export interface ProductCalculation {
   productName: string;
+  productForm?: string;
   packagesNeeded: number;
   productPackageString: string;
   originalTotalCostToGrower: number;
@@ -107,6 +108,7 @@ export function calculateProductData(
 
   return {
     productName: product["Product Name"],
+    productForm: product["Product Form"],
     packagesNeeded,
     productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
