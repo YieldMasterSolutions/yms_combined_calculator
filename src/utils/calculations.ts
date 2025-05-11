@@ -112,7 +112,7 @@ export function calculateProductData(
     packagesNeeded,
     productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower,
+    discountedTotalCostToGrower: discountedCostToGrower,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
