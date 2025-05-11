@@ -33,6 +33,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 }) => {
   const displayUnit = cropPriceUnit.replace("/", "");
 
+  const getProductLabel = (p: ProductCalculation) => {
+    return `${p.productName} – ${p.productForm} – ${p.applicationRate} ${p.rateUnit}`;
+  };
+
   return (
     <div className="space-y-8">
       {seedTreatmentResults.length > 0 && (
@@ -40,7 +44,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <h3 className="text-xl font-bold text-[#39803c] mb-4">Seed Treatment Calculations</h3>
           {seedTreatmentResults.map((result, index) => (
             <div key={index} className="mb-6">
-              <h4 className="text-lg font-bold text-[#49a248] mb-2">{result.productName}</h4>
+              <h4 className="text-lg font-bold text-[#49a248] mb-2">{getProductLabel(result)}</h4>
               <div className="grid grid-cols-2 gap-4 text-white">
                 <div><span className="text-[#b3b5b8] font-semibold">Total Number of Seeds to be Treated:</span> {formatNumber(result.totalSeeds ?? 0, 2)}</div>
                 <div><span className="text-[#b3b5b8] font-semibold">Total Weight of Seeds to be Treated:</span> {formatNumber(result.totalWeight ?? 0, 2)} lbs</div>
@@ -66,7 +70,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <h3 className="text-xl font-bold text-[#39803c] mb-4">In-Furrow / Foliar Product Costs</h3>
           {inFurrowFoliarResults.map((result, index) => (
             <div key={index} className="mb-6">
-              <h4 className="text-lg font-bold text-[#49a248] mb-2">{result.productName}</h4>
+              <h4 className="text-lg font-bold text-[#49a248] mb-2">{getProductLabel(result)}</h4>
               <div className="grid grid-cols-2 gap-4 text-white">
                 <div><span className="text-[#b3b5b8] font-semibold">Application Rate:</span> {formatNumber(result.applicationRate ?? 0, 2)} {result.rateUnit}</div>
                 <div><span className="text-[#b3b5b8] font-semibold">Total Amount of Product Needed:</span> {formatNumber(result.totalProductNeeded ?? 0, 2)}</div>
