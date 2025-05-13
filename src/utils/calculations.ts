@@ -67,27 +67,27 @@ export function calculateProductData(
   const applicationRateUnit = product["Application Rate Unit"];
   if (applicationRateUnit === "fl oz/acre") {
     applicationRate = product["Application Rate"];
-    costPerUnit = product["Product Cost per fl oz"];
+    costPerUnit = product["Product Cost per fl oz"] ?? 0;
     rateUnit = "fl oz/acre";
     totalProductNeeded = acres * (applicationRate ?? 0);
   } else if (applicationRateUnit === "oz/acre") {
     applicationRate = product["Application Rate"];
-    costPerUnit = product["Product Cost per oz"];
+    costPerUnit = product["Product Cost per oz"] ?? 0;
     rateUnit = "oz/acre";
     totalProductNeeded = acres * (applicationRate ?? 0);
   } else if (applicationRateUnit === "g/acre") {
     applicationRate = product["Application Rate"];
-    costPerUnit = product["Product Cost per gram"];
+    costPerUnit = product["Product Cost per gram"] ?? 0;
     rateUnit = "g/acre";
     totalProductNeeded = acres * (applicationRate ?? 0);
   } else if (applicationRateUnit === "oz/unit") {
     applicationRate = product["Application Rate"];
-    costPerUnit = product["Product Cost per oz"];
+    costPerUnit = product["Product Cost per oz"] ?? product["Product Cost per fl oz"] ?? 0;
     rateUnit = "oz/unit";
     totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
   } else if (applicationRateUnit === "fl oz/unit") {
     applicationRate = product["Application Rate"];
-    costPerUnit = product["Product Cost per fl oz"];
+    costPerUnit = product["Product Cost per fl oz"] ?? product["Product Cost per oz"] ?? 0;
     rateUnit = "fl oz/unit";
     totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
   }
@@ -99,7 +99,19 @@ export function calculateProductData(
   const totalCostToGrower = packagesNeeded * productCostPerPackage;
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedCostToGrower = totalCostToGrower * discountFactor;
-  const individualCostPerAcre = ((applicationRate ?? 0) * (costPerUnit ?? 0)) * discountFactor;
+
+  // Accurate cost/acre logic
+  let individualCostPerAcre: number;
+  if (
+    rateUnit === "oz/acre" ||
+    rateUnit === "fl oz/acre" ||
+    rateUnit === "g/acre"
+  ) {
+    individualCostPerAcre = ((applicationRate ?? 0) * (costPerUnit ?? 0)) * discountFactor;
+  } else {
+    individualCostPerAcre = ((totalProductNeeded ?? 0) * (costPerUnit ?? 0)) / acres;
+  }
+
   const productCostPerUnitSeed = (discountedCostToGrower / acres) || 0;
 
   const treatmentCapacity = applicationRate && packageSize

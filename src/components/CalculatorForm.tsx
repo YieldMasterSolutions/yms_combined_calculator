@@ -1,5 +1,6 @@
 // src/components/CalculatorForm.tsx
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { ProductData, SeedType } from "../utils/data";
 
@@ -72,8 +73,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   handleProductChange,
   handleAppTypeChange,
 }) => {
-  const getProductLabel = (p: ProductData) => {
-    return `${p["Product Name"]} – ${p["Product Form"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`;
+  const getProductLabel = (p: ProductData, type: "seed" | "foliar") => {
+    const rate = p["Application Rate"];
+    const size = p["Package Size"];
+    const capacity = rate && size && rate > 0 ? Math.floor(size / rate) : "-";
+    const labelUnit = type === "seed" ? "units" : "acres";
+    return `${p["Product Name"]} – ${size} ${p["Package Units"]} ${p["Package Type"]} – ${rate} ${p["Application Rate Unit"]} – Treats ${capacity} ${labelUnit}`;
   };
 
   return (
@@ -145,15 +150,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       <h2 className="text-xl font-bold text-blue-400">Discount & Market Price Inputs</h2>
       <div className="grid grid-cols-2 gap-4 bg-zinc-800 p-4 rounded border border-zinc-700">
         <div>
-          <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
-          <input
-            type="number"
-            value={dealerDiscount}
-            onChange={(e) => setDealerDiscount(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-        </div>
-        <div>
           <label className="block mb-1 font-semibold">Dealer / Rep Name</label>
           <input
             type="text"
@@ -164,21 +160,30 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           />
         </div>
         <div>
-          <label className="block mb-1 font-semibold">Grower Discount (%)</label>
-          <input
-            type="number"
-            value={growerDiscount}
-            onChange={(e) => setGrowerDiscount(e.target.value)}
-            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
-          />
-        </div>
-        <div>
           <label className="block mb-1 font-semibold">Grower Name</label>
           <input
             type="text"
             value={growerName}
             onChange={(e) => setGrowerName(e.target.value)}
             placeholder="Optional"
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
+          <input
+            type="number"
+            value={dealerDiscount}
+            onChange={(e) => setDealerDiscount(e.target.value)}
+            className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-semibold">Grower Discount (%)</label>
+          <input
+            type="number"
+            value={growerDiscount}
+            onChange={(e) => setGrowerDiscount(e.target.value)}
             className="w-full p-2 bg-gray-800 border border-gray-700 rounded"
           />
         </div>
@@ -217,7 +222,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             >
               <option value="">Select Product</option>
               {productsSeedTreatment.map((p, idx) => (
-                <option key={idx} value={p["Product Name"]}>{getProductLabel(p)}</option>
+                <option key={idx} value={p["Product Name"]}>
+                  {getProductLabel(p, "seed")}
+                </option>
               ))}
             </select>
             <select
@@ -245,7 +252,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             >
               <option value="">Select Product</option>
               {productsInFurrow.map((p, idx) => (
-                <option key={idx} value={p["Product Name"]}>{getProductLabel(p)}</option>
+                <option key={idx} value={p["Product Name"]}>
+                  {getProductLabel(p, "foliar")}
+                </option>
               ))}
             </select>
             <select
@@ -259,6 +268,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             </select>
           </div>
         ))}
+      </div>
+
+      <div className="flex justify-center pt-4">
+        <button type="submit" className="bg-green-700 hover:bg-green-800 text-white font-semibold py-2 px-4 rounded">
+          Calculate
+        </button>
       </div>
     </form>
   );

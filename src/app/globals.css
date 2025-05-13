@@ -1,5 +1,7 @@
-/* src/styles/globals.css */
-@import "tailwindcss";
+ /* src/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;

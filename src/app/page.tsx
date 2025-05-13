@@ -140,7 +140,7 @@ export default function CombinedCalculator() {
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <img
-          src="/yms_combined_calculator/ymslogo5.png"
+          src="/yms_combined_calculator/YMSlogo5.png"
           alt="YMS Logo"
           width="160"
           height="80"

@@ -34,31 +34,47 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const displayUnit = cropPriceUnit.replace("/", "");
 
   const getProductLabel = (p: ProductCalculation) => {
-    return `${p.productName} – ${p.productForm} – ${p.applicationRate} ${p.rateUnit}`;
+    const capacity = p.treatmentCapacity ? `${formatNumber(p.treatmentCapacity, 0)} units` : "-";
+    return `${p.productName} – ${p.productPackageString} – ${p.applicationRate} ${p.rateUnit} – Treats ${capacity}`;
   };
+
+  const renderGridItem = (label: string, value: string | number) => (
+    <div className="flex justify-between items-center min-h-[48px]">
+      <span className="text-yellow-300 font-semibold whitespace-nowrap">{label}</span>
+      <span className="text-white text-right ml-4 whitespace-nowrap">{value}</span>
+    </div>
+  );
 
   return (
     <div className="space-y-8">
       {seedTreatmentResults.length > 0 && (
         <div className="p-4 rounded border border-gray-700 bg-zinc-800">
-          <h3 className="text-xl font-bold text-[#39803c] mb-4">Seed Treatment Calculations</h3>
+          <h3 className="text-xl font-bold text-blue-400 mb-4">Seed Treatment Calculations</h3>
           {seedTreatmentResults.map((result, index) => (
             <div key={index} className="mb-6">
-              <h4 className="text-lg font-bold text-[#49a248] mb-2">{getProductLabel(result)}</h4>
-              <div className="grid grid-cols-2 gap-4 text-white">
-                <div><span className="text-[#b3b5b8] font-semibold">Total Number of Seeds to be Treated:</span> {formatNumber(result.totalSeeds ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Weight of Seeds to be Treated:</span> {formatNumber(result.totalWeight ?? 0, 2)} lbs</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Number of Units to be Treated:</span> {formatNumber(result.unitsToBeTreated ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Number of Seeds per Unit:</span> {formatNumber(result.seedsPerUnit ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Application Rate:</span> {formatNumber(result.applicationRate ?? 0, 2)} {result.rateUnit}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Amount of Product Needed:</span> {formatNumber(result.totalProductNeeded ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Product Units to Order:</span> {result.packagesNeeded} – {result.productPackageString}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Treatment Capacity per Package:</span> {formatNumber(result.treatmentCapacity ?? 0, 0)} units/acre</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Product Cost per Ounce:</span> ${formatNumber(result.productCostPerOz ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Cost to Grower (MSRP):</span> ${formatNumber(result.totalCostToGrower ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Discounted Cost to Grower:</span> ${formatNumber(result.discountedCostToGrower ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Product Cost per Unit of Treated Seed:</span> ${formatNumber(result.productCostPerUnitSeed ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Individual Cost of Seed Treatment per Acre:</span> ${formatNumber(result.individualCostPerAcre ?? 0, 2)}</div>
+              <h4 className="text-lg font-bold text-white mb-2">{getProductLabel(result)}</h4>
+
+              {/* Seeding Info */}
+              <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded mb-4">
+                <h5 className="col-span-2 text-md font-bold text-blue-400">Seeding Information</h5>
+                {renderGridItem("Total Number of Seeds to be Treated:", formatNumber(result.totalSeeds ?? 0, 2))}
+                {renderGridItem("Total Weight of Seeds to be Treated:", `${formatNumber(result.totalWeight ?? 0, 2)} lbs`)}
+                {renderGridItem("Total Number of Units to be Treated:", formatNumber(result.unitsToBeTreated ?? 0, 2))}
+                {renderGridItem("Number of Seeds per Unit:", formatNumber(result.seedsPerUnit ?? 0, 2))}
+              </div>
+
+              {/* Seed Treatment Cost */}
+              <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded">
+                <h5 className="col-span-2 text-md font-bold text-blue-400">Seed Treatment Costs</h5>
+                {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${result.rateUnit}`)}
+                {renderGridItem("Total Amount of Product Needed:", formatNumber(result.totalProductNeeded ?? 0, 2))}
+                {renderGridItem("Total Product Units to Order:", `${result.packagesNeeded} – ${result.productPackageString}`)}
+                {renderGridItem("Treatment Capacity per Package:", `${formatNumber(result.treatmentCapacity ?? 0, 0)} units`)}
+                {renderGridItem("Product Cost per Ounce:", `$${formatNumber(result.productCostPerOz ?? 0, 2)}`)}
+                {renderGridItem("Total Cost to Grower (MSRP):", `$${formatNumber(result.totalCostToGrower ?? 0, 2)}`)}
+                {renderGridItem("Total Discounted Cost to Grower:", `$${formatNumber(result.discountedCostToGrower ?? 0, 2)}`)}
+                {renderGridItem("Product Cost per Unit of Treated Seed:", `$${formatNumber(result.productCostPerUnitSeed ?? 0, 2)}`)}
+                {renderGridItem("Individual Cost of Seed Treatment per Acre:", `$${formatNumber(result.individualCostPerAcre ?? 0, 2)}`)}
               </div>
             </div>
           ))}
@@ -67,42 +83,57 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {inFurrowFoliarResults.length > 0 && (
         <div className="p-4 rounded border border-gray-700 bg-zinc-800">
-          <h3 className="text-xl font-bold text-[#39803c] mb-4">In-Furrow / Foliar Product Costs</h3>
+          <h3 className="text-xl font-bold text-blue-400 mb-4">In-Furrow / Foliar Product Costs</h3>
           {inFurrowFoliarResults.map((result, index) => (
             <div key={index} className="mb-6">
-              <h4 className="text-lg font-bold text-[#49a248] mb-2">{getProductLabel(result)}</h4>
-              <div className="grid grid-cols-2 gap-4 text-white">
-                <div><span className="text-[#b3b5b8] font-semibold">Application Rate:</span> {formatNumber(result.applicationRate ?? 0, 2)} {result.rateUnit}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Amount of Product Needed:</span> {formatNumber(result.totalProductNeeded ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Product Units to Order:</span> {result.packagesNeeded} – {result.productPackageString}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Treatment Capacity per Package:</span> {formatNumber(result.treatmentCapacity ?? 0, 0)} units/acre</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Product Cost per Ounce:</span> ${formatNumber(result.productCostPerOz ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Cost to Grower (MSRP):</span> ${formatNumber(result.totalCostToGrower ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Total Discounted Cost to Grower:</span> ${formatNumber(result.discountedCostToGrower ?? 0, 2)}</div>
-                <div><span className="text-[#b3b5b8] font-semibold">Individual Cost per Acre:</span> ${formatNumber(result.individualCostPerAcre ?? 0, 2)}</div>
+              <h4 className="text-lg font-bold text-white mb-2">{getProductLabel(result)}</h4>
+              <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded">
+                {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${result.rateUnit}`)}
+                {renderGridItem("Total Amount of Product Needed:", formatNumber(result.totalProductNeeded ?? 0, 2))}
+                {renderGridItem("Total Product Units to Order:", `${result.packagesNeeded} – ${result.productPackageString}`)}
+                {renderGridItem("Treatment Capacity per Package:", `${formatNumber(result.treatmentCapacity ?? 0, 0)} units`)}
+                {renderGridItem("Product Cost per Ounce:", `$${formatNumber(result.productCostPerOz ?? 0, 2)}`)}
+                {renderGridItem("Total Cost to Grower (MSRP):", `$${formatNumber(result.totalCostToGrower ?? 0, 2)}`)}
+                {renderGridItem("Total Discounted Cost to Grower:", `$${formatNumber(result.discountedCostToGrower ?? 0, 2)}`)}
+                {renderGridItem("Individual Cost per Acre:", `$${formatNumber(result.individualCostPerAcre ?? 0, 2)}`)}
               </div>
             </div>
           ))}
         </div>
       )}
 
-      <div className="p-4 rounded border border-gray-700 bg-zinc-800 text-white">
-        <h3 className="text-xl font-bold text-[#39803c] mb-4">Total Program Cost</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div><span className="text-[#b3b5b8] font-semibold">Total MSRP Cost to Grower:</span> ${formatNumber(totalUndiscountedCost, 2)}</div>
-          <div><span className="text-[#b3b5b8] font-semibold">Total Discounted Cost to Grower:</span> ${formatNumber(totalDiscountedCost, 2)}</div>
-          <div><span className="text-[#b3b5b8] font-semibold">Total Cost Per Acre:</span> ${formatNumber(totalCostPerAcre, 2)}</div>
+      <div className="p-4 rounded border border-gray-700 bg-zinc-800">
+        <h3 className="text-xl font-bold text-blue-400 mb-4">Total Program Cost</h3>
+        <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded">
+          {renderGridItem("Total MSRP Cost to Grower:", `$${formatNumber(totalUndiscountedCost, 2)}`)}
+          {renderGridItem("Total Discounted Cost to Grower:", `$${formatNumber(totalDiscountedCost, 2)}`)}
+          {renderGridItem("Total Cost Per Acre:", `$${formatNumber(totalCostPerAcre, 2)}`)}
         </div>
       </div>
 
-      <div className="p-4 rounded border border-gray-700 bg-zinc-800 text-white">
-        <h3 className="text-xl font-bold text-[#39803c] mb-4">Breakeven ROI Calculation</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div><span className="text-[#b3b5b8] font-semibold">Breakeven Yield per Acre:</span> {formatNumber(breakevenYield ?? 0, 2)} {displayUnit}</div>
-          <div><span className="text-[#b3b5b8] font-semibold">Yield Needed for 2:1 ROI:</span> {formatNumber(roi2 ?? 0, 2)} {displayUnit}</div>
-          <div><span className="text-[#b3b5b8] font-semibold">Yield Needed for 3:1 ROI:</span> {formatNumber(roi3 ?? 0, 2)} {displayUnit}</div>
-          <div><span className="text-[#b3b5b8] font-semibold">Yield Needed for 4:1 ROI:</span> {formatNumber(roi4 ?? 0, 2)} {displayUnit}</div>
-          <div><span className="text-[#b3b5b8] font-semibold">Yield Needed for 5:1 ROI:</span> {formatNumber(roi5 ?? 0, 2)} {displayUnit}</div>
+      <div className="p-4 rounded border border-gray-700 bg-zinc-800">
+        <h3 className="text-xl font-bold text-blue-400 mb-4">Breakeven ROI Calculation</h3>
+        <div className="grid grid-cols-5 gap-4 text-center text-white">
+          <div className="bg-zinc-700 p-4 rounded">
+            <div className="text-yellow-300 font-semibold mb-1">Breakeven Yield per Acre</div>
+            <div>{formatNumber(breakevenYield ?? 0, 2)} {displayUnit}</div>
+          </div>
+          <div className="bg-zinc-700 p-4 rounded">
+            <div className="text-yellow-300 font-semibold mb-1">Yield Needed for 2:1 ROI</div>
+            <div>{formatNumber(roi2 ?? 0, 2)} {displayUnit}</div>
+          </div>
+          <div className="bg-zinc-700 p-4 rounded">
+            <div className="text-yellow-300 font-semibold mb-1">Yield Needed for 3:1 ROI</div>
+            <div>{formatNumber(roi3 ?? 0, 2)} {displayUnit}</div>
+          </div>
+          <div className="bg-zinc-700 p-4 rounded">
+            <div className="text-yellow-300 font-semibold mb-1">Yield Needed for 4:1 ROI</div>
+            <div>{formatNumber(roi4 ?? 0, 2)} {displayUnit}</div>
+          </div>
+          <div className="bg-zinc-700 p-4 rounded">
+            <div className="text-yellow-300 font-semibold mb-1">Yield Needed for 5:1 ROI</div>
+            <div>{formatNumber(roi5 ?? 0, 2)} {displayUnit}</div>
+          </div>
         </div>
       </div>
     </div>
