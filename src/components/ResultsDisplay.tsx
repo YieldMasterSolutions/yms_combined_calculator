@@ -1,4 +1,4 @@
-// src/components/ResultsDisplay.tsx
+""// src/components/ResultsDisplay.tsx
 
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
@@ -33,15 +33,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 }) => {
   const displayUnit = cropPriceUnit.replace("/", "");
 
-  const getProductLabel = (p: ProductCalculation) => {
-    const capacity = p.treatmentCapacity ? `${formatNumber(p.treatmentCapacity, 0)} units` : "-";
-    return `${p.productName} – ${p.productPackageString} – ${p.applicationRate} ${p.rateUnit} – Treats ${capacity}`;
+  const getCorrectRateUnit = (unit: string | undefined, productName: string): string => {
+    if (!unit) return "";
+    const lowerName = productName.toLowerCase();
+    if (lowerName.includes("gram")) return "g/acre";
+    if (lowerName.includes("sc") || lowerName.includes("liquid") || lowerName.includes("tote") || lowerName.includes("jug")) return "fl oz/acre";
+    return unit; // fallback
   };
 
-  const getCorrectRateUnit = (unit: string, productName: string) => {
-    if (productName.includes("N-Physis") || unit.toLowerCase().includes("g")) return "g/acre";
-    if (unit.toLowerCase().includes("fl oz")) return "fl oz/acre";
-    return "oz/acre";
+  const getProductLabel = (p: ProductCalculation) => {
+    const capacity = p.treatmentCapacity ? `${formatNumber(p.treatmentCapacity, 0)} acres` : "-";
+    return `${p.productName} – ${p.productPackageString} – ${formatNumber(p.applicationRate ?? 0, 2)} ${getCorrectRateUnit(p.rateUnit, p.productName)} – Treats ${capacity}`;
   };
 
   const renderGridItem = (label: string, value: string | number) => (
@@ -92,10 +94,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div key={index} className="mb-6">
               <h4 className="text-lg font-bold text-white mb-2">{getProductLabel(result)}</h4>
               <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded">
-                {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${getCorrectRateUnit(result.rateUnit, result.productName)}`)}
+                {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${getCorrectRateUnit(result.rateUnit, result.productName ?? "")}`)}
                 {renderGridItem("Total Amount of Product Needed:", formatNumber(result.totalProductNeeded ?? 0, 2))}
                 {renderGridItem("Total Product Units to Order:", `${result.packagesNeeded} – ${result.productPackageString}`)}
-                {renderGridItem("Treatment Capacity per Package:", `${formatNumber(result.treatmentCapacity ?? 0, 0)} units`)}
+                {renderGridItem("Treatment Capacity per Package:", `${formatNumber(result.treatmentCapacity ?? 0, 0)} acres`)}
                 {renderGridItem("Product Cost per Ounce:", `$${formatNumber(result.productCostPerOz ?? 0, 2)}`)}
                 {renderGridItem("Total Cost to Grower (MSRP):", `$${formatNumber(result.totalCostToGrower ?? 0, 2)}`)}
                 {renderGridItem("Total Discounted Cost to Grower:", `$${formatNumber(result.discountedCostToGrower ?? 0, 2)}`)}
