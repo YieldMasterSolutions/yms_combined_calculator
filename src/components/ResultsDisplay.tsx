@@ -33,16 +33,18 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 }) => {
   const displayUnit = cropPriceUnit.replace("/", "");
 
-  const getCorrectRateUnit = (rateUnit: string | undefined, productName: string): string => {
+  const getCorrectRateUnit = (rateUnit?: string, productName?: string): string => {
     if (!rateUnit) return "";
+    if (!productName) return rateUnit;
+    const lowerProduct = productName.toLowerCase();
     if (rateUnit.toLowerCase().includes("unit")) return "oz/unit";
-    if (productName.toLowerCase().includes("wg") || productName.toLowerCase().includes("n-phys")) return "g/acre";
+    if (lowerProduct.includes("wg") || lowerProduct.includes("n-phys")) return "g/acre";
     return rateUnit;
   };
 
   const getProductLabel = (p: ProductCalculation, isSeed: boolean) => {
     const capacity = p.treatmentCapacity ? `${formatNumber(p.treatmentCapacity, 0)} ${isSeed ? "units" : "acres"}` : "-";
-    return `${p.productName} – ${p.productPackageString} – ${p.applicationRate} ${getCorrectRateUnit(p.rateUnit, p.productName)} – Treats ${capacity}`;
+    return `${p.productName ?? ""} – ${p.productPackageString ?? ""} – ${formatNumber(p.applicationRate ?? 0, 2)} ${getCorrectRateUnit(p.rateUnit, p.productName)}${isSeed ? ` – Treats ${capacity}` : ""}`;
   };
 
   const renderGridItem = (label: string, value: string | number) => (
@@ -60,7 +62,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           {seedTreatmentResults.map((result, index) => (
             <div key={index} className="mb-6">
               <h4 className="text-lg font-bold text-white mb-2">{getProductLabel(result, true)}</h4>
-
               <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded mb-4">
                 <h5 className="col-span-2 text-md font-bold text-blue-400">Seeding Information</h5>
                 {renderGridItem("Total Number of Seeds to be Treated:", formatNumber(result.totalSeeds ?? 0, 2))}
@@ -68,7 +69,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 {renderGridItem("Total Number of Units to be Treated:", formatNumber(result.unitsToBeTreated ?? 0, 2))}
                 {renderGridItem("Number of Seeds per Unit:", formatNumber(result.seedsPerUnit ?? 0, 2))}
               </div>
-
               <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded">
                 <h5 className="col-span-2 text-md font-bold text-blue-400">Seed Treatment Costs</h5>
                 {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${getCorrectRateUnit(result.rateUnit, result.productName)}`)}

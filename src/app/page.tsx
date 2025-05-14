@@ -8,8 +8,7 @@ import { jsPDF } from "jspdf";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import { calculateProductCosts, ProductCalculation } from "../utils/calculations";
-import { seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
-import { ProductData } from "../utils/data";
+import { seedTypes, productsSeedTreatment, productsInFurrowFoliar, ProductData } from "../utils/data";
 
 export default function CombinedCalculator() {
   const [seedType, setSeedType] = useState("");
