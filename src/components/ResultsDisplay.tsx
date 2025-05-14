@@ -38,6 +38,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     return `${p.productName} – ${p.productPackageString} – ${p.applicationRate} ${p.rateUnit} – Treats ${capacity}`;
   };
 
+  const getCorrectRateUnit = (unit: string, productName: string) => {
+    if (productName.includes("N-Physis") || unit.toLowerCase().includes("g")) return "g/acre";
+    if (unit.toLowerCase().includes("fl oz")) return "fl oz/acre";
+    return "oz/acre";
+  };
+
   const renderGridItem = (label: string, value: string | number) => (
     <div className="flex justify-between items-center min-h-[48px]">
       <span className="text-yellow-300 font-semibold whitespace-nowrap">{label}</span>
@@ -54,7 +60,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div key={index} className="mb-6">
               <h4 className="text-lg font-bold text-white mb-2">{getProductLabel(result)}</h4>
 
-              {/* Seeding Info */}
               <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded mb-4">
                 <h5 className="col-span-2 text-md font-bold text-blue-400">Seeding Information</h5>
                 {renderGridItem("Total Number of Seeds to be Treated:", formatNumber(result.totalSeeds ?? 0, 2))}
@@ -63,7 +68,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 {renderGridItem("Number of Seeds per Unit:", formatNumber(result.seedsPerUnit ?? 0, 2))}
               </div>
 
-              {/* Seed Treatment Cost */}
               <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded">
                 <h5 className="col-span-2 text-md font-bold text-blue-400">Seed Treatment Costs</h5>
                 {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${result.rateUnit}`)}
@@ -88,7 +92,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div key={index} className="mb-6">
               <h4 className="text-lg font-bold text-white mb-2">{getProductLabel(result)}</h4>
               <div className="grid grid-cols-2 gap-4 p-4 border border-gray-600 rounded">
-                {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${result.rateUnit}`)}
+                {renderGridItem("Application Rate:", `${formatNumber(result.applicationRate ?? 0, 2)} ${getCorrectRateUnit(result.rateUnit, result.productName)}`)}
                 {renderGridItem("Total Amount of Product Needed:", formatNumber(result.totalProductNeeded ?? 0, 2))}
                 {renderGridItem("Total Product Units to Order:", `${result.packagesNeeded} – ${result.productPackageString}`)}
                 {renderGridItem("Treatment Capacity per Package:", `${formatNumber(result.treatmentCapacity ?? 0, 0)} units`)}
