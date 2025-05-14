@@ -1,3 +1,57 @@
+/* src/styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-geist-mono), Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* PRINT OVERRIDES */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-page-break {
+    page-break-before: always;
+  }
+
+  .bg-zinc-800,
+  .bg-zinc-900,
+  .bg-zinc-950,
+  .bg-zinc-700 {
+    background-color: #ffffff !important;
+  }
+
+  .text-yellow-300,
+  .text-blue-400,
+  .text-zinc-400,
+  .text-white {
+    color: #000000 !important;
+  }
+
+  .border-gray-600,
+  .border-gray-700 {
+    border-color: #000000 !important;
+  }
+}
