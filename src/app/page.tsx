@@ -124,9 +124,8 @@ export default function CombinedCalculator() {
   const downloadPDF = () => {
     if (!resultRef.current) return;
 
-    // Delay ensures ResultsDisplay is rendered before snapshot
     setTimeout(() => {
-      html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
+      html2canvas(resultRef.current!, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
         const pageWidth = pdf.internal.pageSize.getWidth();
