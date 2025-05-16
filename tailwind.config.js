@@ -1,9 +1,10 @@
 ﻿// tailwind.config.js
 module.exports = {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./public/**/*.html",
-    "./out/**/*.html",
+content: [
+  "./src/**/*.{js,ts,jsx,tsx,css,mdx}",
+  "./public/**/*.html",
+  "./out/**/*.html",
+]
   ],
   safelist: [
     "text-yellow-300",
