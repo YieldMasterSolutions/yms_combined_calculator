@@ -1,3 +1,5 @@
+/* src/app/globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -47,11 +49,13 @@ body {
   page-break-before: always;
 }
 
-/* Print style overrides */
+/* ──────────────────────────────────────────────
+   Print style overrides to ensure light mode
+─────────────────────────────────────────────── */
 @media print {
   color-scheme: only light;
 
-  body {
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
   }
@@ -65,5 +69,10 @@ body {
   .label-yellow,
   .section-header-blue {
     color: #000000 !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 0.75in;
   }
 }

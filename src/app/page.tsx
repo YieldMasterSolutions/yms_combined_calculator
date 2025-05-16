@@ -123,16 +123,20 @@ export default function CombinedCalculator() {
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
-    html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "pt", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const margin = 20;
-      const imgWidth = pageWidth - margin * 2;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-      pdf.save("YieldMaster_CombinedCalculation.pdf");
-    });
+
+    // Delay ensures ResultsDisplay is rendered before snapshot
+    setTimeout(() => {
+      html2canvas(resultRef.current, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "pt", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 20;
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
+        pdf.save("YieldMaster_CombinedCalculation.pdf");
+      });
+    }, 250);
   };
 
   return (
