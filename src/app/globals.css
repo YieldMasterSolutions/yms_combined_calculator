@@ -28,7 +28,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-  @apply bg-[var(--yms-body-bg)] text-[var(--yms-body-fg)];
+  background-color: var(--yms-body-bg);
+  color: var(--yms-body-fg);
 }
 
 .label-yellow {
@@ -57,7 +58,7 @@ body {
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    filter: grayscale(100%);
+    filter: grayscale(100%;
   }
 
   .label-yellow,
