@@ -4,9 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ──────────────────────────────────────────────
-   Base typography and layout colors
-─────────────────────────────────────────────── */
+/* Base typography and layout colors */
 html {
   font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
 }
@@ -40,8 +38,8 @@ body {
 
 .section-header-blue {
   color: var(--yms-blue);
-  font-size: 1.125rem; /* text-lg */
-  font-weight: 600;    /* font-semibold */
+  font-size: 1.125rem;
+  font-weight: 600;
 }
 
 .page-break {
@@ -49,9 +47,13 @@ body {
   page-break-before: always;
 }
 
-/* ──────────────────────────────────────────────
-   Print style overrides to ensure light mode
-─────────────────────────────────────────────── */
+/* 🔒 Force light mode regardless of OS preference */
+html, body {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+/* Print style overrides */
 @media print {
   color-scheme: only light;
 
