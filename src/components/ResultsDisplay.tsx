@@ -53,7 +53,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div className={gridCell}><span className={label}>Application Rate:</span><span className={value}>{product.applicationRate ?? 0} {product.applicationRateUnit}</span></div>
         <div className={gridCell}><span className={label}>Total Amount of Product Needed:</span><span className={value}>{formatNumber(product.totalProductNeeded ?? 0)}</span></div>
         <div className={gridCell}><span className={label}>Total Product Units to Order:</span><span className={value}>{formatNumber(product.packagesNeeded ?? 0)} – {product.productPackageString}</span></div>
-        <div className={gridCell}><span className={label}>Treatment Capacity per Package:</span><span className={value}>{formatNumber(product.treatmentCapacityPerPackage ?? 0)} {isSeed ? "units" : "acres"}</span></div>
+        <div className={gridCell}><span className={label}>Treatment Capacity per Package:</span><span className={value}>{formatNumber(product.treatmentCapacity ?? 0)} {isSeed ? "units" : "acres"}</span></div>
         <div className={gridCell}><span className={label}>Product Cost per Ounce:</span><span className={value}>${formatNumber(product.productCostPerOunce ?? 0)}</span></div>
         <div className={gridCell}><span className={label}>Total Cost to Grower (MSRP):</span><span className={value}>${formatNumber(product.totalMsrpCost ?? 0)}</span></div>
         <div className={gridCell}><span className={label}>Total Discounted Cost to Grower:</span><span className={value}>${formatNumber(product.totalDiscountedCost ?? 0)}</span></div>
