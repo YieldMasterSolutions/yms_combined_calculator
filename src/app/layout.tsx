@@ -27,6 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <base href="/yms_combined_calculator/" />
+      </head>
       <body className={`${openSans.variable} ${montserrat.variable} antialiased`}>
         {children}
       </body>
