@@ -35,21 +35,23 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const label = "label-yellow font-semibold";
   const value = "text-right";
 
+  const renderSeedCalculationCard = (seedProduct: ProductCalculation) => (
+    <div className="bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4 mb-6">
+      <h3 className="text-lg font-bold mb-2 text-blue-500">Seed Calculation Summary</h3>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+        <div className={gridCell}><span className={label}>Total Bushels to be Treated:</span><span className={value}>{formatNumber(seedProduct.totalBushels ?? 0)} bu</span></div>
+        <div className={gridCell}><span className={label}>Total Weight of Seeds to be Treated:</span><span className={value}>{formatNumber(seedProduct.totalWeight ?? 0)} lbs</span></div>
+        <div className={gridCell}><span className={label}>Total Number of Units to be Treated:</span><span className={value}>{formatNumber(seedProduct.unitsToBeTreated ?? 0)}</span></div>
+        <div className={gridCell}><span className={label}>Number of Seeds per Unit:</span><span className={value}>{formatNumber(seedProduct.seedsPerUnit ?? 0)}</span></div>
+      </div>
+    </div>
+  );
+
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => (
     <div className="bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
       <h3 className="text-lg font-bold mb-2 text-blue-500">
         {product.productName} – {product.applicationRate} {product.applicationRateUnit}
       </h3>
-
-      {isSeed && (
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-2">
-          <div className={gridCell}><span className={label}>Total Bushels to be Treated:</span><span className={value}>{formatNumber(product.totalBushels ?? 0)} bu</span></div>
-          <div className={gridCell}><span className={label}>Total Weight of Seeds to be Treated:</span><span className={value}>{formatNumber(product.totalWeight ?? 0)} lbs</span></div>
-          <div className={gridCell}><span className={label}>Total Number of Units to be Treated:</span><span className={value}>{formatNumber(product.unitsToBeTreated ?? 0)}</span></div>
-          <div className={gridCell}><span className={label}>Number of Seeds per Unit:</span><span className={value}>{formatNumber(product.seedsPerUnit ?? 0)}</span></div>
-        </div>
-      )}
-
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         <div className={gridCell}><span className={label}>Application Rate:</span><span className={value}>{product.applicationRate} {product.applicationRateUnit}</span></div>
         <div className={gridCell}><span className={label}>Total Amount of Product Needed:</span><span className={value}>{formatNumber(product.totalProductNeeded ?? 0)}</span></div>
@@ -75,6 +77,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {seedTreatmentResults.length > 0 && (
         <div>
           <h2 className="text-xl font-bold text-blue-600 mb-2">Seed Treatment Calculations</h2>
+          {renderSeedCalculationCard(seedTreatmentResults[0])}
           {seedTreatmentResults.map((product, i) => (
             <div key={i}>{renderProductCard(product, true)}</div>
           ))}
@@ -91,9 +94,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       <div className="grid grid-cols-2 gap-4 bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
-        <div><span className={label}>Total Program Cost per Acre:</span> ${formatNumber(totalCostPerAcre)}</div>
-        <div><span className={label}>Total Discounted Program Cost:</span> ${formatNumber(totalDiscountedCost)}</div>
         <div><span className={label}>Total MSRP Program Cost:</span> ${formatNumber(totalUndiscountedCost)}</div>
+        <div><span className={label}>Total Discounted Program Cost:</span> ${formatNumber(totalDiscountedCost)}</div>
+        <div className="col-span-2"><span className={label}>Total Program Cost per Acre:</span> ${formatNumber(totalCostPerAcre)}</div>
       </div>
 
       <div className="grid grid-cols-5 gap-4 bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
