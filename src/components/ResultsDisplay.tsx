@@ -38,7 +38,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => (
     <div className="bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
       <h3 className="text-lg font-bold mb-2 text-blue-500">
-        {product.productName} – {product.applicationRate} {product.applicationRateUnit}
+        {product.productName} – {product.applicationRate ?? 0} {product.applicationRateUnit}
       </h3>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         {isSeed && (
@@ -50,20 +50,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </>
         )}
 
-        <div className={gridCell}><span className={label}>Application Rate:</span><span className={value}>{product.applicationRate} {product.applicationRateUnit}</span></div>
-        <div className={gridCell}><span className={label}>Total Amount of Product Needed:</span><span className={value}>{formatNumber(product.totalProductNeeded)}</span></div>
-        <div className={gridCell}><span className={label}>Total Product Units to Order:</span><span className={value}>{product.packagesNeeded} – {product.productPackageString}</span></div>
-        <div className={gridCell}><span className={label}>Treatment Capacity per Package:</span><span className={value}>{product.treatmentCapacityPerPackage} {isSeed ? "units" : "acres"}</span></div>
-        <div className={gridCell}><span className={label}>Product Cost per Ounce:</span><span className={value}>${formatNumber(product.productCostPerOunce)}</span></div>
-        <div className={gridCell}><span className={label}>Total Cost to Grower (MSRP):</span><span className={value}>${formatNumber(product.totalMsrpCost)}</span></div>
-        <div className={gridCell}><span className={label}>Total Discounted Cost to Grower:</span><span className={value}>${formatNumber(product.totalDiscountedCost)}</span></div>
+        <div className={gridCell}><span className={label}>Application Rate:</span><span className={value}>{product.applicationRate ?? 0} {product.applicationRateUnit}</span></div>
+        <div className={gridCell}><span className={label}>Total Amount of Product Needed:</span><span className={value}>{formatNumber(product.totalProductNeeded ?? 0)}</span></div>
+        <div className={gridCell}><span className={label}>Total Product Units to Order:</span><span className={value}>{formatNumber(product.packagesNeeded ?? 0)} – {product.productPackageString}</span></div>
+        <div className={gridCell}><span className={label}>Treatment Capacity per Package:</span><span className={value}>{formatNumber(product.treatmentCapacityPerPackage ?? 0)} {isSeed ? "units" : "acres"}</span></div>
+        <div className={gridCell}><span className={label}>Product Cost per Ounce:</span><span className={value}>${formatNumber(product.productCostPerOunce ?? 0)}</span></div>
+        <div className={gridCell}><span className={label}>Total Cost to Grower (MSRP):</span><span className={value}>${formatNumber(product.totalMsrpCost ?? 0)}</span></div>
+        <div className={gridCell}><span className={label}>Total Discounted Cost to Grower:</span><span className={value}>${formatNumber(product.totalDiscountedCost ?? 0)}</span></div>
         {isSeed ? (
           <>
-            <div className={gridCell}><span className={label}>Product Cost per Unit of Treated Seed:</span><span className={value}>${formatNumber(product.productCostPerUnitSeed)}</span></div>
-            <div className={gridCell}><span className={label}>Individual Cost of Seed Treatment per Acre:</span><span className={value}>${formatNumber(product.individualCostPerAcre)}</span></div>
+            <div className={gridCell}><span className={label}>Product Cost per Unit of Treated Seed:</span><span className={value}>${formatNumber(product.productCostPerUnitSeed ?? 0)}</span></div>
+            <div className={gridCell}><span className={label}>Individual Cost of Seed Treatment per Acre:</span><span className={value}>${formatNumber(product.individualCostPerAcre ?? 0)}</span></div>
           </>
         ) : (
-          <div className={gridCell}><span className={label}>Individual Cost per Acre:</span><span className={value}>${formatNumber(product.individualCostPerAcre)}</span></div>
+          <div className={gridCell}><span className={label}>Individual Cost per Acre:</span><span className={value}>${formatNumber(product.individualCostPerAcre ?? 0)}</span></div>
         )}
       </div>
     </div>
@@ -90,17 +90,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       )}
 
       <div className="grid grid-cols-2 gap-4 bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
-        <div><span className={label}>Total Program Cost per Acre:</span> ${formatNumber(totalCostPerAcre)}</div>
-        <div><span className={label}>Total Discounted Program Cost:</span> ${formatNumber(totalDiscountedCost)}</div>
-        <div><span className={label}>Total MSRP Program Cost:</span> ${formatNumber(totalUndiscountedCost)}</div>
+        <div><span className={label}>Total Program Cost per Acre:</span> ${formatNumber(totalCostPerAcre ?? 0)}</div>
+        <div><span className={label}>Total Discounted Program Cost:</span> ${formatNumber(totalDiscountedCost ?? 0)}</div>
+        <div><span className={label}>Total MSRP Program Cost:</span> ${formatNumber(totalUndiscountedCost ?? 0)}</div>
       </div>
 
       <div className="grid grid-cols-5 gap-4 bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
-        <div><span className={label}>Breakeven Yield per Acre:</span><br />{formatNumber(breakevenYield)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 2:1 ROI:</span><br />{formatNumber(roi2)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 3:1 ROI:</span><br />{formatNumber(roi3)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 4:1 ROI:</span><br />{formatNumber(roi4)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 5:1 ROI:</span><br />{formatNumber(roi5)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Breakeven Yield per Acre:</span><br />{formatNumber(breakevenYield ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 2:1 ROI:</span><br />{formatNumber(roi2 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 3:1 ROI:</span><br />{formatNumber(roi3 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 4:1 ROI:</span><br />{formatNumber(roi4 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 5:1 ROI:</span><br />{formatNumber(roi5 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
       </div>
     </div>
   );
