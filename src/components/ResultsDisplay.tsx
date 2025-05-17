@@ -97,11 +97,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       </div>
 
       <div className="grid grid-cols-5 gap-4 bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
-        <div><span className={label}>Breakeven Yield per Acre:</span><br />{formatNumber(breakevenYield)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 2:1 ROI:</span><br />{formatNumber(roi2)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 3:1 ROI:</span><br />{formatNumber(roi3)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 4:1 ROI:</span><br />{formatNumber(roi4)} {cropPriceUnit.replace("/", "")}</div>
-        <div><span className={label}>Yield Needed for 5:1 ROI:</span><br />{formatNumber(roi5)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Breakeven Yield per Acre:</span><br />{formatNumber(breakevenYield ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 2:1 ROI:</span><br />{formatNumber(roi2 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 3:1 ROI:</span><br />{formatNumber(roi3 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 4:1 ROI:</span><br />{formatNumber(roi4 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
+        <div><span className={label}>Yield Needed for 5:1 ROI:</span><br />{formatNumber(roi5 ?? 0)} {cropPriceUnit.replace("/", "")}</div>
       </div>
     </div>
   );
