@@ -125,22 +125,29 @@ export default function CombinedCalculator() {
   const downloadPDF = () => {
     if (!resultRef.current) return;
 
-    setTimeout(() => {
-      html2canvas(resultRef.current!, { scale: window.devicePixelRatio || 2 }).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "pt", "a4");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const margin = 20;
-        const imgWidth = pageWidth - margin * 2;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-        pdf.save("YieldMaster_CombinedCalculation.pdf");
-      });
-    }, 250);
+    // Wait until after the next paint to ensure styles are applied
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        html2canvas(resultRef.current!, {
+          scale: window.devicePixelRatio || 2,
+          useCORS: true,
+          backgroundColor: getComputedStyle(document.body).backgroundColor,
+        }).then((canvas) => {
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF("p", "pt", "a4");
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const margin = 20;
+          const imgWidth = pageWidth - margin * 2;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
+          pdf.save("YieldMaster_CombinedCalculation.pdf");
+        });
+      }, 250);
+    });
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-white text-black min-h-screen" ref={resultRef}>
+    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen" ref={resultRef}>
       <ThemeToggle />
 
       <div className="text-center mb-6">
