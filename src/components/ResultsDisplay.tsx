@@ -56,7 +56,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div className={gridCell}><span className={label}>Treatment Capacity per Package:</span><span className={value}>{formatNumber(product.treatmentCapacity ?? 0)} {isSeed ? "units" : "acres"}</span></div>
         <div className={gridCell}><span className={label}>Product Cost per Ounce:</span><span className={value}>${formatNumber(product.productCostPerOz ?? 0)}</span></div>
         <div className={gridCell}><span className={label}>Total Cost to Grower (MSRP):</span><span className={value}>${formatNumber(product.originalTotalCostToGrower ?? 0)}</span></div>
-        <div className={gridCell}><span className={label}>Total Discounted Cost to Grower:</span><span className={value}>${formatNumber(product.totalDiscountedCost ?? 0)}</span></div>
+        <div className={gridCell}><span className={label}>Total Discounted Cost to Grower:</span><span className={value}>${formatNumber(product.discountedTotalCostToGrower ?? 0)}</span></div>
         {isSeed ? (
           <>
             <div className={gridCell}><span className={label}>Product Cost per Unit of Treated Seed:</span><span className={value}>${formatNumber(product.productCostPerUnitSeed ?? 0)}</span></div>
