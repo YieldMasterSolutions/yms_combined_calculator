@@ -27,9 +27,9 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Tailwind-compatible theming */
 body {
-  background-color: var(--yms-body-bg);
-  color: var(--yms-body-fg);
+  @apply bg-white text-gray-900 dark:bg-zinc-900 dark:text-white;
 }
 
 .label-yellow {
@@ -38,19 +38,13 @@ body {
 
 .section-header-blue {
   color: var(--yms-blue);
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 600;    /* font-semibold */
 }
 
 .page-break {
   break-before: page;
   page-break-before: always;
-}
-
-/* 🔒 Force light mode regardless of OS preference */
-html, body {
-  background: #ffffff !important;
-  color: #1f2937 !important;
 }
 
 /* Print style overrides */
