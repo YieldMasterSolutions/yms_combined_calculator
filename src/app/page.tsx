@@ -129,7 +129,7 @@ export default function CombinedCalculator() {
       const htmlEl = document.documentElement;
       htmlEl.classList.remove("dark");
 
-      html2canvas(resultRef.current, { scale: 2 }).then((canvas) => {
+      html2canvas(resultRef.current!, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
         const pageWidth = pdf.internal.pageSize.getWidth();
