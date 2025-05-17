@@ -43,7 +43,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         {isSeed && (
           <>
-            <div className={gridCell}><span className={label}>Total Number of Seeds to be Treated:</span><span className={value}>{formatNumber(product.totalSeeds ?? 0)}</span></div>
+            <div className={gridCell}><span className={label}>Total Bushels to be Treated:</span><span className={value}>{formatNumber(product.totalBushels ?? 0)} bu</span></div>
             <div className={gridCell}><span className={label}>Total Weight of Seeds to be Treated:</span><span className={value}>{formatNumber(product.totalWeight ?? 0)} lbs</span></div>
             <div className={gridCell}><span className={label}>Total Number of Units to be Treated:</span><span className={value}>{formatNumber(product.unitsToBeTreated ?? 0)}</span></div>
             <div className={gridCell}><span className={label}>Number of Seeds per Unit:</span><span className={value}>{formatNumber(product.seedsPerUnit ?? 0)}</span></div>

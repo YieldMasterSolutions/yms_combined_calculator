@@ -26,6 +26,7 @@ export interface ProductCalculation {
   unitsToBeTreated?: number;
   seedsPerUnit?: number;
   treatmentCapacity?: number;
+  totalBushels?: number;
   packageSize?: number;
   packageUnits?: string;
   packageType?: string;
@@ -119,6 +120,9 @@ export function calculateProductData(
     ? Math.floor(packageSize / applicationRate)
     : undefined;
 
+  const lbsPerBushel = seedType.toLowerCase() === "corn" ? 56 : 60;
+  const totalBushels = totalWeight / lbsPerBushel;
+
   return {
     applicationRateUnit,
     productName: product["Product Name"],
@@ -143,6 +147,7 @@ export function calculateProductData(
     unitsToBeTreated,
     seedsPerUnit,
     treatmentCapacity,
+    totalBushels,
     packageSize,
     packageUnits,
     packageType,
