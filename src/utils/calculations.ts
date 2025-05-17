@@ -3,6 +3,7 @@
 import { ProductData } from "./data";
 
 export interface ProductCalculation {
+  applicationRateUnit?: string;
   productName: string;
   productForm?: string;
   packagesNeeded: number;
@@ -119,6 +120,7 @@ export function calculateProductData(
     : undefined;
 
   return {
+    applicationRateUnit,
     productName: product["Product Name"],
     productForm: product["Product Form"],
     packagesNeeded,
