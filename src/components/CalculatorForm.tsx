@@ -1,5 +1,6 @@
 // src/components/CalculatorForm.tsx
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { ProductData, SeedType } from "../utils/data";
 
@@ -80,16 +81,19 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     return `${p["Product Name"]} – ${size} ${p["Package Units"]} ${p["Package Type"]} – ${rate} ${p["Application Rate Unit"]} – Treats ${capacity} ${labelUnit}`;
   };
 
+  const sharedInputStyles =
+    "w-full p-2 bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-600 rounded";
+
   return (
-    <form onSubmit={onSubmit} className="space-y-6 text-black">
+    <form onSubmit={onSubmit} className="space-y-6 text-black dark:text-white">
       <h2 className="text-xl font-bold text-blue-600">Crop Inputs</h2>
-      <div className="grid grid-cols-2 gap-4 bg-zinc-100 p-4 rounded border border-zinc-300">
+      <div className="grid grid-cols-2 gap-4 bg-zinc-100 dark:bg-zinc-800 p-4 rounded border border-zinc-300 dark:border-zinc-700">
         <div>
           <label className="block mb-1 font-semibold">Seed Type</label>
           <select
             value={seedType}
             onChange={(e) => setSeedType(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           >
             <option value="">Select Seed Type</option>
             {seedTypes.map((s, idx) => (
@@ -103,7 +107,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             type="number"
             value={acres}
             onChange={(e) => setAcres(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -112,7 +116,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             type="number"
             value={seedingRate}
             onChange={(e) => setSeedingRate(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -120,7 +124,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <select
             value={seedingRateUnit}
             onChange={(e) => setSeedingRateUnit(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           >
             <option value="seeds/acre">Seeds/acre</option>
             <option value="lbs/acre">Lbs/acre</option>
@@ -132,7 +136,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             type="number"
             value={overrideSeeds}
             onChange={(e) => setOverrideSeeds(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -141,13 +145,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             type="number"
             value={seedsPerUnitOverride}
             onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
       </div>
 
       <h2 className="text-xl font-bold text-blue-600">Discount & Market Price Inputs</h2>
-      <div className="grid grid-cols-2 gap-4 bg-zinc-100 p-4 rounded border border-zinc-300">
+      <div className="grid grid-cols-2 gap-4 bg-zinc-100 dark:bg-zinc-800 p-4 rounded border border-zinc-300 dark:border-zinc-700">
         <div>
           <label className="block mb-1 font-semibold">Dealer / Rep Name</label>
           <input
@@ -155,7 +159,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             value={dealerName}
             onChange={(e) => setDealerName(e.target.value)}
             placeholder="Optional"
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -165,7 +169,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             value={growerName}
             onChange={(e) => setGrowerName(e.target.value)}
             placeholder="Optional"
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -174,7 +178,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             type="number"
             value={dealerDiscount}
             onChange={(e) => setDealerDiscount(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -183,7 +187,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             type="number"
             value={growerDiscount}
             onChange={(e) => setGrowerDiscount(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -192,7 +196,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             type="number"
             value={marketPrice}
             onChange={(e) => setMarketPrice(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           />
         </div>
         <div>
@@ -200,7 +204,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <select
             value={marketPriceUnit}
             onChange={(e) => setMarketPriceUnit(e.target.value)}
-            className="w-full p-2 bg-white border border-gray-400 rounded"
+            className={sharedInputStyles}
           >
             <option value="/acre">$/acre</option>
             <option value="/bu">$/bu</option>
@@ -209,15 +213,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      <h2 className="text-xl font-bold text-green-700">Seed Treatment Products</h2>
-      <div className="grid grid-cols-1 gap-4 bg-zinc-100 p-4 rounded border border-zinc-300">
+      <h2 className="text-xl font-bold text-[#39803c]">Seed Treatment Products</h2>
+      <div className="grid grid-cols-1 gap-4 bg-zinc-100 dark:bg-zinc-800 p-4 rounded border border-zinc-300 dark:border-zinc-700">
         {[0, 1].map((i) => (
           <div key={i}>
             <label className="block mb-1 font-semibold">Seed Treatment Product {i + 1}</label>
             <select
               value={selectedSeedTreatmentProducts[i]?.product?.["Product Name"] || ""}
               onChange={(e) => handleProductChange(i, e.target.value, "seed")}
-              className="w-full p-2 bg-white border border-gray-400 rounded"
+              className={sharedInputStyles}
             >
               <option value="">Select Product</option>
               {productsSeedTreatment.map((p, idx) => (
@@ -229,7 +233,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={selectedSeedTreatmentProducts[i]?.applicationMethod || ""}
               onChange={(e) => handleAppTypeChange(i, e.target.value, "seed")}
-              className="w-full mt-2 p-2 bg-white border border-gray-400 rounded"
+              className={`${sharedInputStyles} mt-2`}
             >
               <option value="">Application</option>
               <option value="Seed Treatment">Seed Treatment</option>
@@ -239,15 +243,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         ))}
       </div>
 
-      <h2 className="text-xl font-bold text-green-700">In-Furrow / Foliar Products</h2>
-      <div className="grid grid-cols-1 gap-4 bg-zinc-100 p-4 rounded border border-zinc-300">
+      <h2 className="text-xl font-bold text-[#39803c]">In-Furrow / Foliar Products</h2>
+      <div className="grid grid-cols-1 gap-4 bg-zinc-100 dark:bg-zinc-800 p-4 rounded border border-zinc-300 dark:border-zinc-700">
         {[0, 1, 2, 3].map((i) => (
           <div key={i}>
             <label className="block mb-1 font-semibold">In-Furrow / Foliar Product {i + 1}</label>
             <select
               value={selectedFoliarProducts[i]?.product?.["Product Name"] || ""}
               onChange={(e) => handleProductChange(i, e.target.value, "foliar")}
-              className="w-full p-2 bg-white border border-gray-400 rounded"
+              className={sharedInputStyles}
             >
               <option value="">Select Product</option>
               {productsInFurrow.map((p, idx) => (
@@ -259,7 +263,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={selectedFoliarProducts[i]?.applicationMethod || ""}
               onChange={(e) => handleAppTypeChange(i, e.target.value, "foliar")}
-              className="w-full mt-2 p-2 bg-white border border-gray-400 rounded"
+              className={`${sharedInputStyles} mt-2`}
             >
               <option value="">Application</option>
               <option value="In-Furrow">In-Furrow</option>
