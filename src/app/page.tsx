@@ -1,4 +1,5 @@
 // src/app/page.tsx
+
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -7,7 +8,6 @@ import { jsPDF } from "jspdf";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
-import ThemeToggle from "../components/ThemeToggle";
 import { calculateProductCosts, ProductCalculation } from "../utils/calculations";
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar, ProductData } from "../utils/data";
 
@@ -125,31 +125,30 @@ export default function CombinedCalculator() {
   const downloadPDF = () => {
     if (!resultRef.current) return;
 
-    // Wait until after the next paint to ensure styles are applied
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        html2canvas(resultRef.current!, {
-          scale: window.devicePixelRatio || 2,
-          useCORS: true,
-          backgroundColor: getComputedStyle(document.body).backgroundColor,
-        }).then((canvas) => {
-          const imgData = canvas.toDataURL("image/png");
-          const pdf = new jsPDF("p", "pt", "a4");
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const margin = 20;
-          const imgWidth = pageWidth - margin * 2;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-          pdf.save("YieldMaster_CombinedCalculation.pdf");
-        });
-      }, 250);
-    });
+    setTimeout(() => {
+      const htmlEl = document.documentElement;
+      htmlEl.classList.remove("dark");
+
+      html2canvas(resultRef.current, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "pt", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 20;
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
+        pdf.save("YieldMaster_CombinedCalculation.pdf");
+
+        // Reapply original theme
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          htmlEl.classList.add("dark");
+        }
+      });
+    }, 200);
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen" ref={resultRef}>
-      <ThemeToggle />
-
+    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="text-center mb-6">
         <img
           src="/yms_combined_calculator/YMSlogo5.png"
