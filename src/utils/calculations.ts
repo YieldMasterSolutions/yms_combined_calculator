@@ -25,6 +25,9 @@ export interface ProductCalculation {
   unitsToBeTreated?: number;
   seedsPerUnit?: number;
   treatmentCapacity?: number;
+  packageSize?: number;
+  packageUnits?: string;
+  packageType?: string;
 }
 
 export function calculateProductData(
@@ -93,20 +96,17 @@ export function calculateProductData(
   }
 
   const packageSize = product["Package Size"];
-  const productPackageString = `${packageSize} ${product["Package Units"]} - ${product["Package Type"]}`;
+  const packageUnits = product["Package Units"];
+  const packageType = product["Package Type"];
+  const productPackageString = `${packageSize} ${packageUnits} - ${packageType}`;
   const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const totalCostToGrower = packagesNeeded * productCostPerPackage;
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedCostToGrower = totalCostToGrower * discountFactor;
 
-  // Accurate cost/acre logic
   let individualCostPerAcre: number;
-  if (
-    rateUnit === "oz/acre" ||
-    rateUnit === "fl oz/acre" ||
-    rateUnit === "g/acre"
-  ) {
+  if (rateUnit === "oz/acre" || rateUnit === "fl oz/acre" || rateUnit === "g/acre") {
     individualCostPerAcre = ((applicationRate ?? 0) * (costPerUnit ?? 0)) * discountFactor;
   } else {
     individualCostPerAcre = ((totalProductNeeded ?? 0) * (costPerUnit ?? 0)) / acres;
@@ -124,7 +124,7 @@ export function calculateProductData(
     packagesNeeded,
     productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower: discountedCostToGrower,
+    discountedTotalCostToGrower,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
@@ -141,6 +141,9 @@ export function calculateProductData(
     unitsToBeTreated,
     seedsPerUnit,
     treatmentCapacity,
+    packageSize,
+    packageUnits,
+    packageType,
   };
 }
 

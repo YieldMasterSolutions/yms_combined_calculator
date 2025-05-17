@@ -38,7 +38,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => (
     <div className="bg-white dark:bg-zinc-900 text-black dark:text-white border border-zinc-300 dark:border-zinc-700 rounded p-4">
       <h3 className="text-lg font-bold mb-2 text-blue-500">
-        {product.productName} – {product.packageSize} {product.packageUnits} - {product.packageType} – {product.applicationRate} {product.applicationRateUnit}
+        {product.productName} – {product.applicationRate} {product.applicationRateUnit}
       </h3>
       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
         {isSeed && (
@@ -52,7 +52,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
         <div className={gridCell}><span className={label}>Application Rate:</span><span className={value}>{product.applicationRate} {product.applicationRateUnit}</span></div>
         <div className={gridCell}><span className={label}>Total Amount of Product Needed:</span><span className={value}>{formatNumber(product.totalProductNeeded)}</span></div>
-        <div className={gridCell}><span className={label}>Total Product Units to Order:</span><span className={value}>{product.packagesNeeded} – {product.packageSize} {product.packageUnits} - {product.packageType}</span></div>
+        <div className={gridCell}><span className={label}>Total Product Units to Order:</span><span className={value}>{product.packagesNeeded} – {product.productPackageString}</span></div>
         <div className={gridCell}><span className={label}>Treatment Capacity per Package:</span><span className={value}>{product.treatmentCapacityPerPackage} {isSeed ? "units" : "acres"}</span></div>
         <div className={gridCell}><span className={label}>Product Cost per Ounce:</span><span className={value}>${formatNumber(product.productCostPerOunce)}</span></div>
         <div className={gridCell}><span className={label}>Total Cost to Grower (MSRP):</span><span className={value}>${formatNumber(product.totalMsrpCost)}</span></div>
