@@ -69,7 +69,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div>${formatNumber(result.productCostPerOz)}</div>
 
             <div className="label-yellow">Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.totalCostMSRP)}</div>
+            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
             <div>${formatNumber(result.totalCostDiscounted)}</div>
@@ -110,7 +110,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div>${formatNumber(result.productCostPerOz)}</div>
 
             <div className="label-yellow">Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.totalCostMSRP)}</div>
+            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
             <div>${formatNumber(result.totalCostDiscounted)}</div>
