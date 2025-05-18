@@ -49,10 +49,10 @@ export default function CombinedCalculator() {
 
   const handleCalculate = () => {
     const {
-      seedTreatmentResults,
-      inFurrowFoliarResults,
-      programCost,
-      roi,
+      productsData,
+      totalCostPerAcre,
+      totalUndiscountedCost,
+      totalDiscountedCost,
     } = calculateProductCosts(
       seedType,
       seedingRate,
@@ -68,10 +68,16 @@ export default function CombinedCalculator() {
       marketPriceUnit
     );
 
-    setSeedTreatmentResults(seedTreatmentResults);
-    setInFurrowFoliarResults(inFurrowFoliarResults);
-    setProgramCost(programCost);
-    setRoi(roi);
+    // Temporary placeholder — sending all results to seedTreatmentResults
+    setSeedTreatmentResults(productsData);
+    setProgramCost(totalCostPerAcre);
+    setRoi({
+      breakeven: 0,
+      roi2: 0,
+      roi3: 0,
+      roi4: 0,
+      roi5: 0,
+    });
   };
 
   const downloadPDF = async () => {
