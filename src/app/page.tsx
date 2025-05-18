@@ -130,6 +130,7 @@ export default function CombinedCalculator() {
     if (!resultRef.current) return;
     setTimeout(() => {
       const htmlEl = document.documentElement;
+      const wasDark = htmlEl.classList.contains("dark");
       htmlEl.classList.remove("dark");
       html2canvas(resultRef.current!, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
@@ -140,9 +141,7 @@ export default function CombinedCalculator() {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
         pdf.save("YieldMaster_CombinedCalculation.pdf");
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          htmlEl.classList.add("dark");
-        }
+        if (wasDark) htmlEl.classList.add("dark");
       });
     }, 200);
   };

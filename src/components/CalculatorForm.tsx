@@ -78,10 +78,21 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   };
 
   const getDefaultSeedsPerUnit = (): string => {
+    if (seedType.toLowerCase() === "corn") return "80000";
+    if (seedType.toLowerCase() === "soybeans") return "140000";
     const found = seedTypes.find((s) => s["Seed Type"] === seedType);
     const seedsPerLb = found ? parseFloat(found["Seeds/lb"]) : 0;
     const lbsPerUnit = found ? found["Lbs/Unit"] : 0;
     return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
+  };
+
+  const getProductLabel = (p: ProductData, type: "seed" | "foliar") => {
+    const rate = p["Application Rate"];
+    const size = p["Package Size"];
+    const unit = p["Application Rate Unit"] || "";
+    const capacity = rate && size ? Math.floor(size / rate) : "-";
+    const labelUnit = type === "seed" ? "units" : "acres";
+    return `${p["Product Name"]} – ${size} ${p["Package Units"]} ${p["Package Type"]} – ${rate} ${unit} – Treats ${capacity} ${labelUnit}`;
   };
 
   return (
@@ -164,7 +175,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <select value={marketPriceUnit} onChange={(e) => setMarketPriceUnit(e.target.value)} className="p-2 bg-gray-800 border border-gray-600 rounded">
           <option value="$/acre">$/acre</option>
           <option value="$/bu">$/bu</option>
-          <option value="$USD/ton">$USD/ton</option>
+          <option value="$/ton">$/ton</option>
           <option value="$/cwt">$/cwt</option>
         </select>
       </div>
@@ -180,7 +191,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <option value="">Select Seed Treatment Product</option>
             {productsSeedTreatment.map((p) => (
               <option key={p["Product Name"]} value={p["Product Name"]}>
-                {p["Product Name"]}
+                {getProductLabel(p, "seed")}
               </option>
             ))}
           </select>
@@ -206,7 +217,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <option value="">Select In-Furrow / Foliar Product</option>
             {productsInFurrow.map((p) => (
               <option key={p["Product Name"]} value={p["Product Name"]}>
-                {p["Product Name"]}
+                {getProductLabel(p, "foliar")}
               </option>
             ))}
           </select>
