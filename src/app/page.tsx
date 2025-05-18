@@ -21,6 +21,10 @@ import {
 } from "../utils/data";
 import { ProductData } from "../utils/data";
 
+interface ProductWithMethod extends ProductCalculation {
+  applicationMethod: string;
+}
+
 export default function CombinedCalculator() {
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
@@ -160,6 +164,16 @@ export default function CombinedCalculator() {
     setRoi(roiResult);
   };
 
+  const seedTreatmentResultsWithMethod: ProductWithMethod[] = seedTreatmentResults.map((result, index) => ({
+    ...result,
+    applicationMethod: selectedSeedTreatmentProducts[index]?.applicationMethod || "",
+  }));
+
+  const inFurrowFoliarResultsWithMethod: ProductWithMethod[] = inFurrowFoliarResults.map((result, index) => ({
+    ...result,
+    applicationMethod: selectedFoliarProducts[index]?.applicationMethod || "",
+  }));
+
   return (
     <main className="p-4">
       <div className="flex justify-between items-center mb-6">
@@ -231,8 +245,8 @@ export default function CombinedCalculator() {
 
       <div ref={resultsRef} className="mt-10">
         <ResultsDisplay
-          seedTreatmentResults={seedTreatmentResults}
-          inFurrowFoliarResults={inFurrowFoliarResults}
+          seedTreatmentResults={seedTreatmentResultsWithMethod}
+          inFurrowFoliarResults={inFurrowFoliarResultsWithMethod}
           totalProgramCost={totalProgramCost}
           roi={roi}
         />
