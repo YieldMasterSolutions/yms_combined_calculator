@@ -39,6 +39,9 @@ interface CalculatorFormProps {
   seedTypes: SeedType[];
   productsSeedTreatment: ProductData[];
   productsInFurrow: ProductData[];
+  handleProductChange: (index: number, productName: string, type: "seed" | "foliar") => void;
+  handleAppTypeChange: (index: number, method: string, type: "seed" | "foliar") => void;
+  onSubmit: (e: React.FormEvent) => void;
 }
 
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
@@ -74,9 +77,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   seedTypes,
   productsSeedTreatment,
   productsInFurrow,
+  handleProductChange,
+  handleAppTypeChange,
+  onSubmit,
 }) => {
-  // Component logic goes here (unchanged)
-
   return (
     <form className="space-y-8">
       {/* Form layout and fields */}
