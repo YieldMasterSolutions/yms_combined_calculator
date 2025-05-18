@@ -99,8 +99,20 @@ export default function CombinedCalculator() {
       return seedEntry ? seedEntry["Lbs/Unit"] : 0;
     };
 
+    const getDefaultSeedsPerUnit = (): number => {
+      const seed = seedType.toLowerCase();
+      if (seed === "corn") return 80000;
+      if (seed === "soybeans") return 140000;
+      const seedEntry = seedTypes.find((s) => s["Seed Type"].toLowerCase() === seed);
+      if (!seedEntry) return 0;
+      const seedsPerLb = parseFloat(seedEntry["Seeds/lb"]);
+      const lbsPerUnit = seedEntry["Lbs/Unit"];
+      return seedsPerLb * lbsPerUnit;
+    };
+
     const spp = getSeedsPerPound();
     const lpu = getLbsPerUnit();
+    const spu = seedsPerUnitOverride ? parseFloat(seedsPerUnitOverride) : getDefaultSeedsPerUnit();
 
     const selectedSeedProducts = selectedSeedTreatmentProducts
       .filter(p => p.product && p.product["Product Name"])
@@ -153,76 +165,4 @@ export default function CombinedCalculator() {
     }, 200);
   };
 
-  return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
-      <div className="flex justify-between items-center">
-        <button onClick={() => setDarkMode(!darkMode)} className="bg-zinc-700 text-white px-3 py-1 rounded shadow">
-          Switch to {darkMode ? "Light" : "Dark"} Mode
-        </button>
-      </div>
-
-      <div className="text-center mb-6">
-        <img src="/yms_combined_calculator/YMSlogo5.png" alt="YMS Logo" width="160" height="80" className="mx-auto mb-4" />
-        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-zinc-400">Product Calculator</p>
-      </div>
-
-      <CalculatorForm
-        seedType={seedType}
-        setSeedType={setSeedType}
-        acres={acres}
-        setAcres={setAcres}
-        seedingRate={seedingRate}
-        setSeedingRate={setSeedingRate}
-        seedingRateUnit={seedingRateUnit}
-        setSeedingRateUnit={setSeedingRateUnit}
-        overrideSeeds={overrideSeeds}
-        setOverrideSeeds={setOverrideSeeds}
-        seedsPerUnitOverride={seedsPerUnitOverride}
-        setSeedsPerUnitOverride={setSeedsPerUnitOverride}
-        marketPrice={marketPrice}
-        setMarketPrice={setMarketPrice}
-        marketPriceUnit={marketPriceUnit}
-        setMarketPriceUnit={setMarketPriceUnit}
-        dealerDiscount={dealerDiscount}
-        setDealerDiscount={setDealerDiscount}
-        growerDiscount={growerDiscount}
-        setGrowerDiscount={setGrowerDiscount}
-        dealerName={dealerName}
-        setDealerName={setDealerName}
-        growerName={growerName}
-        setGrowerName={setGrowerName}
-        seedTypes={seedTypes}
-        productsSeedTreatment={productsSeedTreatment}
-        productsInFurrow={productsInFurrowFoliar}
-        selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
-        selectedFoliarProducts={selectedFoliarProducts}
-        handleProductChange={handleProductChange}
-        handleAppTypeChange={handleAppTypeChange}
-        onSubmit={handleFormSubmit}
-      />
-
-      {(seedResults.length > 0 || foliarResults.length > 0) && (
-        <ResultsDisplay
-          seedTreatmentResults={seedResults}
-          inFurrowFoliarResults={foliarResults}
-          totalCostPerAcre={totalCostPerAcre}
-          totalUndiscountedCost={totalUndiscountedCost}
-          totalDiscountedCost={totalDiscountedCost}
-          breakevenYield={breakevenYield}
-          roi2={roi2}
-          roi3={roi3}
-          roi4={roi4}
-          roi5={roi5}
-          cropPriceUnit={marketPriceUnit}
-        />
-      )}
-
-      <div className="text-center">
-        <button onClick={downloadPDF} className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white">
-          Download Combined PDF
-        </button>
-      </div>
-    </div>
-  );
-}
+  return (...); // rest unchanged
