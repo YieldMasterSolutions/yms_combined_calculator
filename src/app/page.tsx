@@ -55,14 +55,14 @@ export default function CombinedCalculator() {
       totalDiscountedCost,
     } = calculateProductCosts(
       seedType,
-      seedingRate,
+      Number(seedingRate),
       seedingRateUnit,
-      acres,
-      overrideSeeds,
-      seedsPerUnitOverride,
-      dealerDiscount,
-      growerDiscount,
-      marketPrice // ✅ 9th argument correctly restored
+      Number(acres),
+      overrideSeeds ? Number(overrideSeeds) : undefined,
+      seedsPerUnitOverride ? Number(seedsPerUnitOverride) : undefined,
+      dealerDiscount ? Number(dealerDiscount) : undefined,
+      growerDiscount ? Number(growerDiscount) : undefined,
+      marketPrice ? Number(marketPrice) : undefined
     );
 
     setSeedTreatmentResults(productsData);
