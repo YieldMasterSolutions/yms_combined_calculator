@@ -48,13 +48,15 @@ export default function CombinedCalculator() {
   const resultRef = useRef(null);
 
   const handleCalculate = () => {
+    const seedTypeIndex = seedTypes.findIndex((s) => s["Seed Type"] === seedType); // ✅ Correct
+
     const {
       productsData,
       totalCostPerAcre,
       totalUndiscountedCost,
       totalDiscountedCost,
     } = calculateProductCosts(
-      seedType, // ✅ string passed directly
+      seedTypeIndex, // ✅ number
       Number(seedingRate),
       seedingRateUnit,
       Number(acres),
