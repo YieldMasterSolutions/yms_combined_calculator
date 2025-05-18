@@ -61,14 +61,9 @@ export default function CombinedCalculator() {
       overrideSeeds,
       seedsPerUnitOverride,
       dealerDiscount,
-      growerDiscount,
-      selectedSeedTreatmentProducts,
-      selectedFoliarProducts,
-      marketPrice,
-      marketPriceUnit
+      growerDiscount
     );
 
-    // Temporary placeholder — sending all results to seedTreatmentResults
     setSeedTreatmentResults(productsData);
     setProgramCost(totalCostPerAcre);
     setRoi({
