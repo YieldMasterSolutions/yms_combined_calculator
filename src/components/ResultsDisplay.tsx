@@ -4,9 +4,13 @@ import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
 
+interface ProductWithMethod extends ProductCalculation {
+  applicationMethod: string;
+}
+
 interface ResultsDisplayProps {
-  seedTreatmentResults: ProductCalculation[];
-  inFurrowFoliarResults: ProductCalculation[];
+  seedTreatmentResults: ProductWithMethod[];
+  inFurrowFoliarResults: ProductWithMethod[];
   totalProgramCost: number;
   roi: {
     breakevenYield: number;
