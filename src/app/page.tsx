@@ -44,8 +44,8 @@ export default function CombinedCalculator() {
   ]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
-  const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
-  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<ProductCalculation[]>([]);
+  const [seedTreatmentResults, setSeedTreatmentResults] = useState<any[]>([]);
+  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<any[]>([]);
   const [totalProgramCost, setTotalProgramCost] = useState(0);
   const [roi, setRoi] = useState({
     breakevenYield: 0,
@@ -154,8 +154,12 @@ export default function CombinedCalculator() {
           unit: "",
         };
 
-    setSeedTreatmentResults(seedResults);
-    setInFurrowFoliarResults(foliarResults);
+    setSeedTreatmentResults(
+      seedResults.map((r, i) => ({ ...r, applicationMethod: selectedSeedTreatmentProducts[i].applicationMethod }))
+    );
+    setInFurrowFoliarResults(
+      foliarResults.map((r, i) => ({ ...r, applicationMethod: selectedFoliarProducts[i].applicationMethod }))
+    );
     setTotalProgramCost(totalCost);
     setRoi(roiResult);
   };
