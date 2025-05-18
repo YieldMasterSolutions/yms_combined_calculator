@@ -93,17 +93,6 @@ export default function CombinedCalculator() {
       return seedEntry ? seedEntry["Lbs/Unit"] : 0;
     };
 
-    const getDefaultSeedsPerUnit = (): number => {
-      const seed = seedType.toLowerCase();
-      if (seed === "corn") return 80000;
-      if (seed === "soybeans") return 140000;
-      const seedEntry = seedTypes.find((s) => s["Seed Type"].toLowerCase() === seed);
-      if (!seedEntry) return 0;
-      const seedsPerLb = parseFloat(seedEntry["Seeds/lb"]);
-      const lbsPerUnit = seedEntry["Lbs/Unit"];
-      return seedsPerLb * lbsPerUnit;
-    };
-
     const spp = getSeedsPerPound();
     const lpu = getLbsPerUnit();
 
