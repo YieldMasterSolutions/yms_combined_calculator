@@ -72,7 +72,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div>${formatNumber(result.originalTotalCostToGrower)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.totalCostDiscounted)}</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
 
             <div className="label-yellow">Product Cost per Unit of Treated Seed</div>
             <div>${formatNumber(result.productCostPerUnitSeed)}</div>
@@ -113,7 +113,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div>${formatNumber(result.originalTotalCostToGrower)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.totalCostDiscounted)}</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
 
             <div className="label-yellow">Individual Cost per Acre</div>
             <div>${formatNumber(result.individualCostPerAcre)}</div>
