@@ -52,7 +52,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
             <div className="label-yellow">Application Rate</div>
             <div>
-              {result.applicationRate} {result.applicationRateUnit} / unit of seed
+              {formatNumber(result.applicationRate)} {result.applicationRateUnit} / unit of seed
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
@@ -62,7 +62,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>
-              {formatNumber(result.totalProductUnits)} – {result.packageDescription}
+              {formatNumber(result.totalProductUnits)} – {result.productPackageString}
             </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
@@ -93,7 +93,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
             <div>
-              {result.applicationRate} {result.applicationRateUnit} / acre
+              {formatNumber(result.applicationRate)} {result.applicationRateUnit} / acre
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
@@ -103,7 +103,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>
-              {formatNumber(result.totalProductUnits)} – {result.packageDescription}
+              {formatNumber(result.totalProductUnits)} – {result.productPackageString}
             </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
