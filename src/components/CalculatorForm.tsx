@@ -214,19 +214,19 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <div key={index} className="mb-4">
             <select
               className="w-full border p-2 mb-2"
-              value={entry.product.name}
+              value={entry.product["Product Name"]}
               onChange={(e) =>
                 handleProductChange(
                   index,
                   "seed",
-                  productsSeedTreatment.find((p) => p.name === e.target.value)!
+                  productsSeedTreatment.find((p) => p["Product Name"] === e.target.value)!
                 )
               }
             >
               <option value="">Select a seed treatment product...</option>
               {productsSeedTreatment.map((product) => (
-                <option key={product.name} value={product.name}>
-                  {`${product.name} – ${product.packageSize} ${product.packageUnit} – ${product.applicationRate} ${product.applicationRateUnit} – ${product.treatmentCapacity}`}
+                <option key={product["Product Name"]} value={product["Product Name"]}>
+                  {`${product["Product Name"]} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} – ${product["Application Method"]}`}
                 </option>
               ))}
             </select>
@@ -250,19 +250,19 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <div key={index} className="mb-4">
             <select
               className="w-full border p-2 mb-2"
-              value={entry.product.name}
+              value={entry.product["Product Name"]}
               onChange={(e) =>
                 handleProductChange(
                   index,
                   "foliar",
-                  productsInFurrowFoliar.find((p) => p.name === e.target.value)!
+                  productsInFurrowFoliar.find((p) => p["Product Name"] === e.target.value)!
                 )
               }
             >
               <option value="">Select a foliar or in-furrow product...</option>
               {productsInFurrowFoliar.map((product) => (
-                <option key={product.name} value={product.name}>
-                  {`${product.name} – ${product.packageSize} ${product.packageUnit} – ${product.applicationRate} ${product.applicationRateUnit} – ${product.treatmentCapacity}`}
+                <option key={product["Product Name"]} value={product["Product Name"]}>
+                  {`${product["Product Name"]} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} – ${product["Application Method"]}`}
                 </option>
               ))}
             </select>
