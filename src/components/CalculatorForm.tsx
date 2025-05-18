@@ -35,7 +35,6 @@ interface CalculatorFormProps {
   setSelectedFoliarProducts: (
     value: { product: ProductData; applicationMethod: string }[]
   ) => void;
-  handleCalculate: () => void;
   seedTypes: SeedType[];
   productsSeedTreatment: ProductData[];
   productsInFurrow: ProductData[];
@@ -73,7 +72,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setSelectedSeedTreatmentProducts,
   selectedFoliarProducts,
   setSelectedFoliarProducts,
-  handleCalculate,
   seedTypes,
   productsSeedTreatment,
   productsInFurrow,
@@ -82,12 +80,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   onSubmit,
 }) => {
   return (
-    <form className="space-y-8">
+    <form onSubmit={onSubmit} className="space-y-8">
       {/* Form layout and fields */}
       <div className="flex justify-center">
         <button
-          type="button"
-          onClick={handleCalculate}
+          type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded"
         >
           Calculate
