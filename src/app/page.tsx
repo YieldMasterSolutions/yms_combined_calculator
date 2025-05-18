@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -12,6 +12,16 @@ import { calculateProductCosts, ProductCalculation } from "../utils/calculations
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar, ProductData } from "../utils/data";
 
 export default function CombinedCalculator() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
+
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
@@ -37,10 +47,10 @@ export default function CombinedCalculator() {
   const [roi5, setRoi5] = useState<number | null>(null);
 
   const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState(
-    Array(2).fill({ product: {} as ProductData, applicationMethod: "" })
+    Array(2).fill({ product: {} as ProductData, applicationMethod: "Seed Treatment" })
   );
   const [selectedFoliarProducts, setSelectedFoliarProducts] = useState(
-    Array(4).fill({ product: {} as ProductData, applicationMethod: "" })
+    Array(4).fill({ product: {} as ProductData, applicationMethod: "In-Furrow" })
   );
 
   const resultRef = useRef<HTMLDivElement>(null);
@@ -139,7 +149,6 @@ export default function CombinedCalculator() {
         pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
         pdf.save("YieldMaster_CombinedCalculation.pdf");
 
-        // Reapply original theme
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
           htmlEl.classList.add("dark");
         }
@@ -149,6 +158,15 @@ export default function CombinedCalculator() {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
+      <div className="flex justify-between items-center">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="bg-zinc-700 text-white px-3 py-1 rounded shadow"
+        >
+          Switch to {darkMode ? "Light" : "Dark"} Mode
+        </button>
+      </div>
+
       <div className="text-center mb-6">
         <img
           src="/yms_combined_calculator/YMSlogo5.png"
