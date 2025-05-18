@@ -95,7 +95,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
   const getDefaultSeedsPerUnit = (): string => {
     const found = seedTypes.find(s => s["Seed Type"] === seedType);
-    const seedsPerLb = found ? found["Seeds/lb"] : 0;
+    const seedsPerLb = found ? parseFloat(found["Seeds/lb"]) : 0;
     const lbsPerUnit = found ? found["Lbs/Unit"] : 0;
     return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
   };
