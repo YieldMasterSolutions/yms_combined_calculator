@@ -29,7 +29,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Tailwind-compatible theming */
 body {
-  @apply bg-white text-gray-900 dark:bg-zinc-900 dark:text-white;
+  @apply bg-[var(--yms-body-bg)] text-[var(--yms-body-fg)];
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .label-yellow {
