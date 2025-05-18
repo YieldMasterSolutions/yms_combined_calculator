@@ -33,13 +33,7 @@ interface CalculatorFormProps {
   productsSeedTreatment: ProductData[];
   productsInFurrow: ProductData[];
   selectedSeedTreatmentProducts: { product: ProductData; applicationMethod: string }[];
-  setSelectedSeedTreatmentProducts: (
-    value: { product: ProductData; applicationMethod: string }[]
-  ) => void;
   selectedFoliarProducts: { product: ProductData; applicationMethod: string }[];
-  setSelectedFoliarProducts: (
-    value: { product: ProductData; applicationMethod: string }[]
-  ) => void;
   handleProductChange: (index: number, productName: string, type: "seed" | "foliar") => void;
   handleAppTypeChange: (index: number, method: string, type: "seed" | "foliar") => void;
 }
@@ -74,9 +68,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   productsSeedTreatment,
   productsInFurrow,
   selectedSeedTreatmentProducts,
-  setSelectedSeedTreatmentProducts,
   selectedFoliarProducts,
-  setSelectedFoliarProducts,
   handleProductChange,
   handleAppTypeChange,
 }) => {
