@@ -12,15 +12,9 @@ import { calculateProductCosts, ProductCalculation } from "../utils/calculations
 import { seedTypes, productsSeedTreatment, productsInFurrowFoliar, ProductData } from "../utils/data";
 
 export default function CombinedCalculator() {
-  const [darkMode, setDarkMode] = useState(false);
-
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
+    document.documentElement.classList.remove("dark");
+  }, []);
 
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
@@ -112,7 +106,6 @@ export default function CombinedCalculator() {
 
     const spp = getSeedsPerPound();
     const lpu = getLbsPerUnit();
-    const spu = seedsPerUnitOverride ? parseFloat(seedsPerUnitOverride) : getDefaultSeedsPerUnit();
 
     const selectedSeedProducts = selectedSeedTreatmentProducts
       .filter(p => p.product && p.product["Product Name"])
@@ -167,11 +160,7 @@ export default function CombinedCalculator() {
 
   return (
     <div
-      className={`max-w-5xl mx-auto p-6 space-y-8 min-h-screen transition-colors duration-300 ${
-        darkMode
-          ? "bg-gradient-to-b from-zinc-950 to-zinc-900 text-white"
-          : "bg-white text-black"
-      }`}
+      className="max-w-5xl mx-auto p-6 space-y-8 min-h-screen transition-colors duration-300 bg-white text-black"
       ref={resultRef}
     >
       <div className="flex justify-between items-center mb-6">
