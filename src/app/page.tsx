@@ -1,4 +1,5 @@
 // src/app/page.tsx
+
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -77,7 +78,7 @@ export default function CombinedCalculator() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!seedType || !acres || !seedingRate || !marketPrice) {
+    if (!seedType || !acres || !seedingRate) {
       console.warn("Missing required inputs");
       return;
     }
@@ -133,11 +134,9 @@ export default function CombinedCalculator() {
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
-
     setTimeout(() => {
       const htmlEl = document.documentElement;
       htmlEl.classList.remove("dark");
-
       html2canvas(resultRef.current!, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
@@ -147,7 +146,6 @@ export default function CombinedCalculator() {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
         pdf.save("YieldMaster_CombinedCalculation.pdf");
-
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
           htmlEl.classList.add("dark");
         }
@@ -158,22 +156,13 @@ export default function CombinedCalculator() {
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen" ref={resultRef}>
       <div className="flex justify-between items-center">
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="bg-zinc-700 text-white px-3 py-1 rounded shadow"
-        >
+        <button onClick={() => setDarkMode(!darkMode)} className="bg-zinc-700 text-white px-3 py-1 rounded shadow">
           Switch to {darkMode ? "Light" : "Dark"} Mode
         </button>
       </div>
 
       <div className="text-center mb-6">
-        <img
-          src="/yms_combined_calculator/YMSlogo5.png"
-          alt="YMS Logo"
-          width="160"
-          height="80"
-          className="mx-auto mb-4"
-        />
+        <img src="/yms_combined_calculator/YMSlogo5.png" alt="YMS Logo" width="160" height="80" className="mx-auto mb-4" />
         <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
         <p className="text-3xl font-bold text-zinc-400">Product Calculator</p>
       </div>
@@ -207,9 +196,7 @@ export default function CombinedCalculator() {
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
         selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
-        setSelectedSeedTreatmentProducts={setSelectedSeedTreatmentProducts}
         selectedFoliarProducts={selectedFoliarProducts}
-        setSelectedFoliarProducts={setSelectedFoliarProducts}
         handleProductChange={handleProductChange}
         handleAppTypeChange={handleAppTypeChange}
         onSubmit={handleFormSubmit}
