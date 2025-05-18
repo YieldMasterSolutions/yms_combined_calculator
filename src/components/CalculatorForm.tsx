@@ -32,7 +32,7 @@ interface CalculatorFormProps {
   setSelectedSeedTreatmentProducts: (value: { product: ProductData; applicationMethod: string }[]) => void;
   selectedFoliarProducts: { product: ProductData; applicationMethod: string }[];
   setSelectedFoliarProducts: (value: { product: ProductData; applicationMethod: string }[]) => void;
-  seedTypes: string[];
+  seedTypes: SeedType[];
   productsSeedTreatment: ProductData[];
   productsInFurrowFoliar: ProductData[];
   handleProductChange: (
@@ -97,8 +97,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             >
               <option value="">Select a crop...</option>
               {seedTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
+                <option key={type["Seed Type"]} value={type["Seed Type"]}>
+                  {type["Seed Type"]}
                 </option>
               ))}
             </select>
@@ -155,7 +155,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* ROI Inputs */}
+      {/* Discount & Market Price Inputs */}
       <div>
         <h2 className="text-blue-700 text-lg font-bold mb-2">Discount & Market Price Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
