@@ -11,7 +11,8 @@ import ResultsDisplay from "../components/ResultsDisplay";
 import {
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
-  calculateROI
+  calculateROI,
+  ProductCalculation
 } from "../utils/calculations";
 import {
   seedTypes,
@@ -43,8 +44,8 @@ export default function CombinedCalculator() {
   ]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
-  const [seedTreatmentResults, setSeedTreatmentResults] = useState<any[]>([]);
-  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<any[]>([]);
+  const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
+  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<ProductCalculation[]>([]);
   const [totalProgramCost, setTotalProgramCost] = useState(0);
   const [roi, setRoi] = useState({
     breakevenYield: 0,
