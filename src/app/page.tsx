@@ -1,5 +1,4 @@
 // src/app/page.tsx
-
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -208,9 +207,12 @@ export default function CombinedCalculator() {
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrow={productsInFurrowFoliar}
         selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
+        setSelectedSeedTreatmentProducts={setSelectedSeedTreatmentProducts}
         selectedFoliarProducts={selectedFoliarProducts}
+        setSelectedFoliarProducts={setSelectedFoliarProducts}
         handleProductChange={handleProductChange}
         handleAppTypeChange={handleAppTypeChange}
+        handleCalculate={handleFormSubmit}
         onSubmit={handleFormSubmit}
       />
 
