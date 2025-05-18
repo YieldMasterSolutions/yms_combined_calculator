@@ -1,30 +1,12 @@
 // src/components/ResultsDisplay.tsx
 
 import React from "react";
+import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
 
-interface ProductWithMethod {
-  productName: string;
-  applicationMethod: string;
-  totalSeeds?: number;
-  totalWeight?: number;
-  unitsToBeTreated?: number;
-  seedsPerUnit?: number;
-  applicationRate?: number;
-  applicationRateUnit?: string;
-  totalProductNeeded?: number;
-  totalProductUnits?: number;
-  packageDescription?: string;
-  productCostPerOz?: number;
-  originalTotalCostToGrower?: number;
-  discountedTotalCostToGrower?: number;
-  productCostPerUnitSeed?: number;
-  individualCostPerAcre?: number;
-}
-
 interface ResultsDisplayProps {
-  seedTreatmentResults: ProductWithMethod[];
-  inFurrowFoliarResults: ProductWithMethod[];
+  seedTreatmentResults: ProductCalculation[];
+  inFurrowFoliarResults: ProductCalculation[];
   totalProgramCost: number;
   roi: {
     breakevenYield: number;
@@ -48,9 +30,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {seedTreatmentResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
           <h2 className="text-blue-700 text-lg font-bold mb-4">
-            Seed Treatment – {result.productName} ({result.applicationMethod})
+            Seed Treatment – {result.productName} ({result.applicationRateUnit})
           </h2>
-
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Total Number of Seeds to be Treated</div>
             <div>{formatNumber(result.totalSeeds ?? 0)}</div>
@@ -76,34 +57,33 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>
-              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageDescription ?? "-"}
+              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}
             </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
             <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
 
             <div className="label-yellow">Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.originalTotalCostToGrower ?? 0)}</div>
+            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.discountedTotalCostToGrower ?? 0)}</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
 
             <div className="label-yellow">Product Cost per Unit of Treated Seed</div>
             <div>${formatNumber(result.productCostPerUnitSeed ?? 0)}</div>
 
             <div className="label-yellow">Individual Cost of Seed Treatment per Acre</div>
-            <div>${formatNumber(result.individualCostPerAcre ?? 0)}</div>
+            <div>${formatNumber(result.individualCostPerAcre)}</div>
           </div>
         </div>
       ))}
 
-      {/* In-Furrow / Foliar Product Costs */}
+      {/* In-Furrow / Foliar Results */}
       {inFurrowFoliarResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
           <h2 className="text-blue-700 text-lg font-bold mb-4">
-            {result.productName} ({result.applicationMethod})
+            {result.productName} ({result.applicationRateUnit})
           </h2>
-
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
             <div>
@@ -117,25 +97,25 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>
-              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageDescription ?? "-"}
+              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}
             </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
             <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
 
             <div className="label-yellow">Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.originalTotalCostToGrower ?? 0)}</div>
+            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.discountedTotalCostToGrower ?? 0)}</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
 
             <div className="label-yellow">Individual Cost per Acre</div>
-            <div>${formatNumber(result.individualCostPerAcre ?? 0)}</div>
+            <div>${formatNumber(result.individualCostPerAcre)}</div>
           </div>
         </div>
       ))}
 
-      {/* Total Program Cost and ROI */}
+      {/* Total Program Cost */}
       <div className="border p-4 rounded shadow">
         <h2 className="text-blue-700 text-lg font-bold mb-4">Total Program Cost</h2>
         <div className="grid grid-cols-2 gap-4">
@@ -144,6 +124,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       </div>
 
+      {/* ROI Section */}
       <div className="border p-4 rounded shadow">
         <h2 className="text-blue-700 text-lg font-bold mb-4">Breakeven ROI Calculations</h2>
         <div className="grid grid-cols-5 gap-4">

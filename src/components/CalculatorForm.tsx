@@ -35,16 +35,8 @@ interface CalculatorFormProps {
   seedTypes: SeedType[];
   productsSeedTreatment: ProductData[];
   productsInFurrowFoliar: ProductData[];
-  handleProductChange: (
-    index: number,
-    type: "seed" | "foliar",
-    product: ProductData
-  ) => void;
-  handleAppTypeChange: (
-    index: number,
-    type: "seed" | "foliar",
-    method: string
-  ) => void;
+  handleProductChange: (index: number, type: "seed" | "foliar", product: ProductData) => void;
+  handleAppTypeChange: (index: number, type: "seed" | "foliar", method: string) => void;
 }
 
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
@@ -154,8 +146,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Additional sections remain as in working version */}
     </form>
   );
 };

@@ -1,7 +1,8 @@
+// src/utils/calculations.ts
+
 import { ProductData } from "./data";
 
 export interface ProductCalculation {
-  applicationMethod?: string; // ✅ Added
   applicationRateUnit?: string;
   productName: string;
   productForm?: string;
@@ -29,6 +30,7 @@ export interface ProductCalculation {
   packageSize?: number;
   packageUnits?: string;
   packageType?: string;
+  applicationMethod?: string;
 }
 
 export function calculateSeedTreatmentData(
@@ -54,7 +56,8 @@ export function calculateSeedTreatmentData(
       seedsPerPound,
       lbsPerUnit,
       seedingRate,
-      seedingRateUnit
+      seedingRateUnit,
+      seedsPerUnitOverride
     );
     return { ...base, applicationMethod };
   });
@@ -121,7 +124,8 @@ export function calculateProductData(
   seedsPerPound: number,
   lbsPerUnit: number,
   seedingRate: number,
-  seedingRateUnit: string
+  seedingRateUnit: string,
+  seedsPerUnitOverride?: number
 ): ProductCalculation {
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
@@ -129,7 +133,9 @@ export function calculateProductData(
   let totalProductNeeded: number = 0;
 
   let seedsPerUnit: number;
-  if (seedType.toLowerCase() === "corn") {
+  if (seedsPerUnitOverride) {
+    seedsPerUnit = seedsPerUnitOverride;
+  } else if (seedType.toLowerCase() === "corn") {
     seedsPerUnit = 80000;
   } else if (seedType.toLowerCase() === "soybeans") {
     seedsPerUnit = 140000;
