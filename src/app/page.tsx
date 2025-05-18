@@ -206,7 +206,7 @@ export default function CombinedCalculator() {
         setSelectedSeedTreatmentProducts={setSelectedSeedTreatmentProducts}
         selectedFoliarProducts={selectedFoliarProducts}
         setSelectedFoliarProducts={setSelectedFoliarProducts}
-        seedTypes={seedTypes.map((type) => type["Seed Type"])}
+        seedTypes={seedTypes} {/* ✅ FIXED HERE */}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrowFoliar={productsInFurrowFoliar}
         handleProductChange={handleProductChange}
@@ -231,8 +231,8 @@ export default function CombinedCalculator() {
 
       <div ref={resultsRef} className="mt-10">
         <ResultsDisplay
-          seedTreatmentResults={seedTreatmentResults as any}
-          inFurrowFoliarResults={inFurrowFoliarResults as any}
+          seedTreatmentResults={seedTreatmentResults}
+          inFurrowFoliarResults={inFurrowFoliarResults}
           totalProgramCost={totalProgramCost}
           roi={roi}
         />
@@ -240,3 +240,4 @@ export default function CombinedCalculator() {
     </main>
   );
 }
+
