@@ -21,10 +21,6 @@ import {
 } from "../utils/data";
 import { ProductData } from "../utils/data";
 
-interface ProductWithMethod extends ProductCalculation {
-  applicationMethod: string;
-}
-
 export default function CombinedCalculator() {
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
@@ -114,7 +110,7 @@ export default function CombinedCalculator() {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    let position = 0;
+    const position = 0;
     pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
 
     if (pdfHeight > pdf.internal.pageSize.getHeight()) {
@@ -164,16 +160,6 @@ export default function CombinedCalculator() {
     setRoi(roiResult);
   };
 
-  const seedTreatmentResultsWithMethod: ProductWithMethod[] = seedTreatmentResults.map((result, index) => ({
-    ...result,
-    applicationMethod: selectedSeedTreatmentProducts[index]?.applicationMethod || "",
-  }));
-
-  const inFurrowFoliarResultsWithMethod: ProductWithMethod[] = inFurrowFoliarResults.map((result, index) => ({
-    ...result,
-    applicationMethod: selectedFoliarProducts[index]?.applicationMethod || "",
-  }));
-
   return (
     <main className="p-4">
       <div className="flex justify-between items-center mb-6">
@@ -220,7 +206,7 @@ export default function CombinedCalculator() {
         setSelectedSeedTreatmentProducts={setSelectedSeedTreatmentProducts}
         selectedFoliarProducts={selectedFoliarProducts}
         setSelectedFoliarProducts={setSelectedFoliarProducts}
-        seedTypes={seedTypes}
+        seedTypes={seedTypes.map((type) => type["Seed Type"])}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrowFoliar={productsInFurrowFoliar}
         handleProductChange={handleProductChange}
@@ -245,8 +231,8 @@ export default function CombinedCalculator() {
 
       <div ref={resultsRef} className="mt-10">
         <ResultsDisplay
-          seedTreatmentResults={seedTreatmentResultsWithMethod}
-          inFurrowFoliarResults={inFurrowFoliarResultsWithMethod}
+          seedTreatmentResults={seedTreatmentResults as any}
+          inFurrowFoliarResults={inFurrowFoliarResults as any}
           totalProgramCost={totalProgramCost}
           roi={roi}
         />
