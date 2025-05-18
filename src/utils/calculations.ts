@@ -32,6 +32,87 @@ export interface ProductCalculation {
   packageType?: string;
 }
 
+export function calculateSeedTreatmentData(
+  seedType: string,
+  acres: number,
+  seedingRate: number,
+  seedingRateUnit: string,
+  seedsPerPoundOverride: number | undefined,
+  dealerDiscount: number,
+  growerDiscount: number,
+  selectedProducts: { product: ProductData; applicationMethod: string }[],
+  seedsPerUnitOverride: number | undefined
+): ProductCalculation[] {
+  const seedsPerPound = seedsPerPoundOverride || 2800;
+  const lbsPerUnit = 50;
+  const productsData = selectedProducts.map(({ product, applicationMethod }) => {
+    const base = calculateProductData(
+      acres,
+      product,
+      dealerDiscount,
+      growerDiscount,
+      seedType,
+      seedsPerPound,
+      lbsPerUnit,
+      seedingRate,
+      seedingRateUnit
+    );
+    return { ...base, applicationMethod };
+  });
+  return productsData;
+}
+
+export function calculateAllFoliarProductCosts(
+  acres: number,
+  dealerDiscount: number,
+  growerDiscount: number,
+  selectedProducts: { product: ProductData; applicationMethod: string }[]
+): ProductCalculation[] {
+  const seedType = "corn";
+  const seedsPerPound = 2800;
+  const lbsPerUnit = 50;
+  const seedingRate = 32000;
+  const seedingRateUnit = "seeds/acre";
+
+  return selectedProducts.map(({ product, applicationMethod }) => {
+    const base = calculateProductData(
+      acres,
+      product,
+      dealerDiscount,
+      growerDiscount,
+      seedType,
+      seedsPerPound,
+      lbsPerUnit,
+      seedingRate,
+      seedingRateUnit
+    );
+    return { ...base, applicationMethod };
+  });
+}
+
+export function calculateROI(
+  totalCostPerAcre: number,
+  marketPrice: number,
+  unit: string
+): {
+  breakevenYield: number;
+  roi2to1: number;
+  roi3to1: number;
+  roi4to1: number;
+  roi5to1: number;
+  unit: string;
+} {
+  const breakevenYield = totalCostPerAcre / marketPrice;
+  return {
+    breakevenYield,
+    roi2to1: breakevenYield * 2,
+    roi3to1: breakevenYield * 3,
+    roi4to1: breakevenYield * 4,
+    roi5to1: breakevenYield * 5,
+    unit,
+  };
+}
+
 export function calculateProductData(
   acres: number,
   product: ProductData,
@@ -151,47 +232,5 @@ export function calculateProductData(
     packageSize,
     packageUnits,
     packageType,
-  };
-}
-
-export function calculateProductCosts(
-  acres: number,
-  selectedProducts: ProductData[],
-  dealerDiscount: number = 0,
-  growerDiscount: number = 0,
-  seedType: string,
-  seedsPerPound: number,
-  lbsPerUnit: number,
-  seedingRate: number,
-  seedingRateUnit: string
-): {
-  productsData: ProductCalculation[];
-  totalCostPerAcre: number;
-  totalUndiscountedCost: number;
-  totalDiscountedCost: number;
-} {
-  const productsData = selectedProducts.map((product) =>
-    calculateProductData(
-      acres,
-      product,
-      dealerDiscount,
-      growerDiscount,
-      seedType,
-      seedsPerPound,
-      lbsPerUnit,
-      seedingRate,
-      seedingRateUnit
-    )
-  );
-
-  const totalCostPerAcre = productsData.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
-  const totalUndiscountedCost = productsData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0);
-  const totalDiscountedCost = productsData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
-
-  return {
-    productsData,
-    totalCostPerAcre,
-    totalUndiscountedCost,
-    totalDiscountedCost,
   };
 }
