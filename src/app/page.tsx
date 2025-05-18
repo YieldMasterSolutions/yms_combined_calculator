@@ -11,13 +11,12 @@ import ResultsDisplay from "../components/ResultsDisplay";
 import {
   calculateSeedTreatmentData,
   calculateAllFoliarProductCosts,
-  calculateROI,
-  ProductCalculation,
+  calculateROI
 } from "../utils/calculations";
 import {
   seedTypes,
   productsSeedTreatment,
-  productsInFurrowFoliar,
+  productsInFurrowFoliar
 } from "../utils/data";
 import { ProductData } from "../utils/data";
 
@@ -36,11 +35,11 @@ export default function CombinedCalculator() {
   const [dealerName, setDealerName] = useState("");
 
   const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState([
-    { product: productsSeedTreatment[0], applicationMethod: "" },
+    { product: productsSeedTreatment[0], applicationMethod: "" }
   ]);
 
   const [selectedFoliarProducts, setSelectedFoliarProducts] = useState([
-    { product: productsInFurrowFoliar[0], applicationMethod: "" },
+    { product: productsInFurrowFoliar[0], applicationMethod: "" }
   ]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -53,7 +52,7 @@ export default function CombinedCalculator() {
     roi3to1: 0,
     roi4to1: 0,
     roi5to1: 0,
-    unit: "",
+    unit: ""
   });
 
   const [darkMode, setDarkMode] = useState(false);
@@ -76,9 +75,11 @@ export default function CombinedCalculator() {
       ? [...selectedSeedTreatmentProducts]
       : [...selectedFoliarProducts];
     updated[index].product = product;
-    type === "seed"
-      ? setSelectedSeedTreatmentProducts(updated)
-      : setSelectedFoliarProducts(updated);
+    if (type === "seed") {
+      setSelectedSeedTreatmentProducts(updated);
+    } else {
+      setSelectedFoliarProducts(updated);
+    }
   };
 
   const handleAppTypeChange = (
@@ -90,9 +91,11 @@ export default function CombinedCalculator() {
       ? [...selectedSeedTreatmentProducts]
       : [...selectedFoliarProducts];
     updated[index].applicationMethod = method;
-    type === "seed"
-      ? setSelectedSeedTreatmentProducts(updated)
-      : setSelectedFoliarProducts(updated);
+    if (type === "seed") {
+      setSelectedSeedTreatmentProducts(updated);
+    } else {
+      setSelectedFoliarProducts(updated);
+    }
   };
 
   const generatePDF = async () => {
@@ -102,7 +105,7 @@ export default function CombinedCalculator() {
     const canvas = await html2canvas(input, {
       scale: 2,
       useCORS: true,
-      scrollY: -window.scrollY,
+      scrollY: -window.scrollY
     });
 
     const imgData = canvas.toDataURL("image/png");
@@ -110,8 +113,7 @@ export default function CombinedCalculator() {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    const position = 0;
-    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
 
     if (pdfHeight > pdf.internal.pageSize.getHeight()) {
       pdf.addPage();
@@ -151,15 +153,11 @@ export default function CombinedCalculator() {
           roi3to1: 0,
           roi4to1: 0,
           roi5to1: 0,
-          unit: "",
+          unit: ""
         };
 
-    setSeedTreatmentResults(
-      seedResults.map((r, i) => ({ ...r, applicationMethod: selectedSeedTreatmentProducts[i].applicationMethod }))
-    );
-    setInFurrowFoliarResults(
-      foliarResults.map((r, i) => ({ ...r, applicationMethod: selectedFoliarProducts[i].applicationMethod }))
-    );
+    setSeedTreatmentResults(seedResults);
+    setInFurrowFoliarResults(foliarResults);
     setTotalProgramCost(totalCost);
     setRoi(roiResult);
   };

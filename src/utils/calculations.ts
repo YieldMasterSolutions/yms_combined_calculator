@@ -1,8 +1,7 @@
-// src/utils/calculations.ts
-
 import { ProductData } from "./data";
 
 export interface ProductCalculation {
+  applicationMethod?: string; // ✅ Added
   applicationRateUnit?: string;
   productName: string;
   productForm?: string;

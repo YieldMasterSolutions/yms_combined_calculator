@@ -1,11 +1,25 @@
 // src/components/ResultsDisplay.tsx
 
 import React from "react";
-import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
 
-interface ProductWithMethod extends ProductCalculation {
+interface ProductWithMethod {
+  productName: string;
   applicationMethod: string;
+  totalSeeds?: number;
+  totalWeight?: number;
+  unitsToBeTreated?: number;
+  seedsPerUnit?: number;
+  applicationRate?: number;
+  applicationRateUnit?: string;
+  totalProductNeeded?: number;
+  totalProductUnits?: number;
+  packageDescription?: string;
+  productCostPerOz?: number;
+  originalTotalCostToGrower?: number;
+  discountedTotalCostToGrower?: number;
+  productCostPerUnitSeed?: number;
+  individualCostPerAcre?: number;
 }
 
 interface ResultsDisplayProps {
@@ -39,46 +53,46 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Total Number of Seeds to be Treated</div>
-            <div>{formatNumber(result.totalSeeds)}</div>
+            <div>{formatNumber(result.totalSeeds ?? 0)}</div>
 
             <div className="label-yellow">Total Weight of Seeds to be Treated</div>
-            <div>{formatNumber(result.totalWeight)} lbs</div>
+            <div>{formatNumber(result.totalWeight ?? 0)} lbs</div>
 
             <div className="label-yellow">Total Number of Units to be Treated</div>
-            <div>{formatNumber(result.unitsToBeTreated)}</div>
+            <div>{formatNumber(result.unitsToBeTreated ?? 0)}</div>
 
             <div className="label-yellow">Number of Seeds per Unit</div>
-            <div>{formatNumber(result.seedsPerUnit)}</div>
+            <div>{formatNumber(result.seedsPerUnit ?? 0)}</div>
 
             <div className="label-yellow">Application Rate</div>
             <div>
-              {formatNumber(result.applicationRate)} {result.applicationRateUnit} / unit of seed
+              {result.applicationRate} {result.applicationRateUnit} / unit of seed
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
             <div>
-              {formatNumber(result.totalProductNeeded)} {result.applicationRateUnit}
+              {formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}
             </div>
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>
-              {formatNumber(result.totalProductUnits)} – {result.productPackageString}
+              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageDescription ?? "-"}
             </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
-            <div>${formatNumber(result.productCostPerOz)}</div>
+            <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
 
             <div className="label-yellow">Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
+            <div>${formatNumber(result.originalTotalCostToGrower ?? 0)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower ?? 0)}</div>
 
             <div className="label-yellow">Product Cost per Unit of Treated Seed</div>
-            <div>${formatNumber(result.productCostPerUnitSeed)}</div>
+            <div>${formatNumber(result.productCostPerUnitSeed ?? 0)}</div>
 
             <div className="label-yellow">Individual Cost of Seed Treatment per Acre</div>
-            <div>${formatNumber(result.individualCostPerAcre)}</div>
+            <div>${formatNumber(result.individualCostPerAcre ?? 0)}</div>
           </div>
         </div>
       ))}
@@ -93,30 +107,30 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
             <div>
-              {formatNumber(result.applicationRate)} {result.applicationRateUnit} / acre
+              {result.applicationRate} {result.applicationRateUnit} / acre
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
             <div>
-              {formatNumber(result.totalProductNeeded)} {result.applicationRateUnit}
+              {formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}
             </div>
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>
-              {formatNumber(result.totalProductUnits)} – {result.productPackageString}
+              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageDescription ?? "-"}
             </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
-            <div>${formatNumber(result.productCostPerOz)}</div>
+            <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
 
             <div className="label-yellow">Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
+            <div>${formatNumber(result.originalTotalCostToGrower ?? 0)}</div>
 
             <div className="label-yellow">Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower ?? 0)}</div>
 
             <div className="label-yellow">Individual Cost per Acre</div>
-            <div>${formatNumber(result.individualCostPerAcre)}</div>
+            <div>${formatNumber(result.individualCostPerAcre ?? 0)}</div>
           </div>
         </div>
       ))}
