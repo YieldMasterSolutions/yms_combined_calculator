@@ -61,7 +61,8 @@ export default function CombinedCalculator() {
       overrideSeeds,
       seedsPerUnitOverride,
       dealerDiscount,
-      growerDiscount
+      growerDiscount,
+      marketPrice // ✅ 9th argument correctly restored
     );
 
     setSeedTreatmentResults(productsData);
