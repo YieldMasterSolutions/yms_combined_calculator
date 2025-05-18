@@ -212,7 +212,6 @@ export default function CombinedCalculator() {
         setSelectedFoliarProducts={setSelectedFoliarProducts}
         handleProductChange={handleProductChange}
         handleAppTypeChange={handleAppTypeChange}
-        handleCalculate={handleFormSubmit}
         onSubmit={handleFormSubmit}
       />
 
