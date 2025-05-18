@@ -206,7 +206,7 @@ export default function CombinedCalculator() {
         setSelectedSeedTreatmentProducts={setSelectedSeedTreatmentProducts}
         selectedFoliarProducts={selectedFoliarProducts}
         setSelectedFoliarProducts={setSelectedFoliarProducts}
-        seedTypes={seedTypes} {/* ✅ FIXED HERE */}
+        seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
         productsInFurrowFoliar={productsInFurrowFoliar}
         handleProductChange={handleProductChange}
@@ -240,4 +240,3 @@ export default function CombinedCalculator() {
     </main>
   );
 }
-
