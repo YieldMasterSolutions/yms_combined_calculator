@@ -8,18 +8,12 @@
   --foreground: #171717;
   --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --font-mono: var(--font-geist-mono), Consolas, monospace;
-  --yms-blue: #0d3e8c;
-  --yms-yellow: #ffc627;
-  --label-color: #444444;
-  --section-header-color: #0d3e8c;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --label-color: #ffc627;
-    --section-header-color: #4eaaff;
   }
 }
 
@@ -37,19 +31,30 @@ img {
   display: block;
 }
 
-/* Label styling */
+/* Headings styling */
+h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
 .label-yellow {
-  color: var(--label-color);
+  color: #facc15;
   font-weight: 600;
 }
 
-.section-header-blue {
-  color: var(--section-header-color);
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+/* Section card styling */
+.card-section {
+  background-color: #0f172a;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
 }
 
 /* PRINT OVERRIDES */
