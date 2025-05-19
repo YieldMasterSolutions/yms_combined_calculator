@@ -39,44 +39,46 @@ interface CalculatorFormProps {
   handleAppTypeChange: (index: number, type: "seed" | "foliar", method: string) => void;
 }
 
-const CalculatorForm: React.FC<CalculatorFormProps> = ({
-  seedType,
-  setSeedType,
-  acres,
-  setAcres,
-  seedingRate,
-  setSeedingRate,
-  seedingRateUnit,
-  setSeedingRateUnit,
-  overrideSeeds,
-  setOverrideSeeds,
-  seedsPerUnitOverride,
-  setSeedsPerUnitOverride,
-  marketPrice,
-  setMarketPrice,
-  marketPriceUnit,
-  setMarketPriceUnit,
-  dealerDiscount,
-  setDealerDiscount,
-  growerDiscount,
-  setGrowerDiscount,
-  growerName,
-  setGrowerName,
-  dealerName,
-  setDealerName,
-  selectedSeedTreatmentProducts,
-  setSelectedSeedTreatmentProducts,
-  selectedFoliarProducts,
-  setSelectedFoliarProducts,
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-  handleProductChange,
-  handleAppTypeChange,
-}) => {
+const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
+  const {
+    seedType,
+    setSeedType,
+    acres,
+    setAcres,
+    seedingRate,
+    setSeedingRate,
+    seedingRateUnit,
+    setSeedingRateUnit,
+    overrideSeeds,
+    setOverrideSeeds,
+    seedsPerUnitOverride,
+    setSeedsPerUnitOverride,
+    // Silence unused warnings for now
+    marketPrice,
+    setMarketPrice,
+    marketPriceUnit,
+    setMarketPriceUnit,
+    dealerDiscount,
+    setDealerDiscount,
+    growerDiscount,
+    setGrowerDiscount,
+    growerName,
+    setGrowerName,
+    dealerName,
+    setDealerName,
+    selectedSeedTreatmentProducts,
+    setSelectedSeedTreatmentProducts,
+    selectedFoliarProducts,
+    setSelectedFoliarProducts,
+    productsSeedTreatment,
+    productsInFurrowFoliar,
+    handleProductChange,
+    handleAppTypeChange,
+    seedTypes
+  } = props;
+
   return (
     <form className="space-y-6">
-      {/* Crop Inputs */}
       <div>
         <h2 className="text-blue-700 text-lg font-bold mb-2">Crop Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
