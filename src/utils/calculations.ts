@@ -59,7 +59,7 @@ export function calculateSeedTreatmentData(
       seedingRateUnit,
       seedsPerUnitOverride
     );
-    return { ...base.productsData[0], applicationMethod };
+    return { ...base, applicationMethod };
   });
 }
 
@@ -87,7 +87,7 @@ export function calculateAllFoliarProductCosts(
       seedingRate,
       seedingRateUnit
     );
-    return { ...base.productsData[0], applicationMethod };
+    return { ...base, applicationMethod };
   });
 }
 
@@ -125,12 +125,7 @@ export function calculateProductData(
   seedingRate: number,
   seedingRateUnit: string,
   seedsPerUnitOverride?: number
-): {
-  productsData: ProductCalculation[];
-  totalCostPerAcre: number;
-  totalUndiscountedCost: number;
-  totalDiscountedCost: number;
-} {
+): ProductCalculation {
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
   let rateUnit: string | undefined;
@@ -204,7 +199,7 @@ export function calculateProductData(
   const lbsPerBushel = seedType.toLowerCase() === "corn" ? 56 : 60;
   const totalBushels = totalWeight / lbsPerBushel;
 
-  const result: ProductCalculation = {
+  return {
     applicationRateUnit,
     productName: product["Product Name"],
     productForm: product["Product Form"],
@@ -232,12 +227,5 @@ export function calculateProductData(
     packageSize,
     packageUnits,
     packageType,
-  };
-
-  return {
-    productsData: [result],
-    totalCostPerAcre: individualCostPerAcre,
-    totalUndiscountedCost: totalCostToGrower,
-    totalDiscountedCost: discountedCostToGrower,
   };
 }
