@@ -72,10 +72,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   productsSeedTreatment,
   productsInFurrowFoliar,
   handleProductChange,
-  handleAppTypeChange
+  handleAppTypeChange,
 }) => {
   return (
     <form className="space-y-6">
+      {/* Crop Inputs */}
       <div>
         <h2 className="text-blue-700 text-lg font-bold mb-2">Crop Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
@@ -146,71 +147,74 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
+      {/* Product Inputs – Seed Treatment */}
       <div>
-        <h2 className="text-blue-700 text-lg font-bold mb-2">Discount & Market Price Inputs</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block font-semibold">Dealer/Rep Name</label>
-            <input
-              type="text"
-              value={dealerName}
-              onChange={(e) => setDealerName(e.target.value)}
-              className="w-full border p-2"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold">Grower Name</label>
-            <input
-              type="text"
-              value={growerName}
-              onChange={(e) => setGrowerName(e.target.value)}
-              className="w-full border p-2"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold">Dealer Discount (%)</label>
-            <input
-              type="number"
-              value={dealerDiscount}
-              onChange={(e) => setDealerDiscount(e.target.value)}
-              className="w-full border p-2"
-              placeholder="Optional"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold">Grower Discount (%)</label>
-            <input
-              type="number"
-              value={growerDiscount}
-              onChange={(e) => setGrowerDiscount(e.target.value)}
-              className="w-full border p-2"
-              placeholder="Optional"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold">Market Price</label>
-            <input
-              type="number"
-              value={marketPrice}
-              onChange={(e) => setMarketPrice(e.target.value)}
-              className="w-full border p-2"
-              placeholder="Optional"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold">Price Unit</label>
+        <h2 className="text-blue-700 text-lg font-bold mt-6 mb-2">Seed Treatment Products</h2>
+        {selectedSeedTreatmentProducts.map((entry, index) => (
+          <div key={index} className="mb-4">
             <select
-              value={marketPriceUnit}
-              onChange={(e) => setMarketPriceUnit(e.target.value)}
+              value={entry.product["Product Name"]}
+              onChange={(e) => {
+                const product = productsSeedTreatment.find(
+                  (p) => p["Product Name"] === e.target.value
+                );
+                if (product) handleProductChange(index, "seed", product);
+              }}
+              className="w-full border p-2 mb-2"
+            >
+              <option value="">Select a product...</option>
+              {productsSeedTreatment.map((product) => (
+                <option key={product["Product Name"]} value={product["Product Name"]}>
+                  {product["Product Name"]} – {product["Package Size"]} {product["Package Units"]} – {product["Application Rate"]} {product["Application Rate Unit"]} per unit
+                </option>
+              ))}
+            </select>
+            <select
+              value={entry.applicationMethod}
+              onChange={(e) => handleAppTypeChange(index, "seed", e.target.value)}
               className="w-full border p-2"
             >
-              <option value="">Select unit...</option>
-              <option value="bu">$/bu</option>
-              <option value="cwt">$/cwt</option>
-              <option value="ton">$/ton</option>
+              <option value="">Select application method...</option>
+              <option value="Seed Treatment">Seed Treatment</option>
+              <option value="Planter Box Treatment">Planter Box Treatment</option>
             </select>
           </div>
-        </div>
+        ))}
+      </div>
+
+      {/* Product Inputs – In-Furrow / Foliar */}
+      <div>
+        <h2 className="text-blue-700 text-lg font-bold mt-6 mb-2">In-Furrow / Foliar Products</h2>
+        {selectedFoliarProducts.map((entry, index) => (
+          <div key={index} className="mb-4">
+            <select
+              value={entry.product["Product Name"]}
+              onChange={(e) => {
+                const product = productsInFurrowFoliar.find(
+                  (p) => p["Product Name"] === e.target.value
+                );
+                if (product) handleProductChange(index, "foliar", product);
+              }}
+              className="w-full border p-2 mb-2"
+            >
+              <option value="">Select a product...</option>
+              {productsInFurrowFoliar.map((product) => (
+                <option key={product["Product Name"]} value={product["Product Name"]}>
+                  {product["Product Name"]} – {product["Package Size"]} {product["Package Units"]} – {product["Application Rate"]} {product["Application Rate Unit"]} per acre
+                </option>
+              ))}
+            </select>
+            <select
+              value={entry.applicationMethod}
+              onChange={(e) => handleAppTypeChange(index, "foliar", e.target.value)}
+              className="w-full border p-2"
+            >
+              <option value="">Select application method...</option>
+              <option value="In-Furrow">In-Furrow</option>
+              <option value="Foliar">Foliar</option>
+            </select>
+          </div>
+        ))}
       </div>
     </form>
   );
