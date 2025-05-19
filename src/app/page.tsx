@@ -148,9 +148,6 @@ export default function CombinedCalculator() {
       )
     );
 
-    const seedResultsCombined = seedResultSetArray.flatMap(r => r.productsData);
-    const foliarResultsCombined = foliarResultSetArray.flatMap(r => r.productsData);
-
     const totalSeedCost = seedResultSetArray.reduce((sum, r) => sum + r.totalCostPerAcre, 0);
     const totalFoliarCost = foliarResultSetArray.reduce((sum, r) => sum + r.totalCostPerAcre, 0);
     const totalUndiscounted = seedResultSetArray.reduce((sum, r) => sum + r.totalUndiscountedCost, 0) +
@@ -158,18 +155,19 @@ export default function CombinedCalculator() {
     const totalDiscounted = seedResultSetArray.reduce((sum, r) => sum + r.totalDiscountedCost, 0) +
                             foliarResultSetArray.reduce((sum, r) => sum + r.totalDiscountedCost, 0);
 
-    setSeedResults(seedResultsCombined);
-    setFoliarResults(foliarResultsCombined);
+    setSeedResults(seedResultSetArray);
+    setFoliarResults(foliarResultSetArray);
     setTotalCostPerAcre(totalSeedCost + totalFoliarCost);
     setTotalUndiscountedCost(totalUndiscounted);
     setTotalDiscountedCost(totalDiscounted);
 
     const mp = parseFloat(marketPrice);
-    setBreakevenYield(mp > 0 ? totalSeedCost + totalFoliarCost / mp : null);
-    setRoi2(mp > 0 ? (2 * (totalSeedCost + totalFoliarCost)) / mp : null);
-    setRoi3(mp > 0 ? (3 * (totalSeedCost + totalFoliarCost)) / mp : null);
-    setRoi4(mp > 0 ? (4 * (totalSeedCost + totalFoliarCost)) / mp : null);
-    setRoi5(mp > 0 ? (5 * (totalSeedCost + totalFoliarCost)) / mp : null);
+    const totalCost = totalSeedCost + totalFoliarCost;
+    setBreakevenYield(mp > 0 ? totalCost / mp : null);
+    setRoi2(mp > 0 ? (2 * totalCost) / mp : null);
+    setRoi3(mp > 0 ? (3 * totalCost) / mp : null);
+    setRoi4(mp > 0 ? (4 * totalCost) / mp : null);
+    setRoi5(mp > 0 ? (5 * totalCost) / mp : null);
   };
 
   const downloadPDF = () => {
