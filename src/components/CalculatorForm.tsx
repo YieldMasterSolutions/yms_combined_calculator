@@ -38,6 +38,25 @@ interface CalculatorFormProps {
   handleAppTypeChange: (index: number, method: string, type: "seed" | "foliar") => void;
 }
 
+const getTreatmentCapacity = (product: ProductData): string => {
+  const rate = product["Application Rate"] ?? 0;
+  const size = product["Package Size"] ?? 0;
+  if (!rate || !size) return "";
+  const capacity = Math.floor(size / rate);
+  const unitLabel = product["Application Rate Unit"]?.includes("/acre") ? "acres" : "units";
+  return `Treats ${capacity} ${unitLabel}`;
+};
+
+const formatProductLabel = (product: ProductData): string => {
+  const name = product["Product Name"];
+  const size = product["Package Size"];
+  const units = product["Package Units"];
+  const rate = product["Application Rate"];
+  const rateUnit = product["Application Rate Unit"];
+  const capacity = getTreatmentCapacity(product);
+  return `${name} – ${size} ${units} – ${rate} ${rateUnit} – ${capacity}`;
+};
+
 const CalculatorForm: React.FC<CalculatorFormProps> = ({
   seedType,
   setSeedType,
@@ -84,18 +103,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     const seedsPerLb = found ? parseFloat(found["Seeds/lb"]) : 0;
     const lbsPerUnit = found ? found["Lbs/Unit"] : 0;
     return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
-  };
-
-  const getSeedProductLabel = (p: ProductData) => {
-    const rate = p["Application Rate"] ?? 1;
-    const cap = Math.floor(p["Package Size"] / rate);
-    return `${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} - ${p["Package Type"]} – Treats ${cap} units`;
-  };
-
-  const getFoliarProductLabel = (p: ProductData) => {
-    const rate = p["Application Rate"] ?? 1;
-    const cap = Math.floor(p["Package Size"] / rate);
-    return `${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} - ${p["Package Type"]} – Treats ${cap} acres`;
   };
 
   return (
@@ -194,7 +201,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <option value="">Select Seed Treatment Product</option>
             {productsSeedTreatment.map((p) => (
               <option key={p["Product Name"]} value={p["Product Name"]}>
-                {getSeedProductLabel(p)}
+                {formatProductLabel(p)}
               </option>
             ))}
           </select>
@@ -221,7 +228,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <option value="">Select In-Furrow / Foliar Product</option>
             {productsInFurrow.map((p) => (
               <option key={p["Product Name"]} value={p["Product Name"]}>
-                {getFoliarProductLabel(p)}
+                {formatProductLabel(p)}
               </option>
             ))}
           </select>

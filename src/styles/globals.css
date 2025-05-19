@@ -8,12 +8,18 @@
   --foreground: #171717;
   --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --font-mono: var(--font-geist-mono), Consolas, monospace;
+  --yms-blue: #0d3e8c;
+  --yms-yellow: #ffc627;
+  --label-color: #444444;
+  --section-header-color: #0d3e8c;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --label-color: #ffc627;
+    --section-header-color: #4eaaff;
   }
 }
 
@@ -21,6 +27,29 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Fix logo scaling */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Label styling */
+.label-yellow {
+  color: var(--label-color);
+  font-weight: 600;
+}
+
+.section-header-blue {
+  color: var(--section-header-color);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 /* PRINT OVERRIDES */
@@ -53,5 +82,23 @@ body {
   .border-gray-600,
   .border-gray-700 {
     border-color: #000000 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+  }
+
+  button, select, input, label {
+    color: #000000 !important;
+    background-color: transparent !important;
+    border-color: #000000 !important;
+  }
+
+  .border,
+  .shadow,
+  .rounded,
+  .p-4,
+  .p-6 {
+    all: revert;
   }
 }

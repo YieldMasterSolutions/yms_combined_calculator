@@ -7,6 +7,8 @@ import { jsPDF } from "jspdf";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
+import ThemeToggle from "../components/ThemeToggle";
+
 import {
   calculateProductData,
   ProductCalculation,
@@ -172,13 +174,9 @@ export default function CombinedCalculator() {
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
-
-    const htmlEl = document.documentElement;
-    const originalDark = htmlEl.classList.contains("dark");
-
     setTimeout(() => {
+      const htmlEl = document.documentElement;
       htmlEl.classList.remove("dark");
-
       html2canvas(resultRef.current!, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
@@ -186,12 +184,10 @@ export default function CombinedCalculator() {
         const margin = 20;
         const imgWidth = pageWidth - margin * 2;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
         pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
         pdf.save("YieldMaster_CombinedCalculation.pdf");
-
-        if (originalDark) {
-          requestAnimationFrame(() => htmlEl.classList.add("dark"));
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          htmlEl.classList.add("dark");
         }
       });
     }, 200);
@@ -202,6 +198,8 @@ export default function CombinedCalculator() {
       className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
       ref={resultRef}
     >
+      <ThemeToggle />
+
       <div className="flex justify-between items-center">
         <img
           src="/yms_combined_calculator/ymslogo5.png"

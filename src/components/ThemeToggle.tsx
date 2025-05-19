@@ -8,29 +8,29 @@ const ThemeToggle: React.FC = () => {
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
-    }
+    // On mount, check localStorage or default to light
+    const storedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initial = storedTheme || (prefersDark ? "dark" : "light");
+    setTheme(initial);
+    document.documentElement.classList.toggle("dark", initial === "dark");
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
+    const next = theme === "light" ? "dark" : "light";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
   };
 
   return (
-    <div className="text-right mb-4">
-      <button
-        onClick={toggleTheme}
-        className="text-sm px-4 py-1 border border-gray-400 rounded bg-white text-black dark:bg-black dark:text-white"
-      >
-        Switch to {theme === "light" ? "Dark" : "Light"} Mode
-      </button>
-    </div>
+    <button
+      onClick={toggleTheme}
+      className="absolute top-4 right-4 bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-600 text-sm"
+      aria-label="Toggle Theme"
+    >
+      {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+    </button>
   );
 };
 

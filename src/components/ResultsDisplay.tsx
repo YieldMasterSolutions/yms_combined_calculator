@@ -28,21 +28,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   totalDiscountedCost,
   roi,
 }) => {
-  const getHeaderLabel = (result: ProductCalculation): string => {
-    const cap = result.treatmentCapacity ?? 0;
-    const treatmentLabel = result.applicationMethod?.includes("Seed") || result.applicationMethod?.includes("Planter")
-      ? `Treats ${cap} units`
-      : `Treats ${cap} acres`;
-    return `${result.productName} – ${result.packageSize} ${result.packageUnits} - ${result.packageType} – ${treatmentLabel}`;
-  };
-
   return (
     <div className="mt-10 space-y-10">
       {/* Seed Treatment Results */}
       {seedTreatmentResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
-          <h2 className="text-blue-700 text-lg font-bold mb-4">
-            {getHeaderLabel(result)}
+          <h2 className="section-header-blue">
+            {result.productName} ({result.applicationMethod})
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Total Number of Seeds to be Treated</div>
@@ -59,7 +51,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
             <div className="label-yellow">Application Rate</div>
             <div>
-              {result.applicationRate} {result.applicationRateUnit}
+              {result.applicationRate} {result.applicationRateUnit} / unit of seed
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
@@ -93,13 +85,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {/* In-Furrow / Foliar Results */}
       {inFurrowFoliarResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
-          <h2 className="text-blue-700 text-lg font-bold mb-4">
-            {getHeaderLabel(result)}
+          <h2 className="section-header-blue">
+            {result.productName} ({result.applicationMethod})
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
             <div>
-              {result.applicationRate} {result.applicationRateUnit}
+              {result.applicationRate} {result.applicationRateUnit} / acre
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
@@ -129,7 +121,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* Total Program Cost */}
       <div className="border p-4 rounded shadow">
-        <h2 className="text-blue-700 text-lg font-bold mb-4">Total Program Cost</h2>
+        <h2 className="section-header-blue">Total Program Cost</h2>
         <div className="grid grid-cols-2 gap-4">
           <div className="label-yellow">Total Biological Program Cost per Acre</div>
           <div>${formatNumber(totalCostPerAcre)}</div>
@@ -144,7 +136,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       {/* ROI Section */}
       <div className="border p-4 rounded shadow">
-        <h2 className="text-blue-700 text-lg font-bold mb-4">Breakeven ROI Calculations</h2>
+        <h2 className="section-header-blue">Breakeven ROI Calculations</h2>
         <div className="grid grid-cols-5 gap-4">
           <div>
             <div className="label-yellow">Breakeven Yield per Acre</div>
