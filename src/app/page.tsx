@@ -8,7 +8,7 @@ import { jsPDF } from "jspdf";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import {
-  calculateProductCosts,
+  calculateProductData,
   ProductCalculation,
 } from "../utils/calculations";
 import {
@@ -120,7 +120,7 @@ export default function CombinedCalculator() {
       )
       .map((p) => p.product);
 
-    const seedResultSet = calculateProductCosts(
+    const seedResultSet = calculateProductData(
       acresNum,
       selectedSeedProducts,
       dealer,
@@ -132,7 +132,7 @@ export default function CombinedCalculator() {
       seedingRateUnit
     );
 
-    const foliarResultSet = calculateProductCosts(
+    const foliarResultSet = calculateProductData(
       acresNum,
       selectedFoliarProductsFiltered,
       dealer,
