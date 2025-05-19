@@ -7,7 +7,9 @@ import { formatNumber } from "../utils/formatNumber";
 interface ResultsDisplayProps {
   seedTreatmentResults: ProductCalculation[];
   inFurrowFoliarResults: ProductCalculation[];
-  totalProgramCost: number;
+  totalCostPerAcre: number;
+  totalUndiscountedCost: number;
+  totalDiscountedCost: number;
   roi: {
     breakevenYield: number;
     roi2to1: number;
@@ -21,16 +23,26 @@ interface ResultsDisplayProps {
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   seedTreatmentResults,
   inFurrowFoliarResults,
-  totalProgramCost,
+  totalCostPerAcre,
+  totalUndiscountedCost,
+  totalDiscountedCost,
   roi,
 }) => {
+  const getHeaderLabel = (result: ProductCalculation): string => {
+    const cap = result.treatmentCapacity ?? 0;
+    const treatmentLabel = result.applicationMethod?.includes("Seed") || result.applicationMethod?.includes("Planter")
+      ? `Treats ${cap} units`
+      : `Treats ${cap} acres`;
+    return `${result.productName} – ${result.packageSize} ${result.packageUnits} - ${result.packageType} – ${treatmentLabel}`;
+  };
+
   return (
     <div className="mt-10 space-y-10">
       {/* Seed Treatment Results */}
       {seedTreatmentResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
           <h2 className="text-blue-700 text-lg font-bold mb-4">
-            {result.productName} ({result.applicationMethod})
+            {getHeaderLabel(result)}
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Total Number of Seeds to be Treated</div>
@@ -47,7 +59,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
             <div className="label-yellow">Application Rate</div>
             <div>
-              {result.applicationRate} {result.applicationRateUnit} / unit of seed
+              {result.applicationRate} {result.applicationRateUnit}
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
@@ -82,12 +94,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {inFurrowFoliarResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
           <h2 className="text-blue-700 text-lg font-bold mb-4">
-            {result.productName} ({result.applicationMethod})
+            {getHeaderLabel(result)}
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
             <div>
-              {result.applicationRate} {result.applicationRateUnit} / acre
+              {result.applicationRate} {result.applicationRateUnit}
             </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
@@ -120,7 +132,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <h2 className="text-blue-700 text-lg font-bold mb-4">Total Program Cost</h2>
         <div className="grid grid-cols-2 gap-4">
           <div className="label-yellow">Total Biological Program Cost per Acre</div>
-          <div>${formatNumber(totalProgramCost)}</div>
+          <div>${formatNumber(totalCostPerAcre)}</div>
+
+          <div className="label-yellow">Total Undiscounted Program Cost</div>
+          <div>${formatNumber(totalUndiscountedCost)}</div>
+
+          <div className="label-yellow">Total Discounted Program Cost</div>
+          <div>${formatNumber(totalDiscountedCost)}</div>
         </div>
       </div>
 

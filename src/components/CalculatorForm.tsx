@@ -86,6 +86,18 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
   };
 
+  const getSeedProductLabel = (p: ProductData) => {
+    const rate = p["Application Rate"] ?? 1;
+    const cap = Math.floor(p["Package Size"] / rate);
+    return `${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} - ${p["Package Type"]} – Treats ${cap} units`;
+  };
+
+  const getFoliarProductLabel = (p: ProductData) => {
+    const rate = p["Application Rate"] ?? 1;
+    const cap = Math.floor(p["Package Size"] / rate);
+    return `${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} - ${p["Package Type"]} – Treats ${cap} acres`;
+  };
+
   return (
     <form onSubmit={onSubmit} className="space-y-6 text-white">
       <h2 className="text-xl font-bold text-blue-600">Crop Inputs</h2>
@@ -182,7 +194,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <option value="">Select Seed Treatment Product</option>
             {productsSeedTreatment.map((p) => (
               <option key={p["Product Name"]} value={p["Product Name"]}>
-                {p["Product Name"]}
+                {getSeedProductLabel(p)}
               </option>
             ))}
           </select>
@@ -209,7 +221,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <option value="">Select In-Furrow / Foliar Product</option>
             {productsInFurrow.map((p) => (
               <option key={p["Product Name"]} value={p["Product Name"]}>
-                {p["Product Name"]}
+                {getFoliarProductLabel(p)}
               </option>
             ))}
           </select>

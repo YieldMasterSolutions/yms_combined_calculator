@@ -108,7 +108,7 @@ export default function CombinedCalculator() {
 
     const selectedSeedProducts = selectedSeedTreatmentProducts
       .filter((p) => p.product && p.product["Product Name"])
-      .map((p) => p.product);
+      .map((p) => ({ ...p.product, applicationMethod: p.applicationMethod }));
 
     const selectedFoliarProductsFiltered = selectedFoliarProducts
       .filter(
@@ -118,7 +118,7 @@ export default function CombinedCalculator() {
           (p.applicationMethod === "In-Furrow" ||
             p.applicationMethod === "Foliar")
       )
-      .map((p) => p.product);
+      .map((p) => ({ ...p.product, applicationMethod: p.applicationMethod }));
 
     const seedResultSetArray = selectedSeedProducts.map((product) =>
       calculateProductData(
@@ -148,13 +148,13 @@ export default function CombinedCalculator() {
       )
     );
 
-    const totalSeedCost = seedResultSetArray.reduce((sum, r) => sum + (r.totalCostPerAcre || 0), 0);
-    const totalFoliarCost = foliarResultSetArray.reduce((sum, r) => sum + (r.totalCostPerAcre || 0), 0);
-    const totalUndiscounted = seedResultSetArray.reduce((sum, r) => sum + (r.totalUndiscountedCost || 0), 0) +
-                              foliarResultSetArray.reduce((sum, r) => sum + (r.totalUndiscountedCost || 0), 0);
-    const totalDiscounted = seedResultSetArray.reduce((sum, r) => sum + (r.totalDiscountedCost || 0), 0) +
-                            foliarResultSetArray.reduce((sum, r) => sum + (r.totalDiscountedCost || 0), 0);
+    const totalSeedCost = seedResultSetArray.reduce((sum, r) => sum + r.individualCostPerAcre, 0);
+    const totalFoliarCost = foliarResultSetArray.reduce((sum, r) => sum + r.individualCostPerAcre, 0);
+    const totalUndiscounted = seedResultSetArray.reduce((sum, r) => sum + r.originalTotalCostToGrower, 0) +
+                              foliarResultSetArray.reduce((sum, r) => sum + r.originalTotalCostToGrower, 0);
 
+    const totalDiscounted = seedResultSetArray.reduce((sum, r) => sum + r.discountedTotalCostToGrower, 0) +
+                            foliarResultSetArray.reduce((sum, r) => sum + r.discountedTotalCostToGrower, 0);
     setSeedResults(seedResultSetArray);
     setFoliarResults(foliarResultSetArray);
     setTotalCostPerAcre(totalSeedCost + totalFoliarCost);
@@ -172,9 +172,13 @@ export default function CombinedCalculator() {
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
+
+    const htmlEl = document.documentElement;
+    const originalDark = htmlEl.classList.contains("dark");
+
     setTimeout(() => {
-      const htmlEl = document.documentElement;
       htmlEl.classList.remove("dark");
+
       html2canvas(resultRef.current!, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
@@ -182,10 +186,12 @@ export default function CombinedCalculator() {
         const margin = 20;
         const imgWidth = pageWidth - margin * 2;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
         pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
         pdf.save("YieldMaster_CombinedCalculation.pdf");
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          htmlEl.classList.add("dark");
+
+        if (originalDark) {
+          requestAnimationFrame(() => htmlEl.classList.add("dark"));
         }
       });
     }, 200);
@@ -198,7 +204,7 @@ export default function CombinedCalculator() {
     >
       <div className="flex justify-between items-center">
         <img
-          src="/yms_combined_calculator/YMSLogo5.PNG"
+          src="/yms_combined_calculator/ymslogo5.png"
           alt="YMS Logo"
           width="160"
           height="80"
@@ -262,12 +268,14 @@ export default function CombinedCalculator() {
           totalCostPerAcre={totalCostPerAcre}
           totalUndiscountedCost={totalUndiscountedCost}
           totalDiscountedCost={totalDiscountedCost}
-          breakevenYield={breakevenYield}
-          roi2={roi2}
-          roi3={roi3}
-          roi4={roi4}
-          roi5={roi5}
-          cropPriceUnit={marketPriceUnit}
+          roi={{
+            breakevenYield: breakevenYield ?? 0,
+            roi2to1: roi2 ?? 0,
+            roi3to1: roi3 ?? 0,
+            roi4to1: roi4 ?? 0,
+            roi5to1: roi5 ?? 0,
+            unit: marketPriceUnit.replace("$", "")
+          }}
         />
       )}
 
