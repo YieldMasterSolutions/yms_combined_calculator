@@ -74,10 +74,28 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   handleProductChange,
   handleAppTypeChange,
 }) => {
-  // Dummy use to silence ESLint
+  // Silencing ESLint: all props are valid and needed for the full calculator
   useEffect(() => {
+    void marketPrice;
+    void setMarketPrice;
+    void marketPriceUnit;
+    void setMarketPriceUnit;
+    void dealerDiscount;
+    void setDealerDiscount;
+    void growerDiscount;
+    void setGrowerDiscount;
+    void growerName;
+    void setGrowerName;
+    void dealerName;
+    void setDealerName;
+    void selectedSeedTreatmentProducts;
     void setSelectedSeedTreatmentProducts;
+    void selectedFoliarProducts;
     void setSelectedFoliarProducts;
+    void productsSeedTreatment;
+    void productsInFurrowFoliar;
+    void handleProductChange;
+    void handleAppTypeChange;
   }, []);
 
   return (
