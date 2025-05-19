@@ -39,44 +39,41 @@ interface CalculatorFormProps {
   handleAppTypeChange: (index: number, type: "seed" | "foliar", method: string) => void;
 }
 
-const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
-  const {
-    seedType,
-    setSeedType,
-    acres,
-    setAcres,
-    seedingRate,
-    setSeedingRate,
-    seedingRateUnit,
-    setSeedingRateUnit,
-    overrideSeeds,
-    setOverrideSeeds,
-    seedsPerUnitOverride,
-    setSeedsPerUnitOverride,
-    // Silence unused warnings for now
-    marketPrice,
-    setMarketPrice,
-    marketPriceUnit,
-    setMarketPriceUnit,
-    dealerDiscount,
-    setDealerDiscount,
-    growerDiscount,
-    setGrowerDiscount,
-    growerName,
-    setGrowerName,
-    dealerName,
-    setDealerName,
-    selectedSeedTreatmentProducts,
-    setSelectedSeedTreatmentProducts,
-    selectedFoliarProducts,
-    setSelectedFoliarProducts,
-    productsSeedTreatment,
-    productsInFurrowFoliar,
-    handleProductChange,
-    handleAppTypeChange,
-    seedTypes
-  } = props;
-
+const CalculatorForm: React.FC<CalculatorFormProps> = ({
+  seedType,
+  setSeedType,
+  acres,
+  setAcres,
+  seedingRate,
+  setSeedingRate,
+  seedingRateUnit,
+  setSeedingRateUnit,
+  overrideSeeds,
+  setOverrideSeeds,
+  seedsPerUnitOverride,
+  setSeedsPerUnitOverride,
+  marketPrice,
+  setMarketPrice,
+  marketPriceUnit,
+  setMarketPriceUnit,
+  dealerDiscount,
+  setDealerDiscount,
+  growerDiscount,
+  setGrowerDiscount,
+  growerName,
+  setGrowerName,
+  dealerName,
+  setDealerName,
+  selectedSeedTreatmentProducts,
+  setSelectedSeedTreatmentProducts,
+  selectedFoliarProducts,
+  setSelectedFoliarProducts,
+  seedTypes,
+  productsSeedTreatment,
+  productsInFurrowFoliar,
+  handleProductChange,
+  handleAppTypeChange
+}) => {
   return (
     <form className="space-y-6">
       <div>
@@ -145,6 +142,73 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
               className="w-full border p-2"
               placeholder="Optional"
             />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-blue-700 text-lg font-bold mb-2">Discount & Market Price Inputs</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block font-semibold">Dealer/Rep Name</label>
+            <input
+              type="text"
+              value={dealerName}
+              onChange={(e) => setDealerName(e.target.value)}
+              className="w-full border p-2"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Grower Name</label>
+            <input
+              type="text"
+              value={growerName}
+              onChange={(e) => setGrowerName(e.target.value)}
+              className="w-full border p-2"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Dealer Discount (%)</label>
+            <input
+              type="number"
+              value={dealerDiscount}
+              onChange={(e) => setDealerDiscount(e.target.value)}
+              className="w-full border p-2"
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Grower Discount (%)</label>
+            <input
+              type="number"
+              value={growerDiscount}
+              onChange={(e) => setGrowerDiscount(e.target.value)}
+              className="w-full border p-2"
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Market Price</label>
+            <input
+              type="number"
+              value={marketPrice}
+              onChange={(e) => setMarketPrice(e.target.value)}
+              className="w-full border p-2"
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Price Unit</label>
+            <select
+              value={marketPriceUnit}
+              onChange={(e) => setMarketPriceUnit(e.target.value)}
+              className="w-full border p-2"
+            >
+              <option value="">Select unit...</option>
+              <option value="bu">$/bu</option>
+              <option value="cwt">$/cwt</option>
+              <option value="ton">$/ton</option>
+            </select>
           </div>
         </div>
       </div>
