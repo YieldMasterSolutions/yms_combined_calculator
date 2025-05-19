@@ -1,7 +1,7 @@
 // src/app/page.tsx
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -148,9 +148,6 @@ export default function CombinedCalculator() {
       )
     );
 
-    const seedResultsCombined = seedResultSetArray.flatMap(r => r.productsData);
-    const foliarResultsCombined = foliarResultSetArray.flatMap(r => r.productsData);
-
     const totalSeedCost = seedResultSetArray.reduce((sum, r) => sum + (r.totalCostPerAcre || 0), 0);
     const totalFoliarCost = foliarResultSetArray.reduce((sum, r) => sum + (r.totalCostPerAcre || 0), 0);
     const totalUndiscounted = seedResultSetArray.reduce((sum, r) => sum + (r.totalUndiscountedCost || 0), 0) +
@@ -158,8 +155,8 @@ export default function CombinedCalculator() {
     const totalDiscounted = seedResultSetArray.reduce((sum, r) => sum + (r.totalDiscountedCost || 0), 0) +
                             foliarResultSetArray.reduce((sum, r) => sum + (r.totalDiscountedCost || 0), 0);
 
-    setSeedResults(seedResultsCombined);
-    setFoliarResults(foliarResultsCombined);
+    setSeedResults(seedResultSetArray);
+    setFoliarResults(foliarResultSetArray);
     setTotalCostPerAcre(totalSeedCost + totalFoliarCost);
     setTotalUndiscountedCost(totalUndiscounted);
     setTotalDiscountedCost(totalDiscounted);
