@@ -21,7 +21,6 @@ import {
 } from "../utils/data";
 
 export default function CombinedCalculator() {
-  // Force default light mode on load
   useEffect(() => {
     document.documentElement.classList.remove("dark");
   }, []);
@@ -179,10 +178,13 @@ export default function CombinedCalculator() {
 
   const downloadPDF = () => {
     if (!resultRef.current) return;
+    const el = resultRef.current;
+    const htmlEl = document.documentElement;
+    el.classList.add("print-grayscale");
+    htmlEl.classList.remove("dark");
+
     setTimeout(() => {
-      const htmlEl = document.documentElement;
-      htmlEl.classList.remove("dark");
-      html2canvas(resultRef.current!, { scale: 2 }).then((canvas) => {
+      html2canvas(el, { scale: 2 }).then((canvas) => {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("p", "pt", "a4");
         const pageWidth = pdf.internal.pageSize.getWidth();
@@ -191,6 +193,7 @@ export default function CombinedCalculator() {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
         pdf.save("YieldMaster_CombinedCalculation.pdf");
+        el.classList.remove("print-grayscale");
         if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
           htmlEl.classList.add("dark");
         }

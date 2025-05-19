@@ -149,6 +149,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             onChange={(e) => setSeedingRateUnit(e.target.value)}
             className="w-full p-2 bg-gray-800 border border-gray-600 rounded"
           >
+            <option value="">Select Unit</option>
             <option value="seeds/acre">Seeds/acre</option>
             <option value="lbs/acre">Lbs/acre</option>
           </select>
@@ -183,6 +184,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <input type="number" placeholder="Grower Discount (%)" value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} className="p-2 bg-gray-800 border border-gray-600 rounded" />
         <input type="number" placeholder="Market Price ($)" value={marketPrice} onChange={(e) => setMarketPrice(e.target.value)} className="p-2 bg-gray-800 border border-gray-600 rounded" />
         <select value={marketPriceUnit} onChange={(e) => setMarketPriceUnit(e.target.value)} className="p-2 bg-gray-800 border border-gray-600 rounded">
+          <option value="">Select Unit</option>
           <option value="$/acre">$/acre</option>
           <option value="$/bu">$/bu</option>
           <option value="$/ton">$/ton</option>

@@ -20,6 +20,16 @@ interface ResultsDisplayProps {
   };
 }
 
+const formatProductLabel = (product: ProductCalculation): string => {
+  const name = product.productName;
+  const size = product.packageSize;
+  const units = product.packageUnits;
+  const rate = product.applicationRate;
+  const rateUnit = product.applicationRateUnit;
+  const capacity = product.treatmentCapacity;
+  return `${name} – ${size} ${units} – ${rate} ${rateUnit} – Treats ${capacity}`;
+};
+
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   seedTreatmentResults,
   inFurrowFoliarResults,
@@ -34,7 +44,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {seedTreatmentResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
           <h2 className="section-header-blue">
-            {result.productName} ({result.applicationMethod})
+            {formatProductLabel(result)}
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Total Number of Seeds to be Treated</div>
@@ -86,7 +96,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {inFurrowFoliarResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
           <h2 className="section-header-blue">
-            {result.productName} ({result.applicationMethod})
+            {formatProductLabel(result)}
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
