@@ -2,24 +2,22 @@
 
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import {
-  calculateSeedTreatmentData,
-  calculateAllFoliarProductCosts,
-  calculateROI,
-  ProductCalculation
+  calculateProductCosts,
+  ProductCalculation,
 } from "../utils/calculations";
 import {
   seedTypes,
   productsSeedTreatment,
-  productsInFurrowFoliar
+  productsInFurrowFoliar,
+  ProductData,
 } from "../utils/data";
-import { ProductData } from "../utils/data";
 
 export default function CombinedCalculator() {
   const [seedType, setSeedType] = useState("");
@@ -29,155 +27,195 @@ export default function CombinedCalculator() {
   const [overrideSeeds, setOverrideSeeds] = useState("");
   const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
   const [marketPrice, setMarketPrice] = useState("");
-  const [marketPriceUnit, setMarketPriceUnit] = useState("");
+  const [marketPriceUnit, setMarketPriceUnit] = useState("$/acre");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
-  const [growerName, setGrowerName] = useState("");
   const [dealerName, setDealerName] = useState("");
+  const [growerName, setGrowerName] = useState("");
 
-  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState([
-    { product: productsSeedTreatment[0], applicationMethod: "" }
-  ]);
+  const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
+  const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
+  const [totalCostPerAcre, setTotalCostPerAcre] = useState(0);
+  const [totalUndiscountedCost, setTotalUndiscountedCost] = useState(0);
+  const [totalDiscountedCost, setTotalDiscountedCost] = useState(0);
+  const [breakevenYield, setBreakevenYield] = useState<number | null>(null);
+  const [roi2, setRoi2] = useState<number | null>(null);
+  const [roi3, setRoi3] = useState<number | null>(null);
+  const [roi4, setRoi4] = useState<number | null>(null);
+  const [roi5, setRoi5] = useState<number | null>(null);
 
-  const [selectedFoliarProducts, setSelectedFoliarProducts] = useState([
-    { product: productsInFurrowFoliar[0], applicationMethod: "" }
-  ]);
+  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState(
+    Array(2).fill({ product: {} as ProductData, applicationMethod: "" })
+  );
+  const [selectedFoliarProducts, setSelectedFoliarProducts] = useState(
+    Array(4).fill({ product: {} as ProductData, applicationMethod: "" })
+  );
 
-  const resultsRef = useRef<HTMLDivElement>(null);
-  const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
-  const [inFurrowFoliarResults, setInFurrowFoliarResults] = useState<ProductCalculation[]>([]);
-  const [totalProgramCost, setTotalProgramCost] = useState(0);
-  const [roi, setRoi] = useState({
-    breakevenYield: 0,
-    roi2to1: 0,
-    roi3to1: 0,
-    roi4to1: 0,
-    roi5to1: 0,
-    unit: ""
-  });
-
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (darkMode) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [darkMode]);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const handleProductChange = (
     index: number,
-    type: "seed" | "foliar",
-    product: ProductData
+    productName: string,
+    type: "seed" | "foliar"
   ) => {
-    const updated = type === "seed"
-      ? [...selectedSeedTreatmentProducts]
-      : [...selectedFoliarProducts];
-    updated[index].product = product;
+    const target =
+      type === "seed"
+        ? [...selectedSeedTreatmentProducts]
+        : [...selectedFoliarProducts];
+    const match = [...productsSeedTreatment, ...productsInFurrowFoliar].find(
+      (p) => p["Product Name"] === productName
+    );
+    if (match) target[index] = { ...target[index], product: match };
     if (type === "seed") {
-      setSelectedSeedTreatmentProducts(updated);
+      setSelectedSeedTreatmentProducts(target);
     } else {
-      setSelectedFoliarProducts(updated);
+      setSelectedFoliarProducts(target);
     }
   };
 
   const handleAppTypeChange = (
     index: number,
-    type: "seed" | "foliar",
-    method: string
+    method: string,
+    type: "seed" | "foliar"
   ) => {
-    const updated = type === "seed"
-      ? [...selectedSeedTreatmentProducts]
-      : [...selectedFoliarProducts];
-    updated[index].applicationMethod = method;
+    const target =
+      type === "seed"
+        ? [...selectedSeedTreatmentProducts]
+        : [...selectedFoliarProducts];
+    target[index] = { ...target[index], applicationMethod: method };
     if (type === "seed") {
-      setSelectedSeedTreatmentProducts(updated);
+      setSelectedSeedTreatmentProducts(target);
     } else {
-      setSelectedFoliarProducts(updated);
+      setSelectedFoliarProducts(target);
     }
   };
 
-  const generatePDF = async () => {
-    const input = resultsRef.current;
-    if (!input) return;
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!seedType || !acres || !seedingRate || !marketPrice) return;
 
-    const canvas = await html2canvas(input, {
-      scale: 2,
-      useCORS: true,
-      scrollY: -window.scrollY
-    });
+    const acresNum = parseFloat(acres);
+    const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
+    const grower = growerDiscount ? parseFloat(growerDiscount) : 0;
+    const sRate = parseFloat(seedingRate);
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "pt", "a4");
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const seedEntry = seedTypes.find((s) => s["Seed Type"] === seedType);
+    const spp = overrideSeeds
+      ? parseFloat(overrideSeeds)
+      : seedEntry
+      ? parseFloat(seedEntry["Seeds/lb"])
+      : 0;
+    const lpu = seedEntry ? seedEntry["Lbs/Unit"] : 0;
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    const selectedSeedProducts = selectedSeedTreatmentProducts
+      .filter((p) => p.product && p.product["Product Name"])
+      .map((p) => p.product);
 
-    if (pdfHeight > pdf.internal.pageSize.getHeight()) {
-      pdf.addPage();
-    }
+    const selectedFoliarProductsFiltered = selectedFoliarProducts
+      .filter(
+        (p) =>
+          p.product &&
+          p.product["Product Name"] &&
+          (p.applicationMethod === "In-Furrow" ||
+            p.applicationMethod === "Foliar")
+      )
+      .map((p) => p.product);
 
-    pdf.save("YMS_Calculator_Report.pdf");
-  };
-
-  const handleSubmit = () => {
-    const seedResults = calculateSeedTreatmentData(
+    const seedResultSet = calculateProductCosts(
+      acresNum,
+      selectedSeedProducts,
+      dealer,
+      grower,
       seedType,
-      Number(acres),
-      Number(seedingRate),
-      seedingRateUnit,
-      overrideSeeds ? Number(overrideSeeds) : undefined,
-      Number(dealerDiscount),
-      Number(growerDiscount),
-      selectedSeedTreatmentProducts,
-      seedsPerUnitOverride ? Number(seedsPerUnitOverride) : undefined
+      spp,
+      lpu,
+      sRate,
+      seedingRateUnit
     );
 
-    const foliarResults = calculateAllFoliarProductCosts(
-      Number(acres),
-      Number(dealerDiscount),
-      Number(growerDiscount),
-      selectedFoliarProducts
+    const foliarResultSet = calculateProductCosts(
+      acresNum,
+      selectedFoliarProductsFiltered,
+      dealer,
+      grower,
+      seedType,
+      spp,
+      lpu,
+      sRate,
+      seedingRateUnit
     );
 
-    const allCosts = [...seedResults, ...foliarResults];
-    const totalCost = allCosts.reduce((sum, r) => sum + r.individualCostPerAcre, 0);
+    setSeedResults(seedResultSet.productsData);
+    setFoliarResults(foliarResultSet.productsData);
 
-    const roiResult = marketPrice
-      ? calculateROI(totalCost, Number(marketPrice), marketPriceUnit)
-      : {
-          breakevenYield: 0,
-          roi2to1: 0,
-          roi3to1: 0,
-          roi4to1: 0,
-          roi5to1: 0,
-          unit: ""
-        };
+    const totalCost =
+      seedResultSet.totalCostPerAcre + foliarResultSet.totalCostPerAcre;
+    const totalUndiscounted =
+      seedResultSet.totalUndiscountedCost +
+      foliarResultSet.totalUndiscountedCost;
+    const totalDiscounted =
+      seedResultSet.totalDiscountedCost + foliarResultSet.totalDiscountedCost;
 
-    setSeedTreatmentResults(seedResults);
-    setInFurrowFoliarResults(foliarResults);
-    setTotalProgramCost(totalCost);
-    setRoi(roiResult);
+    setTotalCostPerAcre(totalCost);
+    setTotalUndiscountedCost(totalUndiscounted);
+    setTotalDiscountedCost(totalDiscounted);
+
+    const mp = parseFloat(marketPrice);
+    setBreakevenYield(mp > 0 ? totalCost / mp : null);
+    setRoi2(mp > 0 ? (2 * totalCost) / mp : null);
+    setRoi3(mp > 0 ? (3 * totalCost) / mp : null);
+    setRoi4(mp > 0 ? (4 * totalCost) / mp : null);
+    setRoi5(mp > 0 ? (5 * totalCost) / mp : null);
+  };
+
+  const downloadPDF = () => {
+    if (!resultRef.current) return;
+    setTimeout(() => {
+      const htmlEl = document.documentElement;
+      htmlEl.classList.remove("dark");
+      html2canvas(resultRef.current!, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "pt", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const margin = 20;
+        const imgWidth = pageWidth - margin * 2;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
+        pdf.save("YieldMaster_CombinedCalculation.pdf");
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          htmlEl.classList.add("dark");
+        }
+      });
+    }, 200);
   };
 
   return (
-    <main className="p-4">
-      <div className="flex justify-between items-center mb-6">
-        <img src="/yms_combined_calculator/YMSLogo5.PNG" alt="YMS Logo" className="h-16" />
-        <h1 className="text-2xl font-bold text-center flex-1 -ml-16">Product Calculator</h1>
-        <img src="/yms_combined_calculator/LegendSeedsLogo.png" alt="Legend Logo" className="h-16" />
+    <div
+      className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
+      ref={resultRef}
+    >
+      <div className="flex justify-between items-center">
+        <img
+          src="/yms_combined_calculator/YMSLogo5.PNG"
+          alt="YMS Logo"
+          width="160"
+          height="80"
+          className="mb-2"
+        />
+        <img
+          src="/yms_combined_calculator/legendlogo1.png"
+          alt="Legend Logo"
+          width="160"
+          height="80"
+          className="mb-2"
+        />
       </div>
 
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          className="px-4 py-2 rounded border text-sm bg-gray-100 dark:bg-gray-800 dark:text-white"
-        >
-          Toggle {darkMode ? "Light" : "Dark"} Mode
-        </button>
+      <div className="text-center mb-6">
+        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">
+          YieldMaster Solutions
+        </h1>
+        <p className="text-3xl font-bold text-zinc-400">Product Calculator</p>
       </div>
 
       <CalculatorForm
@@ -201,45 +239,44 @@ export default function CombinedCalculator() {
         setDealerDiscount={setDealerDiscount}
         growerDiscount={growerDiscount}
         setGrowerDiscount={setGrowerDiscount}
-        growerName={growerName}
-        setGrowerName={setGrowerName}
         dealerName={dealerName}
         setDealerName={setDealerName}
-        selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
-        setSelectedSeedTreatmentProducts={setSelectedSeedTreatmentProducts}
-        selectedFoliarProducts={selectedFoliarProducts}
-        setSelectedFoliarProducts={setSelectedFoliarProducts}
+        growerName={growerName}
+        setGrowerName={setGrowerName}
         seedTypes={seedTypes}
         productsSeedTreatment={productsSeedTreatment}
-        productsInFurrowFoliar={productsInFurrowFoliar}
+        productsInFurrow={productsInFurrowFoliar}
+        selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
+        selectedFoliarProducts={selectedFoliarProducts}
         handleProductChange={handleProductChange}
         handleAppTypeChange={handleAppTypeChange}
+        onSubmit={handleFormSubmit}
       />
 
-      <div className="mt-6 flex justify-between">
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={handleSubmit}
-        >
-          Calculate
-        </button>
-
-        <button
-          className="bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600"
-          onClick={generatePDF}
-        >
-          Download PDF
-        </button>
-      </div>
-
-      <div ref={resultsRef} className="mt-10">
+      {(seedResults.length > 0 || foliarResults.length > 0) && (
         <ResultsDisplay
-          seedTreatmentResults={seedTreatmentResults}
-          inFurrowFoliarResults={inFurrowFoliarResults}
-          totalProgramCost={totalProgramCost}
-          roi={roi}
+          seedTreatmentResults={seedResults}
+          inFurrowFoliarResults={foliarResults}
+          totalCostPerAcre={totalCostPerAcre}
+          totalUndiscountedCost={totalUndiscountedCost}
+          totalDiscountedCost={totalDiscountedCost}
+          breakevenYield={breakevenYield}
+          roi2={roi2}
+          roi3={roi3}
+          roi4={roi4}
+          roi5={roi5}
+          cropPriceUnit={marketPriceUnit}
         />
+      )}
+
+      <div className="text-center">
+        <button
+          onClick={downloadPDF}
+          className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white"
+        >
+          Download Combined PDF
+        </button>
       </div>
-    </main>
+    </div>
   );
 }

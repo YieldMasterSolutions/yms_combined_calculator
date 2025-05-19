@@ -30,7 +30,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {seedTreatmentResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
           <h2 className="text-blue-700 text-lg font-bold mb-4">
-            Seed Treatment – {result.productName} ({result.applicationMethod})
+            {result.productName} ({result.applicationMethod})
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Total Number of Seeds to be Treated</div>
