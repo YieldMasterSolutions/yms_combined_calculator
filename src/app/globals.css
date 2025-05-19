@@ -73,3 +73,36 @@ body {
     margin: 0.75in;
   }
 }
+
+/* Explicit grayscale styling for PDF export */
+.print-grayscale * {
+  all: unset;
+  all: revert-layer;
+  font-family: 'Open Sans', sans-serif !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  filter: grayscale(100%) !important;
+  box-sizing: border-box !important;
+}
+
+.print-grayscale {
+  background: #ffffff !important;
+  color: #000000 !important;
+  padding: 1rem;
+  font-family: 'Open Sans', sans-serif !important;
+}
+
+.print-grayscale h1,
+.print-grayscale h2,
+.print-grayscale h3 {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+}
+
+.print-grayscale .label-yellow,
+.print-grayscale .section-header-blue {
+  color: #000000 !important;
+}

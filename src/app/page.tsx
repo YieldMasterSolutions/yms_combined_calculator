@@ -23,6 +23,7 @@ import {
 export default function CombinedCalculator() {
   useEffect(() => {
     document.documentElement.classList.remove("dark");
+    document.documentElement.classList.add("light");
   }, []);
 
   const [seedType, setSeedType] = useState("");
@@ -194,9 +195,9 @@ export default function CombinedCalculator() {
         pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
         pdf.save("YieldMaster_CombinedCalculation.pdf");
         el.classList.remove("print-grayscale");
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setTimeout(() => {
           htmlEl.classList.add("dark");
-        }
+        }, 300);
       });
     }, 200);
   };

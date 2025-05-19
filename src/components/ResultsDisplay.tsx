@@ -27,7 +27,7 @@ const formatProductLabel = (product: ProductCalculation): string => {
   const rate = product.applicationRate;
   const rateUnit = product.applicationRateUnit;
   const capacity = product.treatmentCapacity;
-  return `${name} – ${size} ${units} – ${rate} ${rateUnit} – Treats ${capacity}`;
+  return `${name} – ${size} ${units} – ${rate} ${rateUnit} – Treats ${capacity} acres`;
 };
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -42,14 +42,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     <div className="mt-10 space-y-10">
       {/* Seed Treatment Results */}
       {seedTreatmentResults.map((result, index) => (
-        <div key={index} className="border p-4 rounded shadow">
+        <div key={index} className="border p-4 rounded shadow space-y-6">
           <h2 className="section-header-blue">
             {formatProductLabel(result)}
           </h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="label-yellow">Total Number of Seeds to be Treated</div>
-            <div>{formatNumber(result.totalSeeds ?? 0)}</div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2 font-semibold text-blue-600">Seed Treatment Calculations</div>
             <div className="label-yellow">Total Weight of Seeds to be Treated</div>
             <div>{formatNumber(result.totalWeight ?? 0)} lbs</div>
 
@@ -59,20 +58,18 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div className="label-yellow">Number of Seeds per Unit</div>
             <div>{formatNumber(result.seedsPerUnit ?? 0)}</div>
 
+            <div className="label-yellow">Total Number of Bushels to be Treated</div>
+            <div>{formatNumber(result.totalBushels ?? 0)}</div>
+
+            <div className="col-span-2 font-semibold text-blue-600 mt-4">Seed Treatment Costs</div>
             <div className="label-yellow">Application Rate</div>
-            <div>
-              {result.applicationRate} {result.applicationRateUnit} / unit of seed
-            </div>
+            <div>{result.applicationRate} {result.applicationRateUnit}</div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
-            <div>
-              {formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}
-            </div>
+            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}</div>
 
             <div className="label-yellow">Total Product Units to Order</div>
-            <div>
-              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}
-            </div>
+            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
             <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
@@ -100,19 +97,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
-            <div>
-              {result.applicationRate} {result.applicationRateUnit} / acre
-            </div>
+            <div>{result.applicationRate} {result.applicationRateUnit}</div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
-            <div>
-              {formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}
-            </div>
+            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}</div>
 
             <div className="label-yellow">Total Product Units to Order</div>
-            <div>
-              {formatNumber(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}
-            </div>
+            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
             <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
