@@ -35,15 +35,13 @@ export default function CombinedCalculator() {
   const [growerName, setGrowerName] = useState("");
   const [dealerName, setDealerName] = useState("");
 
-  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState<{
-    product: ProductData;
-    applicationMethod: string;
-  }[]>([{ product: productsSeedTreatment[0], applicationMethod: "" }]);
+  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState([
+    { product: productsSeedTreatment[0], applicationMethod: "" }
+  ]);
 
-  const [selectedFoliarProducts, setSelectedFoliarProducts] = useState<{
-    product: ProductData;
-    applicationMethod: string;
-  }[]>([{ product: productsInFurrowFoliar[0], applicationMethod: "" }]);
+  const [selectedFoliarProducts, setSelectedFoliarProducts] = useState([
+    { product: productsInFurrowFoliar[0], applicationMethod: "" }
+  ]);
 
   const resultsRef = useRef<HTMLDivElement>(null);
   const [seedTreatmentResults, setSeedTreatmentResults] = useState<ProductCalculation[]>([]);
