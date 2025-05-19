@@ -148,15 +148,18 @@ export default function CombinedCalculator() {
       )
     );
 
-    const totalSeedCost = seedResultSetArray.reduce((sum, r) => sum + r.totalCostPerAcre, 0);
-    const totalFoliarCost = foliarResultSetArray.reduce((sum, r) => sum + r.totalCostPerAcre, 0);
-    const totalUndiscounted = seedResultSetArray.reduce((sum, r) => sum + r.totalUndiscountedCost, 0) +
-                              foliarResultSetArray.reduce((sum, r) => sum + r.totalUndiscountedCost, 0);
-    const totalDiscounted = seedResultSetArray.reduce((sum, r) => sum + r.totalDiscountedCost, 0) +
-                            foliarResultSetArray.reduce((sum, r) => sum + r.totalDiscountedCost, 0);
+    const seedResultsCombined = seedResultSetArray.flatMap(r => r.productsData);
+    const foliarResultsCombined = foliarResultSetArray.flatMap(r => r.productsData);
 
-    setSeedResults(seedResultSetArray);
-    setFoliarResults(foliarResultSetArray);
+    const totalSeedCost = seedResultSetArray.reduce((sum, r) => sum + (r.totalCostPerAcre || 0), 0);
+    const totalFoliarCost = foliarResultSetArray.reduce((sum, r) => sum + (r.totalCostPerAcre || 0), 0);
+    const totalUndiscounted = seedResultSetArray.reduce((sum, r) => sum + (r.totalUndiscountedCost || 0), 0) +
+                              foliarResultSetArray.reduce((sum, r) => sum + (r.totalUndiscountedCost || 0), 0);
+    const totalDiscounted = seedResultSetArray.reduce((sum, r) => sum + (r.totalDiscountedCost || 0), 0) +
+                            foliarResultSetArray.reduce((sum, r) => sum + (r.totalDiscountedCost || 0), 0);
+
+    setSeedResults(seedResultsCombined);
+    setFoliarResults(foliarResultsCombined);
     setTotalCostPerAcre(totalSeedCost + totalFoliarCost);
     setTotalUndiscountedCost(totalUndiscounted);
     setTotalDiscountedCost(totalDiscounted);
