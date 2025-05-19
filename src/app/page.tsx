@@ -1,7 +1,7 @@
 // src/app/page.tsx
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -21,6 +21,11 @@ import {
 } from "../utils/data";
 
 export default function CombinedCalculator() {
+  // Force default light mode on load
+  useEffect(() => {
+    document.documentElement.classList.remove("dark");
+  }, []);
+
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
@@ -195,7 +200,7 @@ export default function CombinedCalculator() {
 
   return (
     <div
-      className="max-w-5xl mx-auto p-6 space-y-8 bg-gradient-to-b from-zinc-950 to-zinc-900 text-white min-h-screen"
+      className="max-w-5xl mx-auto p-6 space-y-8 bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen transition-colors"
       ref={resultRef}
     >
       <ThemeToggle />
@@ -221,7 +226,9 @@ export default function CombinedCalculator() {
         <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">
           YieldMaster Solutions
         </h1>
-        <p className="text-3xl font-bold text-zinc-400">Product Calculator</p>
+        <p className="text-3xl font-bold text-zinc-500 dark:text-zinc-400">
+          Product Calculator
+        </p>
       </div>
 
       <CalculatorForm
