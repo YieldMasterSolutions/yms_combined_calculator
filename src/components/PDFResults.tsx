@@ -1,4 +1,5 @@
 // src/components/PDFResults.tsx
+/* eslint-disable @next/next/no-img-element */
 
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";

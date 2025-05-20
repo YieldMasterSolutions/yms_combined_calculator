@@ -96,19 +96,21 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
   } = props;
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  const getDefaultSeedsPerLb = (): string => {
-    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
-    return found ? String(found["Seeds/lb"]) : "";
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getDefaultSeedsPerLb = (): string => {
+  const found = seedTypes.find((s) => s["Seed Type"] === seedType);
+  return found ? String(found["Seeds/lb"]) : "";
+};
 
-  const getDefaultSeedsPerUnit = (): string => {
-    if (seedType.toLowerCase() === "corn") return "80000";
-    if (seedType.toLowerCase() === "soybeans") return "140000";
-    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
-    const seedsPerLb = found ? parseFloat(found["Seeds/lb"]) : 0;
-    const lbsPerUnit = found ? found["Lbs/Unit"] : 0;
-    return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getDefaultSeedsPerUnit = (): string => {
+  if (seedType.toLowerCase() === "corn") return "80000";
+  if (seedType.toLowerCase() === "soybeans") return "140000";
+  const found = seedTypes.find((s) => s["Seed Type"] === seedType);
+  const seedsPerLb = found ? parseFloat(found["Seeds/lb"]) : 0;
+  const lbsPerUnit = found ? found["Lbs/Unit"] : 0;
+  return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
+};
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 text-white">

@@ -1,4 +1,6 @@
 // src/app/page.tsx
+/* eslint-disable @next/next/no-img-element */
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -185,91 +187,4 @@ export default function CombinedCalculator() {
         <img src="/yms_combined_calculator/legendlogo1.png" alt="Legend Logo" width="160" height="80" className="mb-2" />
       </div>
 
-      <div className="text-center mb-6">
-        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-zinc-500 dark:text-zinc-400">Product Calculator</p>
-      </div>
-
-      <CalculatorForm
-        seedType={seedType}
-        setSeedType={setSeedType}
-        acres={acres}
-        setAcres={setAcres}
-        seedingRate={seedingRate}
-        setSeedingRate={setSeedingRate}
-        seedingRateUnit={seedingRateUnit}
-        setSeedingRateUnit={setSeedingRateUnit}
-        overrideSeeds={overrideSeeds}
-        setOverrideSeeds={setOverrideSeeds}
-        seedsPerUnitOverride={seedsPerUnitOverride}
-        setSeedsPerUnitOverride={setSeedsPerUnitOverride}
-        marketPrice={marketPrice}
-        setMarketPrice={setMarketPrice}
-        marketPriceUnit={marketPriceUnit}
-        setMarketPriceUnit={setMarketPriceUnit}
-        dealerDiscount={dealerDiscount}
-        setDealerDiscount={setDealerDiscount}
-        growerDiscount={growerDiscount}
-        setGrowerDiscount={setGrowerDiscount}
-        dealerName={dealerName}
-        setDealerName={setDealerName}
-        growerName={growerName}
-        setGrowerName={setGrowerName}
-        seedTypes={seedTypes}
-        productsSeedTreatment={productsSeedTreatment}
-        productsInFurrow={productsInFurrowFoliar}
-        selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
-        selectedFoliarProducts={selectedFoliarProducts}
-        handleProductChange={handleProductChange}
-        handleAppTypeChange={handleAppTypeChange}
-        onSubmit={handleFormSubmit}
-      />
-
-      {(seedResults.length > 0 || foliarResults.length > 0) && (
-        <>
-          <ResultsDisplay
-            seedTreatmentResults={seedResults}
-            inFurrowFoliarResults={foliarResults}
-            totalCostPerAcre={totalCostPerAcre}
-            totalUndiscountedCost={totalUndiscountedCost}
-            totalDiscountedCost={totalDiscountedCost}
-            roi={{
-              breakevenYield: breakevenYield ?? 0,
-              roi2to1: roi2 ?? 0,
-              roi3to1: roi3 ?? 0,
-              roi4to1: roi4 ?? 0,
-              roi5to1: roi5 ?? 0,
-              unit: marketPriceUnit.replace("$", "")
-            }}
-          />
-
-          <div className="text-center">
-            <PDFDownloadButton targetRef={pdfRef} />
-          </div>
-
-          <div className="hidden">
-            <div ref={pdfRef}>
-              <PDFResults
-                growerName={growerName}
-                repName={dealerName}
-                seedTreatmentResults={seedResults}
-                inFurrowFoliarResults={foliarResults}
-                totalCostPerAcre={totalCostPerAcre}
-                totalUndiscountedCost={totalUndiscountedCost}
-                totalDiscountedCost={totalDiscountedCost}
-                roi={{
-                  breakevenYield: breakevenYield ?? 0,
-                  roi2to1: roi2 ?? 0,
-                  roi3to1: roi3 ?? 0,
-                  roi4to1: roi4 ?? 0,
-                  roi5to1: roi5 ?? 0,
-                  unit: marketPriceUnit.replace("$", "")
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
-    </div>
-  );
-}
+      ...
