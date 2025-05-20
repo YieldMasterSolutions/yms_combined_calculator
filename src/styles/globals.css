@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE (default) */
+/* LIGHT MODE DEFAULTS */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -11,7 +11,7 @@
   --font-mono: var(--font-geist-mono), Consolas, monospace;
 }
 
-/* DARK MODE OVERRIDES */
+/* DARK MODE OVERRIDES (Only applies if .dark class is present) */
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;

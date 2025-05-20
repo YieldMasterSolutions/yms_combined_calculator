@@ -12,15 +12,16 @@ const ThemeToggle: React.FC = () => {
     const initial = stored || "light";
     setTheme(initial);
     applyTheme(initial);
+
+    // Force 'light' theme if nothing set
+    if (!stored) {
+      localStorage.setItem("theme", "light");
+    }
   }, []);
 
   const applyTheme = (mode: "light" | "dark") => {
     const root = document.documentElement;
-    if (mode === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    root.classList.toggle("dark", mode === "dark");
   };
 
   const toggleTheme = () => {
@@ -42,4 +43,3 @@ const ThemeToggle: React.FC = () => {
 };
 
 export default ThemeToggle;
- 

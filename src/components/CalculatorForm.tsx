@@ -97,24 +97,91 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getDefaultSeedsPerLb = (): string => {
-  const found = seedTypes.find((s) => s["Seed Type"] === seedType);
-  return found ? String(found["Seeds/lb"]) : "";
-};
+  const getDefaultSeedsPerLb = (): string => {
+    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
+    return found ? String(found["Seeds/lb"]) : "";
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getDefaultSeedsPerUnit = (): string => {
-  if (seedType.toLowerCase() === "corn") return "80000";
-  if (seedType.toLowerCase() === "soybeans") return "140000";
-  const found = seedTypes.find((s) => s["Seed Type"] === seedType);
-  const seedsPerLb = found ? parseFloat(found["Seeds/lb"]) : 0;
-  const lbsPerUnit = found ? found["Lbs/Unit"] : 0;
-  return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
-};
+  const getDefaultSeedsPerUnit = (): string => {
+    if (seedType.toLowerCase() === "corn") return "80000";
+    if (seedType.toLowerCase() === "soybeans") return "140000";
+    const found = seedTypes.find((s) => s["Seed Type"] === seedType);
+    const seedsPerLb = found ? parseFloat(found["Seeds/lb"]) : 0;
+    const lbsPerUnit = found ? found["Lbs/Unit"] : 0;
+    return seedsPerLb && lbsPerUnit ? String(seedsPerLb * lbsPerUnit) : "";
+  };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 text-white">
-      {/* ...Crop Inputs and Discount Inputs Unchanged... */}
+    <form onSubmit={onSubmit} className="space-y-8 text-white">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Grower Name</label>
+          <input type="text" value={growerName} onChange={(e) => setGrowerName(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Rep Name</label>
+          <input type="text" value={dealerName} onChange={(e) => setDealerName(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+      </div>
+
+      <h2 className="text-xl font-bold text-blue-600">Crop Inputs</h2>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Seed Type</label>
+          <select value={seedType} onChange={(e) => setSeedType(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded">
+            <option value="">Select Seed Type</option>
+            {seedTypes.map((s) => (
+              <option key={s["Seed Type"]} value={s["Seed Type"]}>{s["Seed Type"]}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Seeding Rate</label>
+          <input type="number" value={seedingRate} onChange={(e) => setSeedingRate(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Rate Unit</label>
+          <select value={seedingRateUnit} onChange={(e) => setSeedingRateUnit(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded">
+            <option value="seeds/acre">seeds/acre</option>
+            <option value="lbs/acre">lbs/acre</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Override Seeds/lb</label>
+          <input type="number" value={overrideSeeds} onChange={(e) => setOverrideSeeds(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+          <p className="text-xs text-gray-400 mt-1">Default: {getDefaultSeedsPerLb()}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Override Seeds/Unit</label>
+          <input type="number" value={seedsPerUnitOverride} onChange={(e) => setSeedsPerUnitOverride(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+          <p className="text-xs text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Total Acres</label>
+          <input type="number" value={acres} onChange={(e) => setAcres(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Market Price</label>
+          <input type="number" value={marketPrice} onChange={(e) => setMarketPrice(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Market Price Unit</label>
+          <select value={marketPriceUnit} onChange={(e) => setMarketPriceUnit(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded">
+            <option value="$/acre">$/acre</option>
+            <option value="$/bushel">$/bushel</option>
+            <option value="$/ton">$/ton</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Dealer Discount (%)</label>
+          <input type="number" value={dealerDiscount} onChange={(e) => setDealerDiscount(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Grower Discount (%)</label>
+          <input type="number" value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+      </div>
 
       <h2 className="text-xl font-bold text-blue-600">Seed Treatment Products</h2>
       {[0, 1].map((index) => (
