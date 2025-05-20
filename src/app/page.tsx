@@ -2,12 +2,11 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
-
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import ThemeToggle from "../components/ThemeToggle";
+import PDFDownloadButton from "../components/PDFDownloadButton";
+import PDFResults from "../components/PDFResults";
 
 import {
   calculateProductData,
@@ -57,7 +56,7 @@ export default function CombinedCalculator() {
     Array(4).fill({ product: {} as ProductData, applicationMethod: "" })
   );
 
-  const resultRef = useRef<HTMLDivElement>(null);
+  const pdfRef = useRef<HTMLDivElement>(null);
 
   const handleProductChange = (
     index: number,
@@ -177,62 +176,18 @@ export default function CombinedCalculator() {
     setRoi5(mp > 0 ? (5 * totalCost) / mp : null);
   };
 
-  const downloadPDF = () => {
-    if (!resultRef.current) return;
-    const el = resultRef.current;
-    const htmlEl = document.documentElement;
-    el.classList.add("print-grayscale");
-    htmlEl.classList.remove("dark");
-
-    setTimeout(() => {
-      html2canvas(el, { scale: 2 }).then((canvas) => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "pt", "a4");
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const margin = 20;
-        const imgWidth = pageWidth - margin * 2;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, "PNG", margin, margin, imgWidth, imgHeight);
-        pdf.save("YieldMaster_CombinedCalculation.pdf");
-        el.classList.remove("print-grayscale");
-        setTimeout(() => {
-          htmlEl.classList.add("dark");
-        }, 300);
-      });
-    }, 200);
-  };
-
   return (
-    <div
-      className="max-w-5xl mx-auto p-6 space-y-8 bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen transition-colors"
-      ref={resultRef}
-    >
+    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen transition-colors">
       <ThemeToggle />
 
       <div className="flex justify-between items-center">
-        <img
-          src="/yms_combined_calculator/ymslogo5.png"
-          alt="YMS Logo"
-          width="160"
-          height="80"
-          className="mb-2"
-        />
-        <img
-          src="/yms_combined_calculator/legendlogo1.png"
-          alt="Legend Logo"
-          width="160"
-          height="80"
-          className="mb-2"
-        />
+        <img src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width="160" height="80" className="mb-2" />
+        <img src="/yms_combined_calculator/legendlogo1.png" alt="Legend Logo" width="160" height="80" className="mb-2" />
       </div>
 
       <div className="text-center mb-6">
-        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">
-          YieldMaster Solutions
-        </h1>
-        <p className="text-3xl font-bold text-zinc-500 dark:text-zinc-400">
-          Product Calculator
-        </p>
+        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
+        <p className="text-3xl font-bold text-zinc-500 dark:text-zinc-400">Product Calculator</p>
       </div>
 
       <CalculatorForm
@@ -271,31 +226,50 @@ export default function CombinedCalculator() {
       />
 
       {(seedResults.length > 0 || foliarResults.length > 0) && (
-        <ResultsDisplay
-          seedTreatmentResults={seedResults}
-          inFurrowFoliarResults={foliarResults}
-          totalCostPerAcre={totalCostPerAcre}
-          totalUndiscountedCost={totalUndiscountedCost}
-          totalDiscountedCost={totalDiscountedCost}
-          roi={{
-            breakevenYield: breakevenYield ?? 0,
-            roi2to1: roi2 ?? 0,
-            roi3to1: roi3 ?? 0,
-            roi4to1: roi4 ?? 0,
-            roi5to1: roi5 ?? 0,
-            unit: marketPriceUnit.replace("$", "")
-          }}
-        />
-      )}
+        <>
+          <ResultsDisplay
+            seedTreatmentResults={seedResults}
+            inFurrowFoliarResults={foliarResults}
+            totalCostPerAcre={totalCostPerAcre}
+            totalUndiscountedCost={totalUndiscountedCost}
+            totalDiscountedCost={totalDiscountedCost}
+            roi={{
+              breakevenYield: breakevenYield ?? 0,
+              roi2to1: roi2 ?? 0,
+              roi3to1: roi3 ?? 0,
+              roi4to1: roi4 ?? 0,
+              roi5to1: roi5 ?? 0,
+              unit: marketPriceUnit.replace("$", "")
+            }}
+          />
 
-      <div className="text-center">
-        <button
-          onClick={downloadPDF}
-          className="bg-green-700 hover:bg-green-600 px-6 py-2 rounded-full text-white"
-        >
-          Download Combined PDF
-        </button>
-      </div>
+          <div className="text-center">
+            <PDFDownloadButton targetRef={pdfRef} />
+          </div>
+
+          <div className="hidden">
+            <div ref={pdfRef}>
+              <PDFResults
+                growerName={growerName}
+                repName={dealerName}
+                seedTreatmentResults={seedResults}
+                inFurrowFoliarResults={foliarResults}
+                totalCostPerAcre={totalCostPerAcre}
+                totalUndiscountedCost={totalUndiscountedCost}
+                totalDiscountedCost={totalDiscountedCost}
+                roi={{
+                  breakevenYield: breakevenYield ?? 0,
+                  roi2to1: roi2 ?? 0,
+                  roi3to1: roi3 ?? 0,
+                  roi4to1: roi4 ?? 0,
+                  roi5to1: roi5 ?? 0,
+                  unit: marketPriceUnit.replace("$", "")
+                }}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

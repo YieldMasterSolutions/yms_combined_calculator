@@ -5,22 +5,29 @@
 import React, { useEffect, useState } from "react";
 
 const ThemeToggle: React.FC = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    // On mount, check localStorage or default to light
-    const storedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initial = storedTheme || (prefersDark ? "dark" : "light");
+    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
+    const initial = stored || "light";
     setTheme(initial);
-    document.documentElement.classList.toggle("dark", initial === "dark");
+    applyTheme(initial);
   }, []);
+
+  const applyTheme = (mode: "light" | "dark") => {
+    const root = document.documentElement;
+    if (mode === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  };
 
   const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     localStorage.setItem("theme", next);
-    document.documentElement.classList.toggle("dark", next === "dark");
+    applyTheme(next);
   };
 
   return (
@@ -35,3 +42,4 @@ const ThemeToggle: React.FC = () => {
 };
 
 export default ThemeToggle;
+ 

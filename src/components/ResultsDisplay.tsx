@@ -24,10 +24,11 @@ const formatProductLabel = (product: ProductCalculation): string => {
   const name = product.productName;
   const size = product.packageSize;
   const units = product.packageUnits;
+  const type = product.packageType;
   const rate = product.applicationRate;
   const rateUnit = product.applicationRateUnit;
   const capacity = product.treatmentCapacity;
-  return `${name} – ${size} ${units} – ${rate} ${rateUnit} – Treats ${capacity} acres`;
+  return `${name} – ${size} ${units} – ${type} – ${rate} ${rateUnit} – Treats ${capacity} acres`;
 };
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -66,7 +67,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div>{result.applicationRate} {result.applicationRateUnit}</div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
-            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}</div>
+            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
@@ -100,7 +101,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div>{result.applicationRate} {result.applicationRateUnit}</div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
-            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.applicationRateUnit}</div>
+            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
 
             <div className="label-yellow">Total Product Units to Order</div>
             <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
@@ -120,6 +121,33 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       ))}
 
+      {/* ROI Section */}
+      <div className="border p-4 rounded shadow space-y-4">
+        <h2 className="section-header-blue">Breakeven ROI Calculations</h2>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Breakeven Yield per Acre</div>
+            <div>{formatNumber(roi.breakevenYield)} {roi.unit}</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for 2:1 ROI</div>
+            <div>{formatNumber(roi.roi2to1)} {roi.unit}</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for 3:1 ROI</div>
+            <div>{formatNumber(roi.roi3to1)} {roi.unit}</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for 4:1 ROI</div>
+            <div>{formatNumber(roi.roi4to1)} {roi.unit}</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for 5:1 ROI</div>
+            <div>{formatNumber(roi.roi5to1)} {roi.unit}</div>
+          </div>
+        </div>
+      </div>
+
       {/* Total Program Cost */}
       <div className="border p-4 rounded shadow">
         <h2 className="section-header-blue">Total Program Cost</h2>
@@ -132,33 +160,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
           <div className="label-yellow">Total Discounted Program Cost</div>
           <div>${formatNumber(totalDiscountedCost)}</div>
-        </div>
-      </div>
-
-      {/* ROI Section */}
-      <div className="border p-4 rounded shadow">
-        <h2 className="section-header-blue">Breakeven ROI Calculations</h2>
-        <div className="grid grid-cols-5 gap-4">
-          <div>
-            <div className="label-yellow">Breakeven Yield per Acre</div>
-            <div>{formatNumber(roi.breakevenYield)} {roi.unit}</div>
-          </div>
-          <div>
-            <div className="label-yellow">Yield Needed for 2:1 ROI</div>
-            <div>{formatNumber(roi.roi2to1)} {roi.unit}</div>
-          </div>
-          <div>
-            <div className="label-yellow">Yield Needed for 3:1 ROI</div>
-            <div>{formatNumber(roi.roi3to1)} {roi.unit}</div>
-          </div>
-          <div>
-            <div className="label-yellow">Yield Needed for 4:1 ROI</div>
-            <div>{formatNumber(roi.roi4to1)} {roi.unit}</div>
-          </div>
-          <div>
-            <div className="label-yellow">Yield Needed for 5:1 ROI</div>
-            <div>{formatNumber(roi.roi5to1)} {roi.unit}</div>
-          </div>
         </div>
       </div>
     </div>
