@@ -58,40 +58,44 @@ const formatProductLabel = (product: ProductData): string => {
   return `${name} – ${size} ${units} ${type} – ${rate} ${rateUnit} – ${capacity}`;
 };
 
-const CalculatorForm: React.FC<CalculatorFormProps> = ({
-  seedType,
-  setSeedType,
-  acres,
-  setAcres,
-  seedingRate,
-  setSeedingRate,
-  seedingRateUnit,
-  setSeedingRateUnit,
-  overrideSeeds,
-  setOverrideSeeds,
-  seedsPerUnitOverride,
-  setSeedsPerUnitOverride,
-  marketPrice,
-  setMarketPrice,
-  marketPriceUnit,
-  setMarketPriceUnit,
-  dealerDiscount,
-  setDealerDiscount,
-  growerDiscount,
-  setGrowerDiscount,
-  dealerName,
-  setDealerName,
-  growerName,
-  setGrowerName,
-  onSubmit,
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrow,
-  selectedSeedTreatmentProducts,
-  selectedFoliarProducts,
-  handleProductChange,
-  handleAppTypeChange,
-}) => {
+const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const {
+    seedType,
+    setSeedType,
+    acres,
+    setAcres,
+    seedingRate,
+    setSeedingRate,
+    seedingRateUnit,
+    setSeedingRateUnit,
+    overrideSeeds,
+    setOverrideSeeds,
+    seedsPerUnitOverride,
+    setSeedsPerUnitOverride,
+    marketPrice,
+    setMarketPrice,
+    marketPriceUnit,
+    setMarketPriceUnit,
+    dealerDiscount,
+    setDealerDiscount,
+    growerDiscount,
+    setGrowerDiscount,
+    dealerName,
+    setDealerName,
+    growerName,
+    setGrowerName,
+    onSubmit,
+    seedTypes,
+    productsSeedTreatment,
+    productsInFurrow,
+    selectedSeedTreatmentProducts,
+    selectedFoliarProducts,
+    handleProductChange,
+    handleAppTypeChange,
+  } = props;
+  /* eslint-enable @typescript-eslint/no-unused-vars */
+
   const getDefaultSeedsPerLb = (): string => {
     const found = seedTypes.find((s) => s["Seed Type"] === seedType);
     return found ? String(found["Seeds/lb"]) : "";
