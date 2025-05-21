@@ -59,7 +59,6 @@ const formatProductLabel = (product: ProductData): string => {
 };
 
 const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   const {
     seedType,
     setSeedType,
@@ -94,15 +93,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
     handleProductChange,
     handleAppTypeChange,
   } = props;
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getDefaultSeedsPerLb = (): string => {
     const found = seedTypes.find((s) => s["Seed Type"] === seedType);
     return found ? String(found["Seeds/lb"]) : "";
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getDefaultSeedsPerUnit = (): string => {
     if (seedType.toLowerCase() === "corn") return "80000";
     if (seedType.toLowerCase() === "soybeans") return "140000";
@@ -137,15 +133,19 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Seeding Rate</label>
-          <input type="number" value={seedingRate} onChange={(e) => setSeedingRate(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
-        </div>
-        <div>
           <label className="block text-sm font-bold text-yellow-300 mb-1">Rate Unit</label>
           <select value={seedingRateUnit} onChange={(e) => setSeedingRateUnit(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded">
             <option value="seeds/acre">seeds/acre</option>
             <option value="lbs/acre">lbs/acre</option>
           </select>
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Seeding Rate</label>
+          <input type="number" value={seedingRate} onChange={(e) => setSeedingRate(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
+        </div>
+        <div>
+          <label className="block text-sm font-bold text-yellow-300 mb-1">Total Acres</label>
+          <input type="number" value={acres} onChange={(e) => setAcres(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
           <label className="block text-sm font-bold text-yellow-300 mb-1">Override Seeds/lb</label>
@@ -156,10 +156,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
           <label className="block text-sm font-bold text-yellow-300 mb-1">Override Seeds/Unit</label>
           <input type="number" value={seedsPerUnitOverride} onChange={(e) => setSeedsPerUnitOverride(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
           <p className="text-xs text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Total Acres</label>
-          <input type="number" value={acres} onChange={(e) => setAcres(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
           <label className="block text-sm font-bold text-yellow-300 mb-1">Market Price</label>
