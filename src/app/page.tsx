@@ -13,11 +13,7 @@ import {
   calculateAllFoliarProductCosts,
   calculateROI,
 } from "../utils/calculations";
-import {
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-  seedTypes,
-} from "../utils/data";
+import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement | null>(null);
@@ -27,14 +23,13 @@ export default function Home() {
   const [seedingRate, setSeedingRate] = useState("");
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
   const [overrideSeeds, setOverrideSeeds] = useState("");
+
   const [marketPrice, setMarketPrice] = useState("");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
+
   const [growerName, setGrowerName] = useState("");
   const [repName, setRepName] = useState("");
-
-  const [seedProducts, setSeedProducts] = useState(productsSeedTreatment.slice(0, 2));
-  const [foliarProducts, setFoliarProducts] = useState(productsInFurrowFoliar.slice(0, 4));
 
   const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -47,15 +42,15 @@ export default function Home() {
   const [roi5, setROI5] = useState(0);
 
   const handleCalculate = () => {
-const selectedSeedProducts = seedProducts.map((product) => ({
-  product,
-  applicationMethod: product["Application Method"] || "Seed Treatment",
-}));
+    const selectedSeedProducts = productsSeedTreatment.slice(0, 2).map((product) => ({
+      product,
+      applicationMethod: product["Application Method"] || "Seed Treatment",
+    }));
 
-const selectedFoliarProducts = foliarProducts.map((product) => ({
-  product,
-  applicationMethod: product["Application Method"] || "In-Furrow",
-}));
+    const selectedFoliarProducts = productsInFurrowFoliar.slice(0, 4).map((product) => ({
+      product,
+      applicationMethod: product["Application Method"] || "In-Furrow",
+    }));
 
     const seedData = calculateSeedTreatmentData(
       seedType,
@@ -63,29 +58,32 @@ const selectedFoliarProducts = foliarProducts.map((product) => ({
       parseFloat(seedingRate),
       seedingRateUnit,
       overrideSeeds ? parseFloat(overrideSeeds) : undefined,
-      parseFloat(dealerDiscount) || 0,
-      parseFloat(growerDiscount) || 0,
+      parseFloat(dealerDiscount || "0"),
+      parseFloat(growerDiscount || "0"),
       selectedSeedProducts,
       undefined
     );
 
     const foliarData = calculateAllFoliarProductCosts(
       parseFloat(acres),
-      parseFloat(dealerDiscount) || 0,
-      parseFloat(growerDiscount) || 0,
+      parseFloat(dealerDiscount || "0"),
+      parseFloat(growerDiscount || "0"),
       selectedFoliarProducts
     );
 
-    const totalCost = seedData.reduce((sum, p) => sum + p.individualCostPerAcre, 0) +
-                      foliarData.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
+    const totalCost =
+      seedData.reduce((sum, p) => sum + p.individualCostPerAcre, 0) +
+      foliarData.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
 
-    const totalMSRP = seedData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0) +
-                      foliarData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0);
+    const totalMSRP =
+      seedData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0) +
+      foliarData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0);
 
-    const totalDiscounted = seedData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
-                            foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
+    const totalDiscounted =
+      seedData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
+      foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
 
-    const roi = calculateROI(totalCost, parseFloat(marketPrice), "bu/acre");
+    const roi = calculateROI(totalCost, parseFloat(marketPrice || "1"), "bu/acre");
 
     setSeedResults(seedData);
     setFoliarResults(foliarData);
@@ -129,10 +127,6 @@ const selectedFoliarProducts = foliarProducts.map((product) => ({
           setGrowerName={setGrowerName}
           repName={repName}
           setRepName={setRepName}
-          seedProducts={seedProducts}
-          setSeedProducts={setSeedProducts}
-          foliarProducts={foliarProducts}
-          setFoliarProducts={setFoliarProducts}
           handleCalculate={handleCalculate}
         />
 
