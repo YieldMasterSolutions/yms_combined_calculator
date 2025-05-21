@@ -47,15 +47,15 @@ export default function Home() {
   const [roi5, setROI5] = useState(0);
 
   const handleCalculate = () => {
-    const selectedSeedProducts = seedProducts.map((product) => ({
-      product,
-      applicationMethod: "Seed Treatment",
-    }));
+const selectedSeedProducts = seedProducts.map((product) => ({
+  product,
+  applicationMethod: product["Application Method"] || "Seed Treatment",
+}));
 
-    const selectedFoliarProducts = foliarProducts.map((product) => ({
-      product,
-      applicationMethod: product.ApplicationMethod || "In-Furrow",
-    }));
+const selectedFoliarProducts = foliarProducts.map((product) => ({
+  product,
+  applicationMethod: product["Application Method"] || "In-Furrow",
+}));
 
     const seedData = calculateSeedTreatmentData(
       seedType,
