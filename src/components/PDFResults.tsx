@@ -36,27 +36,26 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         <div className="font-semibold">Product Name</div>
         <div>{product.productName} ({product.applicationMethod})</div>
 
-
         <div className="font-semibold">Application Rate</div>
-        <div>{product.applicationRate} {product.applicationUnit} / acre</div>
+        <div>{product.applicationRate} {product.applicationRateUnit}</div>
 
         <div className="font-semibold">Total Product Needed</div>
-        <div>{formatNumber(product.totalProductNeeded)} {product.applicationUnit}</div>
+        <div>{formatNumber(product.totalProductNeeded)} {product.applicationRateUnit?.split("/")[0]}</div>
 
         <div className="font-semibold">Total Product Units to Order</div>
         <div>{formatNumber(product.totalProductUnits, 0)}</div>
 
         <div className="font-semibold">Product Cost per Unit</div>
-        <div>${formatNumber(product.costPerUnit)}</div>
+        <div>${formatNumber(product.productCostPerOz)}</div>
 
         <div className="font-semibold">Total MSRP</div>
-        <div>${formatNumber(product.totalMSRP)}</div>
+        <div>${formatNumber(product.originalTotalCostToGrower)}</div>
 
         <div className="font-semibold">Total Discounted Cost</div>
-        <div>${formatNumber(product.totalDiscountedCost)}</div>
+        <div>${formatNumber(product.discountedTotalCostToGrower)}</div>
 
         <div className="font-semibold">Cost per Acre</div>
-        <div>${formatNumber(product.costPerAcre)}</div>
+        <div>${formatNumber(product.individualCostPerAcre)}</div>
       </div>
     </div>
   );
@@ -64,7 +63,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   return (
     <div className="p-6 text-black bg-white text-sm font-[Open_Sans] w-full max-w-[900px] mx-auto">
       <div className="mb-4 text-center">
-        <h1 className="text-xl font-[Montserrat] text-blue-700 mb-2">YMS Product Calculator Summary</h1>
+        <h1 className="text-xl font-[Montserrat] text-blue-700 mb-2">YMS Program Calculator Summary</h1>
         <p>Grower: <span className="font-semibold">{growerName || "—"}</span></p>
         <p>Rep: <span className="font-semibold">{repName || "—"}</span></p>
       </div>
