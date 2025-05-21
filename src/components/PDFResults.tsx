@@ -34,7 +34,8 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     <div key={product.productName} className="mb-4 border-b pb-2">
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div className="font-semibold">Product Name</div>
-        <div>{product.productName} ({product.applicationType})</div>
+        <div>{product.productName} ({product.applicationMethod})</div>
+
 
         <div className="font-semibold">Application Rate</div>
         <div>{product.applicationRate} {product.applicationUnit} / acre</div>
