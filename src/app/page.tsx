@@ -8,7 +8,7 @@ import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 import PDFResults from "../components/PDFResults";
 import { ProductCalculation, calculateSeedTreatmentData, calculateProductData, calculateROI } from "../utils/calculations";
-import { productsSeedTreatment, productsInFurrowFoliar, seedTypes } from "../utils/data";
+import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement | null>(null);
@@ -54,7 +54,8 @@ export default function Home() {
       seedingRateUnit,
       overrideSeeds,
       dealerDiscount,
-      growerDiscount
+      growerDiscount,
+      marketPrice // ✅ Included as 9th argument
     );
 
     const foliarData = calculateProductData(foliarProducts, acres, dealerDiscount, growerDiscount);
