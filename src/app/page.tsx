@@ -58,7 +58,7 @@ export default function CombinedCalculator() {
     Array(4).fill({ product: {} as ProductData, applicationMethod: "" })
   );
 
-  const pdfRef = useRef<HTMLDivElement>(null);
+  const pdfRef = useRef<HTMLDivElement>() as React.RefObject<HTMLDivElement>;
 
   const handleProductChange = (
     index: number,
