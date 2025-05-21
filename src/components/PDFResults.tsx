@@ -5,164 +5,105 @@ import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
 
 interface PDFResultsProps {
-  seedTreatmentResults: ProductCalculation[];
-  inFurrowFoliarResults: ProductCalculation[];
-  totalCostPerAcre: number;
-  totalUndiscountedCost: number;
-  totalDiscountedCost: number;
-  roi: {
-    breakevenYield: number;
-    roi2to1: number;
-    roi3to1: number;
-    roi4to1: number;
-    roi5to1: number;
-    unit: string;
-  };
   growerName: string;
   repName: string;
+  seedTreatmentResults: ProductCalculation[];
+  inFurrowFoliarResults: ProductCalculation[];
+  totalProgramCost: number;
+  roiYields: {
+    roi2x: number;
+    roi3x: number;
+    roi4x: number;
+    roi5x: number;
+  };
 }
 
-const formatProductLabel = (product: ProductCalculation): string => {
-  const name = product.productName;
-  const size = product.packageSize;
-  const units = product.packageUnits;
-  const type = product.packageType;
-  const rate = product.applicationRate;
-  const rateUnit = product.applicationRateUnit;
-  const capacity = product.treatmentCapacity;
-  return `${name} – ${size} ${units} – ${type} – ${rate} ${rateUnit} – Treats ${capacity} units`;
-};
-
 const PDFResults: React.FC<PDFResultsProps> = ({
-  seedTreatmentResults,
-  inFurrowFoliarResults,
-  totalCostPerAcre,
-  totalUndiscountedCost,
-  totalDiscountedCost,
-  roi,
   growerName,
   repName,
+  seedTreatmentResults,
+  inFurrowFoliarResults,
+  totalProgramCost,
+  roiYields,
 }) => {
+  const renderProduct = (product: ProductCalculation) => (
+    <div key={product.productName} className="mb-4 border-b pb-2">
+      <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="font-semibold">Product Name</div>
+        <div>{product.productName} ({product.applicationType})</div>
+
+        <div className="font-semibold">Application Rate</div>
+        <div>{product.applicationRate} {product.applicationUnit} / acre</div>
+
+        <div className="font-semibold">Total Product Needed</div>
+        <div>{formatNumber(product.totalProductNeeded)} {product.applicationUnit}</div>
+
+        <div className="font-semibold">Total Product Units to Order</div>
+        <div>{formatNumber(product.totalProductUnits, 0)}</div>
+
+        <div className="font-semibold">Product Cost per Unit</div>
+        <div>${formatNumber(product.costPerUnit)}</div>
+
+        <div className="font-semibold">Total MSRP</div>
+        <div>${formatNumber(product.totalMSRP)}</div>
+
+        <div className="font-semibold">Total Discounted Cost</div>
+        <div>${formatNumber(product.totalDiscountedCost)}</div>
+
+        <div className="font-semibold">Cost per Acre</div>
+        <div>${formatNumber(product.costPerAcre)}</div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-10 text-black p-6">
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold">YieldMaster Solutions – Summary Report</h1>
-        <p className="text-md">Grower: {growerName} | Rep: {repName}</p>
+    <div className="p-6 text-black bg-white text-sm font-[Open_Sans] w-full max-w-[900px] mx-auto">
+      <div className="mb-4 text-center">
+        <h1 className="text-xl font-[Montserrat] text-blue-700 mb-2">YMS Product Calculator Summary</h1>
+        <p>Grower: <span className="font-semibold">{growerName || "—"}</span></p>
+        <p>Rep: <span className="font-semibold">{repName || "—"}</span></p>
       </div>
 
-      {seedTreatmentResults.map((result, index) => (
-        <div key={index} className="border p-4 rounded space-y-6">
-          <h2 className="text-lg font-bold">{formatProductLabel(result)}</h2>
+      {/* Seed Treatment Results */}
+      {seedTreatmentResults.length > 0 && (
+        <>
+          <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Seed Treatment: Basic Calculations</h2>
+          {renderProduct(seedTreatmentResults[0])}
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="col-span-2 font-semibold">Seed Treatment Calculations</div>
+          <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">Seed Treatment: Cost Breakdown</h2>
+          {seedTreatmentResults.slice(1).map(renderProduct)}
+        </>
+      )}
 
-            <div>Total Number of Bushels to be Treated</div>
-            <div>{formatNumber(result.totalBushels ?? 0)}</div>
+      {/* In-Furrow / Foliar Results */}
+      {inFurrowFoliarResults.length > 0 && (
+        <>
+          <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">In-Furrow / Foliar Product Costs</h2>
+          {inFurrowFoliarResults.map(renderProduct)}
+        </>
+      )}
 
-            <div>Total Weight of Seeds to be Treated</div>
-            <div>{formatNumber(result.totalWeight ?? 0)} lbs</div>
-
-            <div>Total Number of Units to be Treated</div>
-            <div>{formatNumber(result.unitsToBeTreated ?? 0)}</div>
-
-            <div>Number of Seeds per Unit</div>
-            <div>{formatNumber(result.seedsPerUnit ?? 0)}</div>
-
-            <div className="col-span-2 font-semibold mt-4">Seed Treatment Costs</div>
-
-            <div>Application Rate</div>
-            <div>{result.applicationRate} {result.applicationRateUnit}</div>
-
-            <div>Total Amount of Product Needed</div>
-            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
-
-            <div>Total Product Units to Order</div>
-            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
-
-            <div>Product Cost per Ounce</div>
-            <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
-
-            <div>Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
-
-            <div>Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
-
-            <div>Product Cost per Unit of Treated Seed</div>
-            <div>${formatNumber(result.productCostPerUnitSeed ?? 0)}</div>
-
-            <div>Individual Cost of Seed Treatment per Acre</div>
-            <div>${formatNumber(result.individualCostPerAcre)}</div>
-          </div>
-        </div>
-      ))}
-
-      {inFurrowFoliarResults.map((result, index) => (
-        <div key={index} className="border p-4 rounded">
-          <h2 className="text-lg font-bold">{formatProductLabel(result)}</h2>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>Application Rate</div>
-            <div>{result.applicationRate} {result.applicationRateUnit}</div>
-
-            <div>Total Amount of Product Needed</div>
-            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
-
-            <div>Total Product Units to Order</div>
-            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
-
-            <div>Product Cost per Ounce</div>
-            <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
-
-            <div>Total Cost to Grower (MSRP)</div>
-            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
-
-            <div>Total Discounted Cost to Grower</div>
-            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
-
-            <div>Individual Cost per Acre</div>
-            <div>${formatNumber(result.individualCostPerAcre)}</div>
-          </div>
-        </div>
-      ))}
-
-      <div className="border p-4 rounded space-y-4">
-        <h2 className="text-lg font-bold">Breakeven ROI Calculations</h2>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-sm">
-          <div className="border rounded p-2">
-            <div>Breakeven ROI</div>
-            <div>{formatNumber(roi.breakevenYield)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2">
-            <div>Yield Needed for</div>
-            <div>2:1 ROI – {formatNumber(roi.roi2to1)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2">
-            <div>Yield Needed for</div>
-            <div>3:1 ROI – {formatNumber(roi.roi3to1)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2">
-            <div>Yield Needed for</div>
-            <div>4:1 ROI – {formatNumber(roi.roi4to1)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2">
-            <div>Yield Needed for</div>
-            <div>5:1 ROI – {formatNumber(roi.roi5to1)} {roi.unit}/acre</div>
-          </div>
-        </div>
+      {/* Total Program Cost */}
+      <div className="mt-8 border-t pt-4">
+        <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Total Program Cost</h2>
+        <p className="text-base font-semibold">${formatNumber(totalProgramCost)} per acre</p>
       </div>
 
-      <div className="border p-4 rounded">
-        <h2 className="text-lg font-bold">Total Program Cost</h2>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>Total Undiscounted Program Cost</div>
-          <div>${formatNumber(totalUndiscountedCost)}</div>
+      {/* ROI Calculations */}
+      <div className="mt-6 border-t pt-4">
+        <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Breakeven ROI Calculations</h2>
+        <div className="grid grid-cols-2 gap-y-2">
+          <div className="font-semibold">2:1 ROI Threshold</div>
+          <div>{formatNumber(roiYields.roi2x)} bu/acre</div>
 
-          <div>Total Discounted Program Cost</div>
-          <div>${formatNumber(totalDiscountedCost)}</div>
+          <div className="font-semibold">3:1 ROI Threshold</div>
+          <div>{formatNumber(roiYields.roi3x)} bu/acre</div>
 
-          <div>Total Biological Program Cost per Acre</div>
-          <div>${formatNumber(totalCostPerAcre)}</div>
+          <div className="font-semibold">4:1 ROI Threshold</div>
+          <div>{formatNumber(roiYields.roi4x)} bu/acre</div>
+
+          <div className="font-semibold">5:1 ROI Threshold</div>
+          <div>{formatNumber(roiYields.roi5x)} bu/acre</div>
         </div>
       </div>
     </div>
