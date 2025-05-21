@@ -28,7 +28,7 @@ const formatProductLabel = (product: ProductCalculation): string => {
   const rate = product.applicationRate;
   const rateUnit = product.applicationRateUnit;
   const capacity = product.treatmentCapacity;
-  return `${name} – ${size} ${units} – ${type} – ${rate} ${rateUnit} – Treats ${capacity} acres`;
+  return `${name} – ${size} ${units} – ${type} – ${rate} ${rateUnit} – Treats ${capacity} units`;
 };
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -44,10 +44,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {/* Seed Treatment Results */}
       {seedTreatmentResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow space-y-6">
-          <h2 className="section-header-blue">{formatProductLabel(result)}</h2>
+          <h2 className="section-header-blue">
+            {formatProductLabel(result)}
+          </h2>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2 font-semibold text-blue-600">Seed Treatment Calculations</div>
+            <div className="col-span-2 font-semibold text-blue-600">
+              Seed Treatment Calculations
+            </div>
+
             <div className="label-yellow">Total Number of Bushels to be Treated</div>
             <div>{formatNumber(result.totalBushels ?? 0)}</div>
 
@@ -60,15 +65,24 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
             <div className="label-yellow">Number of Seeds per Unit</div>
             <div>{formatNumber(result.seedsPerUnit ?? 0)}</div>
 
-            <div className="col-span-2 font-semibold text-blue-600 mt-4">Seed Treatment Costs</div>
+            <div className="col-span-2 font-semibold text-blue-600 mt-4">
+              Seed Treatment Costs
+            </div>
+
             <div className="label-yellow">Application Rate</div>
-            <div>{result.applicationRate} {result.applicationRateUnit}</div>
+            <div>
+              {result.applicationRate} {result.applicationRateUnit}
+            </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
-            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
+            <div>
+              {formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}
+            </div>
 
             <div className="label-yellow">Total Product Units to Order</div>
-            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
+            <div>
+              {Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}
+            </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
             <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
@@ -91,16 +105,24 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {/* In-Furrow / Foliar Results */}
       {inFurrowFoliarResults.map((result, index) => (
         <div key={index} className="border p-4 rounded shadow">
-          <h2 className="section-header-blue">{formatProductLabel(result)}</h2>
+          <h2 className="section-header-blue">
+            {formatProductLabel(result)}
+          </h2>
           <div className="grid grid-cols-2 gap-4">
             <div className="label-yellow">Application Rate</div>
-            <div>{result.applicationRate} {result.applicationRateUnit}</div>
+            <div>
+              {result.applicationRate} {result.applicationRateUnit}
+            </div>
 
             <div className="label-yellow">Total Amount of Product Needed</div>
-            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
+            <div>
+              {formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}
+            </div>
 
             <div className="label-yellow">Total Product Units to Order</div>
-            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
+            <div>
+              {Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}
+            </div>
 
             <div className="label-yellow">Product Cost per Ounce</div>
             <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
@@ -117,6 +139,33 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       ))}
 
+      {/* ROI Section */}
+      <div className="border p-4 rounded shadow space-y-4">
+        <h2 className="section-header-blue">Breakeven ROI Calculations</h2>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Breakeven ROI</div>
+            <div>{formatNumber(roi.breakevenYield)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for</div>
+            <div>2:1 ROI – {formatNumber(roi.roi2to1)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for</div>
+            <div>3:1 ROI – {formatNumber(roi.roi3to1)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for</div>
+            <div>4:1 ROI – {formatNumber(roi.roi4to1)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2 shadow">
+            <div className="label-yellow">Yield Needed for</div>
+            <div>5:1 ROI – {formatNumber(roi.roi5to1)} {roi.unit}/acre</div>
+          </div>
+        </div>
+      </div>
+
       {/* Total Program Cost */}
       <div className="border p-4 rounded shadow">
         <h2 className="section-header-blue">Total Program Cost</h2>
@@ -129,33 +178,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
           <div className="label-yellow">Total Biological Program Cost per Acre</div>
           <div>${formatNumber(totalCostPerAcre)}</div>
-        </div>
-      </div>
-
-      {/* ROI Section */}
-      <div className="border p-4 rounded shadow space-y-4">
-        <h2 className="section-header-blue">Breakeven ROI Calculations</h2>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="border rounded p-2 shadow">
-            <div className="label-yellow">Breakeven ROI</div>
-            <div>{formatNumber(roi.breakevenYield)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2 shadow">
-            <div className="label-yellow">Yield Needed for</div>
-            <div>2:1 ROI<br />{formatNumber(roi.roi2to1)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2 shadow">
-            <div className="label-yellow">Yield Needed for</div>
-            <div>3:1 ROI<br />{formatNumber(roi.roi3to1)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2 shadow">
-            <div className="label-yellow">Yield Needed for</div>
-            <div>4:1 ROI<br />{formatNumber(roi.roi4to1)} {roi.unit}/acre</div>
-          </div>
-          <div className="border rounded p-2 shadow">
-            <div className="label-yellow">Yield Needed for</div>
-            <div>5:1 ROI<br />{formatNumber(roi.roi5to1)} {roi.unit}/acre</div>
-          </div>
         </div>
       </div>
     </div>

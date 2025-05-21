@@ -7,7 +7,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 interface PDFDownloadButtonProps {
-  targetRef: React.RefObject<HTMLDivElement | null>;
+  targetRef: React.RefObject<HTMLDivElement>;
 }
 
 const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
@@ -15,17 +15,22 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const input = targetRef.current;
     if (!input) return;
 
-    // Temporarily force light mode and visibility
+    // Save scroll position
+    const scrollY = window.scrollY;
+
+    // Force light mode and ensure visibility
     document.documentElement.classList.remove("dark");
     input.classList.remove("hidden");
 
     // Wait for layout to stabilize
-    await new Promise((res) => setTimeout(res, 300));
+    await new Promise((res) => setTimeout(res, 500));
+
+    // Scroll to top to capture properly
+    window.scrollTo(0, 0);
 
     const canvas = await html2canvas(input, {
       scale: 2,
       useCORS: true,
-      scrollY: -window.scrollY,
     });
 
     const imgData = canvas.toDataURL("image/png");
@@ -37,7 +42,6 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
 
     let position = 0;
 
-    // Split into multiple pages if needed
     while (position < imgHeight) {
       pdf.addImage(imgData, "PNG", 0, -position, imgWidth, imgHeight);
       position += pageHeight;
@@ -46,9 +50,10 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
 
     pdf.save("YMS_Calculator_Results.pdf");
 
-    // Re-hide and restore dark mode after export
+    // Restore layout and scroll position
     input.classList.add("hidden");
     document.documentElement.classList.add("dark");
+    window.scrollTo(0, scrollY);
   };
 
   return (

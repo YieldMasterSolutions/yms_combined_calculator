@@ -1,12 +1,10 @@
 // src/components/PDFResults.tsx
-/* eslint-disable @next/next/no-img-element */
 
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
+import { formatNumber } from "../utils/formatNumber";
 
 interface PDFResultsProps {
-  growerName: string;
-  repName: string;
   seedTreatmentResults: ProductCalculation[];
   inFurrowFoliarResults: ProductCalculation[];
   totalCostPerAcre: number;
@@ -20,96 +18,153 @@ interface PDFResultsProps {
     roi5to1: number;
     unit: string;
   };
+  growerName: string;
+  repName: string;
 }
 
+const formatProductLabel = (product: ProductCalculation): string => {
+  const name = product.productName;
+  const size = product.packageSize;
+  const units = product.packageUnits;
+  const type = product.packageType;
+  const rate = product.applicationRate;
+  const rateUnit = product.applicationRateUnit;
+  const capacity = product.treatmentCapacity;
+  return `${name} – ${size} ${units} – ${type} – ${rate} ${rateUnit} – Treats ${capacity} units`;
+};
+
 const PDFResults: React.FC<PDFResultsProps> = ({
-  growerName,
-  repName,
   seedTreatmentResults,
   inFurrowFoliarResults,
   totalCostPerAcre,
   totalUndiscountedCost,
   totalDiscountedCost,
   roi,
+  growerName,
+  repName,
 }) => {
-  const renderTable = (rows: [string, string | number][]) => (
-    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem', fontSize: '11px' }}>
-      <tbody>
-        {rows.map(([label, value], index) => (
-          <tr key={index}>
-            <td style={{ border: '1px solid #888', padding: '4px', fontWeight: 600 }}>{label}</td>
-            <td style={{ border: '1px solid #888', padding: '4px' }}>{value}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-
   return (
-    <div style={{ fontFamily: 'sans-serif', fontSize: '12px', color: '#111', padding: '1rem' }}>
-      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-        <img
-          src="/yms_combined_calculator/ymslogo3.png"
-          alt="YMS Logo"
-          style={{ height: '40px', marginBottom: '0.5rem' }}
-        />
-        <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '0.25rem' }}>YieldMaster Solutions</h2>
-        <p style={{ fontSize: '14px', fontWeight: 500 }}>Biological Product Summary</p>
+    <div className="space-y-10 text-black p-6">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold">YieldMaster Solutions – Summary Report</h1>
+        <p className="text-md">Grower: {growerName} | Rep: {repName}</p>
       </div>
 
-      <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '0.25rem' }}>Grower Information</h3>
-      {renderTable([
-        ["Grower Name", growerName],
-        ["Sales Rep", repName],
-        ["Date", new Date().toLocaleDateString()]
-      ])}
+      {seedTreatmentResults.map((result, index) => (
+        <div key={index} className="border p-4 rounded space-y-6">
+          <h2 className="text-lg font-bold">{formatProductLabel(result)}</h2>
 
-      {seedTreatmentResults.map((result, i) => (
-        <div key={i} style={{ marginBottom: '1rem' }}>
-          <h4 style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '0.25rem' }}>{result.productName} (Seed Treatment)</h4>
-          {renderTable([
-            ["Application Rate", `${result.applicationRate} ${result.applicationRateUnit}`],
-            ["Total Product Needed", `${result.totalProductNeeded?.toFixed(2)} ${result.packageUnits}`],
-            ["Total Units to Order", `${Math.ceil(result.totalProductUnits ?? 0)} – ${result.packageSize} ${result.packageUnits}`],
-            ["Product Cost per Ounce", `$${result.productCostPerOz?.toFixed(2)}`],
-            ["Total MSRP", `$${result.originalTotalCostToGrower.toFixed(2)}`],
-            ["Total Discounted Cost", `$${result.discountedTotalCostToGrower.toFixed(2)}`],
-            ["Cost per Unit of Seed", `$${result.productCostPerUnitSeed?.toFixed(4)}`],
-            ["Cost per Acre", `$${result.individualCostPerAcre.toFixed(2)}`],
-          ])}
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="col-span-2 font-semibold">Seed Treatment Calculations</div>
+
+            <div>Total Number of Bushels to be Treated</div>
+            <div>{formatNumber(result.totalBushels ?? 0)}</div>
+
+            <div>Total Weight of Seeds to be Treated</div>
+            <div>{formatNumber(result.totalWeight ?? 0)} lbs</div>
+
+            <div>Total Number of Units to be Treated</div>
+            <div>{formatNumber(result.unitsToBeTreated ?? 0)}</div>
+
+            <div>Number of Seeds per Unit</div>
+            <div>{formatNumber(result.seedsPerUnit ?? 0)}</div>
+
+            <div className="col-span-2 font-semibold mt-4">Seed Treatment Costs</div>
+
+            <div>Application Rate</div>
+            <div>{result.applicationRate} {result.applicationRateUnit}</div>
+
+            <div>Total Amount of Product Needed</div>
+            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
+
+            <div>Total Product Units to Order</div>
+            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
+
+            <div>Product Cost per Ounce</div>
+            <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
+
+            <div>Total Cost to Grower (MSRP)</div>
+            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
+
+            <div>Total Discounted Cost to Grower</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
+
+            <div>Product Cost per Unit of Treated Seed</div>
+            <div>${formatNumber(result.productCostPerUnitSeed ?? 0)}</div>
+
+            <div>Individual Cost of Seed Treatment per Acre</div>
+            <div>${formatNumber(result.individualCostPerAcre)}</div>
+          </div>
         </div>
       ))}
 
-      {inFurrowFoliarResults.map((result, i) => (
-        <div key={i} style={{ marginBottom: '1rem' }}>
-          <h4 style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '0.25rem' }}>{result.productName} ({result.applicationMethod})</h4>
-          {renderTable([
-            ["Application Rate", `${result.applicationRate} ${result.applicationRateUnit}`],
-            ["Total Product Needed", `${result.totalProductNeeded?.toFixed(2)} ${result.packageUnits}`],
-            ["Total Units to Order", `${Math.ceil(result.totalProductUnits ?? 0)} – ${result.packageSize} ${result.packageUnits}`],
-            ["Product Cost per Ounce", `$${result.productCostPerOz?.toFixed(2)}`],
-            ["Total MSRP", `$${result.originalTotalCostToGrower.toFixed(2)}`],
-            ["Total Discounted Cost", `$${result.discountedTotalCostToGrower.toFixed(2)}`],
-            ["Cost per Acre", `$${result.individualCostPerAcre.toFixed(2)}`],
-          ])}
+      {inFurrowFoliarResults.map((result, index) => (
+        <div key={index} className="border p-4 rounded">
+          <h2 className="text-lg font-bold">{formatProductLabel(result)}</h2>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>Application Rate</div>
+            <div>{result.applicationRate} {result.applicationRateUnit}</div>
+
+            <div>Total Amount of Product Needed</div>
+            <div>{formatNumber(result.totalProductNeeded ?? 0)} {result.packageUnits}</div>
+
+            <div>Total Product Units to Order</div>
+            <div>{Math.ceil(result.totalProductUnits ?? 0)} – {result.packageSize} {result.packageUnits} - {result.packageType}</div>
+
+            <div>Product Cost per Ounce</div>
+            <div>${formatNumber(result.productCostPerOz ?? 0)}</div>
+
+            <div>Total Cost to Grower (MSRP)</div>
+            <div>${formatNumber(result.originalTotalCostToGrower)}</div>
+
+            <div>Total Discounted Cost to Grower</div>
+            <div>${formatNumber(result.discountedTotalCostToGrower)}</div>
+
+            <div>Individual Cost per Acre</div>
+            <div>${formatNumber(result.individualCostPerAcre)}</div>
+          </div>
         </div>
       ))}
 
-      <h4 style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '0.25rem' }}>Total Program Cost</h4>
-      {renderTable([
-        ["Total Program Cost per Acre", `$${totalCostPerAcre.toFixed(2)}`],
-        ["Total Undiscounted Cost", `$${totalUndiscountedCost.toFixed(2)}`],
-        ["Total Discounted Cost", `$${totalDiscountedCost.toFixed(2)}`],
-      ])}
+      <div className="border p-4 rounded space-y-4">
+        <h2 className="text-lg font-bold">Breakeven ROI Calculations</h2>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-sm">
+          <div className="border rounded p-2">
+            <div>Breakeven ROI</div>
+            <div>{formatNumber(roi.breakevenYield)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2">
+            <div>Yield Needed for</div>
+            <div>2:1 ROI – {formatNumber(roi.roi2to1)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2">
+            <div>Yield Needed for</div>
+            <div>3:1 ROI – {formatNumber(roi.roi3to1)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2">
+            <div>Yield Needed for</div>
+            <div>4:1 ROI – {formatNumber(roi.roi4to1)} {roi.unit}/acre</div>
+          </div>
+          <div className="border rounded p-2">
+            <div>Yield Needed for</div>
+            <div>5:1 ROI – {formatNumber(roi.roi5to1)} {roi.unit}/acre</div>
+          </div>
+        </div>
+      </div>
 
-      <h4 style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '0.25rem' }}>Breakeven ROI Table</h4>
-      {renderTable([
-        ["Breakeven Yield", `${roi.breakevenYield.toFixed(2)} ${roi.unit}`],
-        ["2:1 ROI", `${roi.roi2to1.toFixed(2)} ${roi.unit}`],
-        ["3:1 ROI", `${roi.roi3to1.toFixed(2)} ${roi.unit}`],
-        ["4:1 ROI", `${roi.roi4to1.toFixed(2)} ${roi.unit}`],
-        ["5:1 ROI", `${roi.roi5to1.toFixed(2)} ${roi.unit}`],
-      ])}
+      <div className="border p-4 rounded">
+        <h2 className="text-lg font-bold">Total Program Cost</h2>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>Total Undiscounted Program Cost</div>
+          <div>${formatNumber(totalUndiscountedCost)}</div>
+
+          <div>Total Discounted Program Cost</div>
+          <div>${formatNumber(totalDiscountedCost)}</div>
+
+          <div>Total Biological Program Cost per Acre</div>
+          <div>${formatNumber(totalCostPerAcre)}</div>
+        </div>
+      </div>
     </div>
   );
 };
