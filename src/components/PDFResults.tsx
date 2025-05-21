@@ -9,8 +9,10 @@ interface PDFResultsProps {
   repName: string;
   seedTreatmentResults: ProductCalculation[];
   inFurrowFoliarResults: ProductCalculation[];
-  totalProgramCost: number;
-  roiYields: {
+  totalCostPerAcre: number;
+  totalUndiscountedCost: number;
+  totalDiscountedCost: number;
+  roi: {
     roi2x: number;
     roi3x: number;
     roi4x: number;
@@ -23,8 +25,10 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   repName,
   seedTreatmentResults,
   inFurrowFoliarResults,
-  totalProgramCost,
-  roiYields,
+  totalCostPerAcre,
+  totalUndiscountedCost,
+  totalDiscountedCost,
+  roi,
 }) => {
   const renderProduct = (product: ProductCalculation) => (
     <div key={product.productName} className="mb-4 border-b pb-2">
@@ -83,10 +87,19 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </>
       )}
 
-      {/* Total Program Cost */}
+      {/* Total Program Cost Summary */}
       <div className="mt-8 border-t pt-4">
-        <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Total Program Cost</h2>
-        <p className="text-base font-semibold">${formatNumber(totalProgramCost)} per acre</p>
+        <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Total Program Cost Summary</h2>
+        <div className="grid grid-cols-2 gap-y-2">
+          <div className="font-semibold">Total Undiscounted Cost</div>
+          <div>${formatNumber(totalUndiscountedCost)}</div>
+
+          <div className="font-semibold">Total Discounted Cost</div>
+          <div>${formatNumber(totalDiscountedCost)}</div>
+
+          <div className="font-semibold">Cost per Acre</div>
+          <div>${formatNumber(totalCostPerAcre)}</div>
+        </div>
       </div>
 
       {/* ROI Calculations */}
@@ -94,16 +107,16 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Breakeven ROI Calculations</h2>
         <div className="grid grid-cols-2 gap-y-2">
           <div className="font-semibold">2:1 ROI Threshold</div>
-          <div>{formatNumber(roiYields.roi2x)} bu/acre</div>
+          <div>{formatNumber(roi.roi2x)} bu/acre</div>
 
           <div className="font-semibold">3:1 ROI Threshold</div>
-          <div>{formatNumber(roiYields.roi3x)} bu/acre</div>
+          <div>{formatNumber(roi.roi3x)} bu/acre</div>
 
           <div className="font-semibold">4:1 ROI Threshold</div>
-          <div>{formatNumber(roiYields.roi4x)} bu/acre</div>
+          <div>{formatNumber(roi.roi4x)} bu/acre</div>
 
           <div className="font-semibold">5:1 ROI Threshold</div>
-          <div>{formatNumber(roiYields.roi5x)} bu/acre</div>
+          <div>{formatNumber(roi.roi5x)} bu/acre</div>
         </div>
       </div>
     </div>
