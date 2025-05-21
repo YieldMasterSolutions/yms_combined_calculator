@@ -1,277 +1,155 @@
 // src/app/page.tsx
-/* eslint-disable @next/next/no-img-element */
 
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState } from "react";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
-import ThemeToggle from "../components/ThemeToggle";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 import PDFResults from "../components/PDFResults";
+import { ProductCalculation, calculateSeedTreatmentData, calculateProductData, calculateROI } from "../utils/calculations";
+import { productsSeedTreatment, productsInFurrowFoliar, seedTypes } from "../utils/data";
 
-import {
-  calculateProductData,
-  ProductCalculation,
-} from "../utils/calculations";
-import {
-  seedTypes,
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-  ProductData,
-} from "../utils/data";
+export default function Home() {
+  const pdfRef = useRef<HTMLDivElement | null>(null);
 
-export default function CombinedCalculator() {
-  useEffect(() => {
-    document.documentElement.classList.remove("dark");
-    document.documentElement.classList.add("light");
-  }, []);
-
+  // Crop inputs
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
   const [overrideSeeds, setOverrideSeeds] = useState("");
-  const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
+
+  // Market inputs
   const [marketPrice, setMarketPrice] = useState("");
-  const [marketPriceUnit, setMarketPriceUnit] = useState("$/acre");
+
+  // Discounts
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
-  const [dealerName, setDealerName] = useState("");
+
+  // Grower/rep
   const [growerName, setGrowerName] = useState("");
+  const [repName, setRepName] = useState("");
+
+  // Products
+  const [seedProducts, setSeedProducts] = useState(productsSeedTreatment.slice(0, 2));
+  const [foliarProducts, setFoliarProducts] = useState(productsInFurrowFoliar.slice(0, 4));
 
   const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
   const [totalCostPerAcre, setTotalCostPerAcre] = useState(0);
   const [totalUndiscountedCost, setTotalUndiscountedCost] = useState(0);
   const [totalDiscountedCost, setTotalDiscountedCost] = useState(0);
-  const [breakevenYield, setBreakevenYield] = useState<number | null>(null);
-  const [roi2, setRoi2] = useState<number | null>(null);
-  const [roi3, setRoi3] = useState<number | null>(null);
-  const [roi4, setRoi4] = useState<number | null>(null);
-  const [roi5, setRoi5] = useState<number | null>(null);
+  const [roi2, setROI2] = useState(0);
+  const [roi3, setROI3] = useState(0);
+  const [roi4, setROI4] = useState(0);
+  const [roi5, setROI5] = useState(0);
 
-  const [selectedSeedTreatmentProducts, setSelectedSeedTreatmentProducts] = useState(
-    Array(2).fill({ product: {} as ProductData, applicationMethod: "" })
-  );
-  const [selectedFoliarProducts, setSelectedFoliarProducts] = useState(
-    Array(4).fill({ product: {} as ProductData, applicationMethod: "" })
-  );
-
-  const pdfRef = useRef<HTMLDivElement | null>(null);
-
-  const handleProductChange = (
-    index: number,
-    productName: string,
-    type: "seed" | "foliar"
-  ) => {
-    const target =
-      type === "seed"
-        ? [...selectedSeedTreatmentProducts]
-        : [...selectedFoliarProducts];
-    const match = [...productsSeedTreatment, ...productsInFurrowFoliar].find(
-      (p) => p["Product Name"] === productName
-    );
-    if (match) target[index] = { ...target[index], product: match };
-    if (type === "seed") {
-      setSelectedSeedTreatmentProducts(target);
-    } else {
-      setSelectedFoliarProducts(target);
-    }
-  };
-
-  const handleAppTypeChange = (
-    index: number,
-    method: string,
-    type: "seed" | "foliar"
-  ) => {
-    const target =
-      type === "seed"
-        ? [...selectedSeedTreatmentProducts]
-        : [...selectedFoliarProducts];
-    target[index] = { ...target[index], applicationMethod: method };
-    if (type === "seed") {
-      setSelectedSeedTreatmentProducts(target);
-    } else {
-      setSelectedFoliarProducts(target);
-    }
-  };
-
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!seedType || !acres || !seedingRate || !marketPrice) return;
-
-    const acresNum = parseFloat(acres);
-    const dealer = dealerDiscount ? parseFloat(dealerDiscount) : 0;
-    const grower = growerDiscount ? parseFloat(growerDiscount) : 0;
-    const sRate = parseFloat(seedingRate);
-
-    const seedEntry = seedTypes.find((s) => s["Seed Type"] === seedType);
-    const spp = overrideSeeds
-      ? parseFloat(overrideSeeds)
-      : seedEntry
-      ? parseFloat(seedEntry["Seeds/lb"])
-      : 0;
-    const lpu = seedEntry ? seedEntry["Lbs/Unit"] : 0;
-
-    const selectedSeedProducts = selectedSeedTreatmentProducts
-      .filter((p) => p.product && p.product["Product Name"])
-      .map((p) => ({ ...p.product, applicationMethod: p.applicationMethod }));
-
-    const selectedFoliarProductsFiltered = selectedFoliarProducts
-      .filter(
-        (p) =>
-          p.product &&
-          p.product["Product Name"] &&
-          (p.applicationMethod === "In-Furrow" ||
-            p.applicationMethod === "Foliar")
-      )
-      .map((p) => ({ ...p.product, applicationMethod: p.applicationMethod }));
-
-    const seedResultSetArray = selectedSeedProducts.map((product) =>
-      calculateProductData(
-        acresNum,
-        product,
-        dealer,
-        grower,
-        seedType,
-        spp,
-        lpu,
-        sRate,
-        seedingRateUnit
-      )
+  const handleCalculate = () => {
+    const seedData = calculateSeedTreatmentData(
+      seedType,
+      seedProducts,
+      acres,
+      seedingRate,
+      seedingRateUnit,
+      overrideSeeds,
+      dealerDiscount,
+      growerDiscount
     );
 
-    const foliarResultSetArray = selectedFoliarProductsFiltered.map((product) =>
-      calculateProductData(
-        acresNum,
-        product,
-        dealer,
-        grower,
-        seedType,
-        spp,
-        lpu,
-        sRate,
-        seedingRateUnit
-      )
-    );
+    const foliarData = calculateProductData(foliarProducts, acres, dealerDiscount, growerDiscount);
 
-    const totalSeedCost = seedResultSetArray.reduce((sum, r) => sum + r.individualCostPerAcre, 0);
-    const totalFoliarCost = foliarResultSetArray.reduce((sum, r) => sum + r.individualCostPerAcre, 0);
-    const totalUndiscounted = seedResultSetArray.reduce((sum, r) => sum + r.originalTotalCostToGrower, 0) +
-                              foliarResultSetArray.reduce((sum, r) => sum + r.originalTotalCostToGrower, 0);
+    const totalCost = seedData.reduce((sum, p) => sum + p.costPerAcre, 0) + foliarData.reduce((sum, p) => sum + p.costPerAcre, 0);
+    const totalMSRP = seedData.reduce((sum, p) => sum + p.totalMSRP, 0) + foliarData.reduce((sum, p) => sum + p.totalMSRP, 0);
+    const totalDiscounted = seedData.reduce((sum, p) => sum + p.totalDiscountedCost, 0) + foliarData.reduce((sum, p) => sum + p.totalDiscountedCost, 0);
 
-    const totalDiscounted = seedResultSetArray.reduce((sum, r) => sum + r.discountedTotalCostToGrower, 0) +
-                            foliarResultSetArray.reduce((sum, r) => sum + r.discountedTotalCostToGrower, 0);
-    setSeedResults(seedResultSetArray);
-    setFoliarResults(foliarResultSetArray);
-    setTotalCostPerAcre(totalSeedCost + totalFoliarCost);
-    setTotalUndiscountedCost(totalUndiscounted);
+    const roi = calculateROI(totalCost, marketPrice);
+
+    setSeedResults(seedData);
+    setFoliarResults(foliarData);
+    setTotalCostPerAcre(totalCost);
+    setTotalUndiscountedCost(totalMSRP);
     setTotalDiscountedCost(totalDiscounted);
-
-    const mp = parseFloat(marketPrice);
-    const totalCost = totalSeedCost + totalFoliarCost;
-    setBreakevenYield(mp > 0 ? totalCost / mp : null);
-    setRoi2(mp > 0 ? (2 * totalCost) / mp : null);
-    setRoi3(mp > 0 ? (3 * totalCost) / mp : null);
-    setRoi4(mp > 0 ? (4 * totalCost) / mp : null);
-    setRoi5(mp > 0 ? (5 * totalCost) / mp : null);
+    setROI2(roi.roi2x);
+    setROI3(roi.roi3x);
+    setROI4(roi.roi4x);
+    setROI5(roi.roi5x);
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8 bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen transition-colors">
-      <ThemeToggle />
+    <main className="min-h-screen bg-white text-black px-4 py-6 font-[Open_Sans]">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <img src="/legendlogo1.png" alt="Legend Seed Logo" className="h-12" />
+          <img src="/ymslogo3.png" alt="YMS Logo" className="h-12" />
+        </div>
 
-      <div className="flex justify-between items-center">
-        <img src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width="160" height="80" className="mb-2" />
-        <img src="/yms_combined_calculator/legendlogo1.png" alt="Legend Logo" width="160" height="80" className="mb-2" />
-      </div>
+        <h1 className="text-2xl font-[Montserrat] text-blue-700 mb-4">YMS Program Calculator</h1>
 
-      <div className="text-center mb-6">
-        <h1 className="text-5xl font-bold text-yellow-400 tracking-tight">YieldMaster Solutions</h1>
-        <p className="text-3xl font-bold text-zinc-500 dark:text-zinc-400">Product Calculator</p>
-      </div>
+        <CalculatorForm
+          seedType={seedType}
+          setSeedType={setSeedType}
+          acres={acres}
+          setAcres={setAcres}
+          seedingRate={seedingRate}
+          setSeedingRate={setSeedingRate}
+          seedingRateUnit={seedingRateUnit}
+          setSeedingRateUnit={setSeedingRateUnit}
+          overrideSeeds={overrideSeeds}
+          setOverrideSeeds={setOverrideSeeds}
+          marketPrice={marketPrice}
+          setMarketPrice={setMarketPrice}
+          dealerDiscount={dealerDiscount}
+          setDealerDiscount={setDealerDiscount}
+          growerDiscount={growerDiscount}
+          setGrowerDiscount={setGrowerDiscount}
+          growerName={growerName}
+          setGrowerName={setGrowerName}
+          repName={repName}
+          setRepName={setRepName}
+          seedProducts={seedProducts}
+          setSeedProducts={setSeedProducts}
+          foliarProducts={foliarProducts}
+          setFoliarProducts={setFoliarProducts}
+          handleCalculate={handleCalculate}
+        />
 
-      <CalculatorForm
-        seedType={seedType}
-        setSeedType={setSeedType}
-        acres={acres}
-        setAcres={setAcres}
-        seedingRate={seedingRate}
-        setSeedingRate={setSeedingRate}
-        seedingRateUnit={seedingRateUnit}
-        setSeedingRateUnit={setSeedingRateUnit}
-        overrideSeeds={overrideSeeds}
-        setOverrideSeeds={setOverrideSeeds}
-        seedsPerUnitOverride={seedsPerUnitOverride}
-        setSeedsPerUnitOverride={setSeedsPerUnitOverride}
-        marketPrice={marketPrice}
-        setMarketPrice={setMarketPrice}
-        marketPriceUnit={marketPriceUnit}
-        setMarketPriceUnit={setMarketPriceUnit}
-        dealerDiscount={dealerDiscount}
-        setDealerDiscount={setDealerDiscount}
-        growerDiscount={growerDiscount}
-        setGrowerDiscount={setGrowerDiscount}
-        dealerName={dealerName}
-        setDealerName={setDealerName}
-        growerName={growerName}
-        setGrowerName={setGrowerName}
-        seedTypes={seedTypes}
-        productsSeedTreatment={productsSeedTreatment}
-        productsInFurrow={productsInFurrowFoliar}
-        selectedSeedTreatmentProducts={selectedSeedTreatmentProducts}
-        selectedFoliarProducts={selectedFoliarProducts}
-        handleProductChange={handleProductChange}
-        handleAppTypeChange={handleAppTypeChange}
-        onSubmit={handleFormSubmit}
-      />
-
-      {(seedResults.length > 0 || foliarResults.length > 0) && (
-        <>
+        <div className="my-8">
           <ResultsDisplay
             seedTreatmentResults={seedResults}
             inFurrowFoliarResults={foliarResults}
             totalCostPerAcre={totalCostPerAcre}
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
+            roi2={roi2}
+            roi3={roi3}
+            roi4={roi4}
+            roi5={roi5}
+          />
+        </div>
+
+        <div className="text-center mb-4">
+          <PDFDownloadButton targetRef={pdfRef} />
+        </div>
+
+        <div className="hidden">
+          <PDFResults
+            growerName={growerName}
+            repName={repName}
+            seedTreatmentResults={seedResults}
+            inFurrowFoliarResults={foliarResults}
+            totalCostPerAcre={totalCostPerAcre}
+            totalUndiscountedCost={totalUndiscountedCost}
+            totalDiscountedCost={totalDiscountedCost}
             roi={{
-              breakevenYield: breakevenYield ?? 0,
-              roi2to1: roi2 ?? 0,
-              roi3to1: roi3 ?? 0,
-              roi4to1: roi4 ?? 0,
-              roi5to1: roi5 ?? 0,
-              unit: marketPriceUnit.replace("$", "")
+              roi2x: roi2 ?? 0,
+              roi3x: roi3 ?? 0,
+              roi4x: roi4 ?? 0,
+              roi5x: roi5 ?? 0,
             }}
           />
-
-          <div className="text-center">
-            <PDFDownloadButton targetRef={pdfRef} />
-          </div>
-
-          <div className="hidden">
-            <div ref={pdfRef}>
-              <PDFResults
-                growerName={growerName}
-                repName={dealerName}
-                seedTreatmentResults={seedResults}
-                inFurrowFoliarResults={foliarResults}
-                totalCostPerAcre={totalCostPerAcre}
-                totalUndiscountedCost={totalUndiscountedCost}
-                totalDiscountedCost={totalDiscountedCost}
-                roi={{
-                  breakevenYield: breakevenYield ?? 0,
-                  roi2to1: roi2 ?? 0,
-                  roi3to1: roi3 ?? 0,
-                  roi4to1: roi4 ?? 0,
-                  roi5to1: roi5 ?? 0,
-                  unit: marketPriceUnit.replace("$", "")
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+        </div>
+      </div>
+    </main>
   );
 }
