@@ -7,31 +7,32 @@ import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 import PDFResults from "../components/PDFResults";
-import { ProductCalculation, calculateSeedTreatmentData, calculateProductData, calculateROI } from "../utils/calculations";
-import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
+import {
+  ProductCalculation,
+  calculateSeedTreatmentData,
+  calculateAllFoliarProductCosts,
+  calculateROI,
+} from "../utils/calculations";
+import {
+  productsSeedTreatment,
+  productsInFurrowFoliar,
+  seedTypes,
+} from "../utils/data";
 
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement | null>(null);
 
-  // Crop inputs
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
   const [overrideSeeds, setOverrideSeeds] = useState("");
-
-  // Market inputs
   const [marketPrice, setMarketPrice] = useState("");
-
-  // Discounts
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
-
-  // Grower/rep
   const [growerName, setGrowerName] = useState("");
   const [repName, setRepName] = useState("");
 
-  // Products
   const [seedProducts, setSeedProducts] = useState(productsSeedTreatment.slice(0, 2));
   const [foliarProducts, setFoliarProducts] = useState(productsInFurrowFoliar.slice(0, 4));
 
@@ -46,35 +47,55 @@ export default function Home() {
   const [roi5, setROI5] = useState(0);
 
   const handleCalculate = () => {
+    const selectedSeedProducts = seedProducts.map((product) => ({
+      product,
+      applicationMethod: "Seed Treatment",
+    }));
+
+    const selectedFoliarProducts = foliarProducts.map((product) => ({
+      product,
+      applicationMethod: product.ApplicationMethod || "In-Furrow",
+    }));
+
     const seedData = calculateSeedTreatmentData(
       seedType,
-      seedProducts,
-      acres,
-      seedingRate,
+      parseFloat(acres),
+      parseFloat(seedingRate),
       seedingRateUnit,
-      overrideSeeds,
-      dealerDiscount,
-      growerDiscount,
-      marketPrice // ✅ Included as 9th argument
+      overrideSeeds ? parseFloat(overrideSeeds) : undefined,
+      parseFloat(dealerDiscount) || 0,
+      parseFloat(growerDiscount) || 0,
+      selectedSeedProducts,
+      undefined
     );
 
-    const foliarData = calculateProductData(foliarProducts, acres, dealerDiscount, growerDiscount);
+    const foliarData = calculateAllFoliarProductCosts(
+      parseFloat(acres),
+      parseFloat(dealerDiscount) || 0,
+      parseFloat(growerDiscount) || 0,
+      selectedFoliarProducts
+    );
 
-    const totalCost = seedData.reduce((sum, p) => sum + p.costPerAcre, 0) + foliarData.reduce((sum, p) => sum + p.costPerAcre, 0);
-    const totalMSRP = seedData.reduce((sum, p) => sum + p.totalMSRP, 0) + foliarData.reduce((sum, p) => sum + p.totalMSRP, 0);
-    const totalDiscounted = seedData.reduce((sum, p) => sum + p.totalDiscountedCost, 0) + foliarData.reduce((sum, p) => sum + p.totalDiscountedCost, 0);
+    const totalCost = seedData.reduce((sum, p) => sum + p.individualCostPerAcre, 0) +
+                      foliarData.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
 
-    const roi = calculateROI(totalCost, marketPrice);
+    const totalMSRP = seedData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0) +
+                      foliarData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0);
+
+    const totalDiscounted = seedData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
+                            foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
+
+    const roi = calculateROI(totalCost, parseFloat(marketPrice), "bu/acre");
 
     setSeedResults(seedData);
     setFoliarResults(foliarData);
     setTotalCostPerAcre(totalCost);
     setTotalUndiscountedCost(totalMSRP);
     setTotalDiscountedCost(totalDiscounted);
-    setROI2(roi.roi2x);
-    setROI3(roi.roi3x);
-    setROI4(roi.roi4x);
-    setROI5(roi.roi5x);
+    setROI2(roi.roi2to1);
+    setROI3(roi.roi3to1);
+    setROI4(roi.roi4to1);
+    setROI5(roi.roi5to1);
   };
 
   return (
@@ -143,10 +164,10 @@ export default function Home() {
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
             roi={{
-              roi2x: roi2 ?? 0,
-              roi3x: roi3 ?? 0,
-              roi4x: roi4 ?? 0,
-              roi5x: roi5 ?? 0,
+              roi2x: roi2,
+              roi3x: roi3,
+              roi4x: roi4,
+              roi5x: roi5,
             }}
           />
         </div>
