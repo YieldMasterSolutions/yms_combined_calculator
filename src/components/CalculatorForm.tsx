@@ -110,9 +110,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
 
   return (
     <form onSubmit={onSubmit} className="space-y-8 text-white">
+      <h2 className="text-xl font-bold text-blue-600">Crop Inputs</h2>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Seed Type</label>
+          <label className="label-yellow mb-1 block">Seed Type</label>
           <select value={seedType} onChange={(e) => setSeedType(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded">
             <option value="">Select Seed Type</option>
             {seedTypes.map((s) => (
@@ -121,56 +122,56 @@ const CalculatorForm: React.FC<CalculatorFormProps> = (props) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Total Acres</label>
+          <label className="label-yellow mb-1 block">Total Acres</label>
           <input type="number" value={acres} onChange={(e) => setAcres(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Seeding Rate</label>
+          <label className="label-yellow mb-1 block">Seeding Rate</label>
           <input type="number" value={seedingRate} onChange={(e) => setSeedingRate(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Rate Unit</label>
+          <label className="label-yellow mb-1 block">Rate Unit</label>
           <select value={seedingRateUnit} onChange={(e) => setSeedingRateUnit(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded">
             <option value="seeds/acre">seeds/acre</option>
             <option value="lbs/acre">lbs/acre</option>
           </select>
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Override Seeds/lb</label>
+          <label className="label-yellow mb-1 block">Override Seeds/lb</label>
           <input type="number" value={overrideSeeds} onChange={(e) => setOverrideSeeds(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
           <p className="text-xs text-gray-400 mt-1">Default: {getDefaultSeedsPerLb()}</p>
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Override Seeds/Unit</label>
+          <label className="label-yellow mb-1 block">Override Seeds/Unit</label>
           <input type="number" value={seedsPerUnitOverride} onChange={(e) => setSeedsPerUnitOverride(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
           <p className="text-xs text-gray-400 mt-1">Default: {getDefaultSeedsPerUnit()}</p>
         </div>
       </div>
 
-      <h2 className="text-xl font-bold text-blue-600">Market Price and ROI</h2>
+      <h2 className="text-xl font-bold text-blue-600">Market and ROI Inputs</h2>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Grower Name</label>
+          <label className="label-yellow mb-1 block">Grower Name</label>
           <input type="text" value={growerName} onChange={(e) => setGrowerName(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Rep Name</label>
+          <label className="label-yellow mb-1 block">Rep Name</label>
           <input type="text" value={dealerName} onChange={(e) => setDealerName(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Dealer Discount (%)</label>
+          <label className="label-yellow mb-1 block">Dealer Discount (%)</label>
           <input type="number" value={dealerDiscount} onChange={(e) => setDealerDiscount(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Grower Discount (%)</label>
+          <label className="label-yellow mb-1 block">Grower Discount (%)</label>
           <input type="number" value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Market Price</label>
+          <label className="label-yellow mb-1 block">Market Price</label>
           <input type="number" value={marketPrice} onChange={(e) => setMarketPrice(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded" />
         </div>
         <div>
-          <label className="block text-sm font-bold text-yellow-300 mb-1">Market Price Unit</label>
+          <label className="label-yellow mb-1 block">Market Price Unit</label>
           <select value={marketPriceUnit} onChange={(e) => setMarketPriceUnit(e.target.value)} className="w-full p-2 bg-gray-800 border border-gray-600 rounded">
             <option value="$/acre">$/acre</option>
             <option value="$/bushel">$/bushel</option>
