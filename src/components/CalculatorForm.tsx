@@ -69,7 +69,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     const units = product["Package Units"];
     const type = product["Package Type"];
     const treatCapacity = rate && size ? Math.floor(size / rate) : "—";
-    const pluralType = type && treatCapacity === 1 ? type : `${type}s`;
+    const pluralType = treatCapacity === 1 ? type : `${type}s`;
     return `${product["Product Name"]} – ${size} ${units} – ${pluralType} – ${rate} ${rateUnit} – Treats ${treatCapacity} units`;
   };
 
