@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base typography and layout colors */
+/* Base typography */
 html {
   font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
 }
@@ -13,6 +13,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
 }
 
+/* Light mode color variables */
 :root {
   --yms-blue: #0d3e8c;
   --yms-yellow: #ffc627;
@@ -20,12 +21,15 @@ h1, h2, h3, h4, h5, h6 {
   --yms-body-fg: #1f2937;
 }
 
+/* Dark mode removed to enforce white PDF compatibility */
+/*
 @media (prefers-color-scheme: dark) {
   :root {
     --yms-body-bg: #1d1d1d;
     --yms-body-fg: #f3f4f6;
   }
 }
+*/
 
 /* Tailwind-compatible theming */
 body {
@@ -33,22 +37,24 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Section & label overrides */
 .label-yellow {
   color: var(--yms-yellow);
 }
 
 .section-header-blue {
   color: var(--yms-blue);
-  font-size: 1.125rem; /* text-lg */
-  font-weight: 600;    /* font-semibold */
+  font-size: 1.125rem;
+  font-weight: 600;
 }
 
+/* Page breaks for print */
 .page-break {
   break-before: page;
   page-break-before: always;
 }
 
-/* Print style overrides */
+/* Print overrides */
 @media print {
   color-scheme: only light;
 
@@ -74,7 +80,7 @@ body {
   }
 }
 
-/* Explicit grayscale styling for PDF export */
+/* PDF export specific grayscale block */
 .print-grayscale * {
   all: unset;
   all: revert-layer;
@@ -106,3 +112,4 @@ body {
 .print-grayscale .section-header-blue {
   color: #000000 !important;
 }
+

@@ -33,28 +33,28 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   const renderProduct = (product: ProductCalculation) => (
     <div key={product.productName} className="mb-4 border-b pb-2">
       <div className="grid grid-cols-2 gap-2 text-sm">
-        <div className="font-semibold">Product Name</div>
+        <div className="font-semibold text-yellow-600">Product Name</div>
         <div>{product.productName} ({product.applicationMethod})</div>
 
-        <div className="font-semibold">Application Rate</div>
-        <div>{product.applicationRate} {product.applicationRateUnit}</div>
+        <div className="font-semibold text-yellow-600">Application Rate</div>
+        <div>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
 
-        <div className="font-semibold">Total Product Needed</div>
-        <div>{formatNumber(product.totalProductNeeded)} {product.applicationRateUnit?.split("/")[0]}</div>
+        <div className="font-semibold text-yellow-600">Total Product Needed</div>
+        <div>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
 
-        <div className="font-semibold">Total Product Units to Order</div>
+        <div className="font-semibold text-yellow-600">Total Product Units to Order</div>
         <div>{formatNumber(product.totalProductUnits, 0)}</div>
 
-        <div className="font-semibold">Product Cost per Unit</div>
+        <div className="font-semibold text-yellow-600">Product Cost per Unit</div>
         <div>${formatNumber(product.productCostPerOz)}</div>
 
-        <div className="font-semibold">Total MSRP</div>
+        <div className="font-semibold text-yellow-600">Total MSRP</div>
         <div>${formatNumber(product.originalTotalCostToGrower)}</div>
 
-        <div className="font-semibold">Total Discounted Cost</div>
+        <div className="font-semibold text-yellow-600">Total Discounted Cost</div>
         <div>${formatNumber(product.discountedTotalCostToGrower)}</div>
 
-        <div className="font-semibold">Cost per Acre</div>
+        <div className="font-semibold text-yellow-600">Cost per Acre</div>
         <div>${formatNumber(product.individualCostPerAcre)}</div>
       </div>
     </div>
@@ -68,18 +68,22 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         <p>Rep: <span className="font-semibold">{repName || "—"}</span></p>
       </div>
 
-      {/* Seed Treatment Results */}
+      {/* Seed Treatment */}
       {seedTreatmentResults.length > 0 && (
         <>
-          <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Seed Treatment: Basic Calculations</h2>
+          <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Basic Seed Calculations</h2>
           {renderProduct(seedTreatmentResults[0])}
+        </>
+      )}
 
-          <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">Seed Treatment: Cost Breakdown</h2>
+      {seedTreatmentResults.length > 1 && (
+        <>
+          <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">Seed Treatment Costs</h2>
           {seedTreatmentResults.slice(1).map(renderProduct)}
         </>
       )}
 
-      {/* In-Furrow / Foliar Results */}
+      {/* In-Furrow / Foliar */}
       {inFurrowFoliarResults.length > 0 && (
         <>
           <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">In-Furrow / Foliar Product Costs</h2>
@@ -87,35 +91,35 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </>
       )}
 
-      {/* Total Program Cost Summary */}
+      {/* Total Program Cost */}
       <div className="mt-8 border-t pt-4">
         <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Total Program Cost Summary</h2>
-        <div className="grid grid-cols-2 gap-y-2">
-          <div className="font-semibold">Total Undiscounted Cost</div>
+        <div className="grid grid-cols-2 gap-y-2 text-sm">
+          <div className="font-semibold text-yellow-600">Total Undiscounted Cost</div>
           <div>${formatNumber(totalUndiscountedCost)}</div>
 
-          <div className="font-semibold">Total Discounted Cost</div>
+          <div className="font-semibold text-yellow-600">Total Discounted Cost</div>
           <div>${formatNumber(totalDiscountedCost)}</div>
 
-          <div className="font-semibold">Cost per Acre</div>
+          <div className="font-semibold text-yellow-600">Cost per Acre</div>
           <div>${formatNumber(totalCostPerAcre)}</div>
         </div>
       </div>
 
-      {/* ROI Calculations */}
+      {/* ROI */}
       <div className="mt-6 border-t pt-4">
         <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Breakeven ROI Calculations</h2>
-        <div className="grid grid-cols-2 gap-y-2">
-          <div className="font-semibold">2:1 ROI Threshold</div>
+        <div className="grid grid-cols-2 gap-y-2 text-sm">
+          <div className="font-semibold text-yellow-600">2:1 ROI Threshold</div>
           <div>{formatNumber(roi.roi2x)} bu/acre</div>
 
-          <div className="font-semibold">3:1 ROI Threshold</div>
+          <div className="font-semibold text-yellow-600">3:1 ROI Threshold</div>
           <div>{formatNumber(roi.roi3x)} bu/acre</div>
 
-          <div className="font-semibold">4:1 ROI Threshold</div>
+          <div className="font-semibold text-yellow-600">4:1 ROI Threshold</div>
           <div>{formatNumber(roi.roi4x)} bu/acre</div>
 
-          <div className="font-semibold">5:1 ROI Threshold</div>
+          <div className="font-semibold text-yellow-600">5:1 ROI Threshold</div>
           <div>{formatNumber(roi.roi5x)} bu/acre</div>
         </div>
       </div>
@@ -124,3 +128,4 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 };
 
 export default PDFResults;
+

@@ -3,6 +3,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
@@ -23,6 +24,7 @@ export default function Home() {
   const [seedingRate, setSeedingRate] = useState("");
   const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
   const [overrideSeeds, setOverrideSeeds] = useState("");
+  const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
 
   const [marketPrice, setMarketPrice] = useState("");
   const [dealerDiscount, setDealerDiscount] = useState("");
@@ -30,6 +32,9 @@ export default function Home() {
 
   const [growerName, setGrowerName] = useState("");
   const [repName, setRepName] = useState("");
+
+  const [seedProducts, setSeedProducts] = useState(productsSeedTreatment.slice(0, 2));
+  const [foliarProducts, setFoliarProducts] = useState(productsInFurrowFoliar.slice(0, 4));
 
   const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -42,12 +47,12 @@ export default function Home() {
   const [roi5, setROI5] = useState(0);
 
   const handleCalculate = () => {
-    const selectedSeedProducts = productsSeedTreatment.slice(0, 2).map((product) => ({
+    const selectedSeedProducts = seedProducts.map((product) => ({
       product,
       applicationMethod: product["Application Method"] || "Seed Treatment",
     }));
 
-    const selectedFoliarProducts = productsInFurrowFoliar.slice(0, 4).map((product) => ({
+    const selectedFoliarProducts = foliarProducts.map((product) => ({
       product,
       applicationMethod: product["Application Method"] || "In-Furrow",
     }));
@@ -61,7 +66,7 @@ export default function Home() {
       parseFloat(dealerDiscount || "0"),
       parseFloat(growerDiscount || "0"),
       selectedSeedProducts,
-      undefined
+      seedsPerUnitOverride ? parseFloat(seedsPerUnitOverride) : undefined
     );
 
     const foliarData = calculateAllFoliarProductCosts(
@@ -100,8 +105,8 @@ export default function Home() {
     <main className="min-h-screen bg-white text-black px-4 py-6 font-[Open_Sans]">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <img src="/legendlogo1.png" alt="Legend Seed Logo" className="h-12" />
-          <img src="/ymslogo3.png" alt="YMS Logo" className="h-12" />
+          <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={160} height={48} />
+          <Image src="/yms_combined_calculator/legendlogo1.png" alt="Legend Seed Logo" width={160} height={48} />
         </div>
 
         <h1 className="text-2xl font-[Montserrat] text-blue-700 mb-4">YMS Program Calculator</h1>
@@ -117,6 +122,8 @@ export default function Home() {
           setSeedingRateUnit={setSeedingRateUnit}
           overrideSeeds={overrideSeeds}
           setOverrideSeeds={setOverrideSeeds}
+          seedsPerUnitOverride={seedsPerUnitOverride}
+          setSeedsPerUnitOverride={setSeedsPerUnitOverride}
           marketPrice={marketPrice}
           setMarketPrice={setMarketPrice}
           dealerDiscount={dealerDiscount}
@@ -127,6 +134,10 @@ export default function Home() {
           setGrowerName={setGrowerName}
           repName={repName}
           setRepName={setRepName}
+          seedProducts={seedProducts}
+          setSeedProducts={setSeedProducts}
+          foliarProducts={foliarProducts}
+          setFoliarProducts={setFoliarProducts}
           handleCalculate={handleCalculate}
         />
 
