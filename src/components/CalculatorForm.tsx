@@ -67,7 +67,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     products: ProductData[],
     setProducts: (products: ProductData[]) => void,
     field: keyof ProductData,
-    value: any
+    value: string | number
   ) => {
     const updated = [...products];
     updated[index] = { ...updated[index], [field]: value };
@@ -241,4 +241,3 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 };
 
 export default CalculatorForm;
-
