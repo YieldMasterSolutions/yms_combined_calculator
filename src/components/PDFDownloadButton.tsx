@@ -12,22 +12,26 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
   const handleDownloadPDF = async () => {
     if (!targetRef.current) return;
 
-    const element = targetRef.current;
+    // Clone the hidden content
+    const original = targetRef.current;
+    const clone = original.cloneNode(true) as HTMLElement;
+    clone.style.position = "fixed";
+    clone.style.top = "0";
+    clone.style.left = "0";
+    clone.style.opacity = "1";
+    clone.style.zIndex = "-1";
+    clone.style.backgroundColor = "white";
+    clone.style.display = "block";
+    document.body.appendChild(clone);
 
-    // Ensure element is visible during capture
-    const previousDisplay = element.style.display;
-    element.style.display = "block";
+    await new Promise((resolve) => setTimeout(resolve, 250)); // Wait for fonts/layout
 
-    // Give time for layout/fonts to finalize
-    await new Promise((resolve) => setTimeout(resolve, 250));
-
-    const canvas = await html2canvas(element, {
+    const canvas = await html2canvas(clone, {
       scale: 2,
       useCORS: true,
     });
 
     const imgData = canvas.toDataURL("image/png");
-
     const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -44,7 +48,6 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     let position = 0;
     pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
 
-    // Add pages if content overflows
     let remainingHeight = imgHeight - pageHeight;
     while (remainingHeight > 0) {
       position -= pageHeight;
@@ -55,8 +58,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
 
     pdf.save("YMS_Calculator_Results.pdf");
 
-    // Reset display
-    element.style.display = previousDisplay;
+    document.body.removeChild(clone); // Clean up
   };
 
   return (

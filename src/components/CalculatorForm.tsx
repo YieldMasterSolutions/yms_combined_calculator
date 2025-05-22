@@ -1,7 +1,7 @@
 // src/components/CalculatorForm.tsx
 
 import React from "react";
-import { ProductData } from "../utils/data";
+import { ProductData, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 
 interface CalculatorFormProps {
   seedType: string;
@@ -62,27 +62,39 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setFoliarProducts,
   handleCalculate,
 }) => {
-  const handleProductChange = (
+  const formatProductLabel = (product: ProductData): string => {
+    const rate = product["Application Rate"];
+    const rateUnit = product["Application Rate Unit"];
+    const size = product["Package Size"];
+    const units = product["Package Units"];
+    const type = product["Package Type"];
+    const treatCapacity = rate && size ? Math.floor(size / rate) : "—";
+    const pluralType = type && treatCapacity === 1 ? type : `${type}s`;
+    return `${product["Product Name"]} – ${size} ${units} – ${pluralType} – ${rate} ${rateUnit} – Treats ${treatCapacity} units`;
+  };
+
+  const handleProductSelect = (
     index: number,
-    products: ProductData[],
-    setProducts: (products: ProductData[]) => void,
-    field: keyof ProductData,
-    value: string | number
+    isSeed: boolean,
+    value: string
   ) => {
-    const updated = [...products];
-    updated[index] = { ...updated[index], [field]: value };
-    setProducts(updated);
+    const productList = isSeed ? productsSeedTreatment : productsInFurrowFoliar;
+    const selected = productList.find(p => formatProductLabel(p) === value);
+    if (!selected) return;
+
+    const updated = isSeed ? [...seedProducts] : [...foliarProducts];
+    updated[index] = { ...selected };
+    isSeed ? setSeedProducts(updated) : setFoliarProducts(updated);
   };
 
   const handleAppMethodChange = (
     index: number,
-    products: ProductData[],
-    setProducts: (products: ProductData[]) => void,
+    isSeed: boolean,
     value: string
   ) => {
-    const updated = [...products];
+    const updated = isSeed ? [...seedProducts] : [...foliarProducts];
     updated[index] = { ...updated[index], ["Application Method"]: value };
-    setProducts(updated);
+    isSeed ? setSeedProducts(updated) : setFoliarProducts(updated);
   };
 
   return (
@@ -164,22 +176,24 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <div key={index} className="grid grid-cols-2 gap-4 items-center border p-3 rounded bg-gray-50">
               <div>
                 <label className="block mb-1">Product</label>
-                <input
-                  type="text"
-                  value={product["Product Name"]}
-                  onChange={(e) =>
-                    handleProductChange(index, seedProducts, setSeedProducts, "Product Name", e.target.value)
-                  }
+                <select
+                  value={formatProductLabel(product)}
+                  onChange={(e) => handleProductSelect(index, true, e.target.value)}
                   className="w-full border rounded px-3 py-2"
-                />
+                >
+                  <option value="">Select Product</option>
+                  {productsSeedTreatment.map((p, i) => (
+                    <option key={i} value={formatProductLabel(p)}>
+                      {formatProductLabel(p)}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block mb-1">Application Method</label>
                 <select
                   value={product["Application Method"] || "Seed Treatment"}
-                  onChange={(e) =>
-                    handleAppMethodChange(index, seedProducts, setSeedProducts, e.target.value)
-                  }
+                  onChange={(e) => handleAppMethodChange(index, true, e.target.value)}
                   className="w-full border rounded px-3 py-2"
                 >
                   <option value="Seed Treatment">Seed Treatment</option>
@@ -199,22 +213,24 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <div key={index} className="grid grid-cols-2 gap-4 items-center border p-3 rounded bg-gray-50">
               <div>
                 <label className="block mb-1">Product</label>
-                <input
-                  type="text"
-                  value={product["Product Name"]}
-                  onChange={(e) =>
-                    handleProductChange(index, foliarProducts, setFoliarProducts, "Product Name", e.target.value)
-                  }
+                <select
+                  value={formatProductLabel(product)}
+                  onChange={(e) => handleProductSelect(index, false, e.target.value)}
                   className="w-full border rounded px-3 py-2"
-                />
+                >
+                  <option value="">Select Product</option>
+                  {productsInFurrowFoliar.map((p, i) => (
+                    <option key={i} value={formatProductLabel(p)}>
+                      {formatProductLabel(p)}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block mb-1">Application Method</label>
                 <select
                   value={product["Application Method"] || "In-Furrow"}
-                  onChange={(e) =>
-                    handleAppMethodChange(index, foliarProducts, setFoliarProducts, e.target.value)
-                  }
+                  onChange={(e) => handleAppMethodChange(index, false, e.target.value)}
                   className="w-full border rounded px-3 py-2"
                 >
                   <option value="In-Furrow">In-Furrow</option>

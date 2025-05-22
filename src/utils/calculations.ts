@@ -178,7 +178,8 @@ export function calculateProductData(
   const packageSize = product["Package Size"];
   const packageUnits = product["Package Units"];
   const packageType = product["Package Type"];
-  const productPackageString = `${packageSize} ${packageUnits} - ${packageType}`;
+  const pluralType = packageType && Math.ceil(totalProductNeeded / packageSize) !== 1 ? `${packageType}s` : packageType;
+  const productPackageString = `${packageSize} ${packageUnits} - ${pluralType}`;
   const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const totalCostToGrower = packagesNeeded * productCostPerPackage;

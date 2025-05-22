@@ -30,20 +30,45 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   totalDiscountedCost,
   roi,
 }) => {
-  const renderProduct = (product: ProductCalculation) => (
-    <div key={product.productName} className="mb-4 border-b pb-2">
+  const pluralize = (word: string, count: number) => (count === 1 ? word : word + "s");
+
+  const renderSeedCalcBlock = (product: ProductCalculation) => (
+    <div key={product.productName + "-seed"} className="mb-4 border-b pb-2">
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div className="font-semibold text-yellow-600">Product Name</div>
         <div>{product.productName} ({product.applicationMethod})</div>
 
+        <div className="font-semibold text-yellow-600">Number of Bushels to Be Treated</div>
+        <div>{formatNumber(product.totalBushels)}</div>
+
+        <div className="font-semibold text-yellow-600">Total Weight of Seeds to Be Treated</div>
+        <div>{formatNumber(product.totalWeight)} lbs</div>
+
+        <div className="font-semibold text-yellow-600">Total Units to Be Treated</div>
+        <div>{formatNumber(product.unitsToBeTreated)}</div>
+
+        <div className="font-semibold text-yellow-600">Seeds per Unit</div>
+        <div>{formatNumber(product.seedsPerUnit, 0)}</div>
+
         <div className="font-semibold text-yellow-600">Application Rate</div>
         <div>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
 
-        <div className="font-semibold text-yellow-600">Total Product Needed</div>
+        <div className="font-semibold text-yellow-600">Total Amount of Product Needed</div>
         <div>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
 
         <div className="font-semibold text-yellow-600">Total Product Units to Order</div>
-        <div>{formatNumber(product.totalProductUnits, 0)}</div>
+        <div>
+          {formatNumber(product.totalProductUnits, 0)} – {product.packageSize} {product.packageUnits} – {pluralize(product.packageType || "", product.totalProductUnits || 0)}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderProductCostBlock = (product: ProductCalculation) => (
+    <div key={product.productName + "-cost"} className="mb-4 border-b pb-2">
+      <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="font-semibold text-yellow-600">Product Name</div>
+        <div>{product.productName} ({product.applicationMethod})</div>
 
         <div className="font-semibold text-yellow-600">Product Cost per Unit</div>
         <div>${formatNumber(product.productCostPerOz)}</div>
@@ -68,26 +93,27 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         <p>Rep: <span className="font-semibold">{repName || "—"}</span></p>
       </div>
 
-      {/* Seed Treatment */}
+      {/* Basic Seed Calculations */}
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Basic Seed Calculations</h2>
-          {renderProduct(seedTreatmentResults[0])}
+          {renderSeedCalcBlock(seedTreatmentResults[0])}
         </>
       )}
 
+      {/* Seed Treatment Costs */}
       {seedTreatmentResults.length > 1 && (
         <>
           <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">Seed Treatment Costs</h2>
-          {seedTreatmentResults.slice(1).map(renderProduct)}
+          {seedTreatmentResults.slice(1).map(renderProductCostBlock)}
         </>
       )}
 
-      {/* In-Furrow / Foliar */}
+      {/* In-Furrow / Foliar Product Costs */}
       {inFurrowFoliarResults.length > 0 && (
         <>
           <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">In-Furrow / Foliar Product Costs</h2>
-          {inFurrowFoliarResults.map(renderProduct)}
+          {inFurrowFoliarResults.map(renderProductCostBlock)}
         </>
       )}
 
@@ -106,7 +132,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </div>
       </div>
 
-      {/* ROI */}
+      {/* ROI Calculations */}
       <div className="mt-6 border-t pt-4">
         <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Breakeven ROI Calculations</h2>
         <div className="grid grid-cols-2 gap-y-2 text-sm">
@@ -128,4 +154,3 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 };
 
 export default PDFResults;
-

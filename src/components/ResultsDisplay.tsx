@@ -27,6 +27,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi4,
   roi5,
 }) => {
+  const pluralize = (word: string, count: number) => (count === 1 ? word : `${word}s`);
+
   const renderProduct = (product: ProductCalculation) => (
     <div key={product.productName} className="mb-6 border p-4 rounded shadow-sm bg-white">
       <div className="grid grid-cols-2 gap-y-2 text-sm">
@@ -40,7 +42,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
 
         <div className="font-semibold text-yellow-600">Total Product Units to Order</div>
-        <div>{formatNumber(product.totalProductUnits, 0)}</div>
+        <div>
+          {formatNumber(product.totalProductUnits, 0)} – {product.packageSize} {product.packageUnits} – {pluralize(product.packageType || "", product.totalProductUnits || 0)}
+        </div>
 
         <div className="font-semibold text-yellow-600">Product Cost per Unit</div>
         <div>${formatNumber(product.productCostPerOz)}</div>
@@ -63,15 +67,27 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-blue-600 text-lg font-[Montserrat]">Basic Seed Calculations</h2>
-          {renderProduct(seedTreatmentResults[0])}
+          <div className="mb-4 border p-4 rounded shadow-sm bg-white grid grid-cols-2 gap-y-2 text-sm">
+            <div className="font-semibold text-yellow-600">Number of Bushels to Be Treated</div>
+            <div>{formatNumber(seedTreatmentResults[0].totalBushels)}</div>
+
+            <div className="font-semibold text-yellow-600">Total Weight of Seed (lbs)</div>
+            <div>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
+
+            <div className="font-semibold text-yellow-600">Units to Be Treated</div>
+            <div>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</div>
+
+            <div className="font-semibold text-yellow-600">Seeds per Unit</div>
+            <div>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
+          </div>
         </>
       )}
 
       {/* Seed Treatment: Cost Breakdown */}
-      {seedTreatmentResults.length > 1 && (
+      {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-blue-600 text-lg font-[Montserrat]">Seed Treatment Costs</h2>
-          {seedTreatmentResults.slice(1).map(renderProduct)}
+          {seedTreatmentResults.map(renderProduct)}
         </>
       )}
 
@@ -120,4 +136,3 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 };
 
 export default ResultsDisplay;
-
