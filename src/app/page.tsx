@@ -152,6 +152,7 @@ export default function Home() {
             roi3={roi3}
             roi4={roi4}
             roi5={roi5}
+            seedType={seedType}
           />
         </div>
 
