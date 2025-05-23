@@ -1,7 +1,9 @@
 // src/app/layout.tsx
+
 import type { Metadata } from "next";
 import { Open_Sans, Montserrat } from "next/font/google";
 import "./globals.css";
+import ThemeToggle from "../components/ThemeToggle";
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -27,10 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <base href="/yms_combined_calculator/" />
-      </head>
-      <body className={`${openSans.variable} ${montserrat.variable} antialiased`}>
+      <body
+        className={`${openSans.variable} ${montserrat.variable} antialiased bg-white text-black dark:bg-gray-900 dark:text-white`}
+      >
+        <ThemeToggle />
         {children}
       </body>
     </html>

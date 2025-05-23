@@ -1,15 +1,15 @@
 ﻿// tailwind.config.js
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
-
+  darkMode: "class",
   content: [
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",         // ✅ App directory (used by page.tsx, layout.tsx)
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",   // ✅ All component files
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",        // (optional for older pages/ route support)
-    "./src/**/*.{js,ts,jsx,tsx}",                  // Existing
-    "./public/**/*.html"
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./public/**/*.html",
   ],
-
   safelist: [
     // Typography and layout
     "text-yellow-300", "text-yellow-400", "text-blue-400", "text-blue-600", "text-green-700",
@@ -25,9 +25,13 @@ module.exports = {
     "grid-cols-1", "grid-cols-2", "grid-cols-5",
     "grid", "flex", "justify-center", "text-center"
   ],
-
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Open Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        heading: ["Montserrat", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 };

@@ -17,13 +17,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ──────────────────────────────────────────────
-   Light Mode Defaults Only (Dark mode removed)
+   Light/Dark Mode Variables
 ─────────────────────────────────────────────── */
 :root {
   --yms-blue: #0d3e8c;
   --yms-yellow: #ffc627;
   --yms-body-bg: #ffffff;
   --yms-body-fg: #1f2937;
+}
+
+.dark {
+  --yms-body-bg: #0d1117;
+  --yms-body-fg: #e6edf3;
 }
 
 body {
@@ -40,11 +45,19 @@ body {
   font-weight: 600;
 }
 
+.dark .label-yellow {
+  color: #ffd966;
+}
+
 .section-header-blue {
   color: var(--yms-blue);
   font-size: 1.25rem;
   font-weight: 600;
   font-family: 'Montserrat', sans-serif;
+}
+
+.dark .section-header-blue {
+  color: #5ea4f3;
 }
 
 /* ──────────────────────────────────────────────

@@ -1,13 +1,12 @@
-// src/app/page.tsx
-
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 import PDFResults from "../components/PDFResults";
+import ThemeToggle from "../components/ThemeToggle";
 import {
   ProductCalculation,
   calculateSeedTreatmentData,
@@ -18,6 +17,15 @@ import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement>(null);
+
+  const [theme, setTheme] = useState("light");
+  useEffect(() => {
+    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
+    const activeTheme = stored || "light";
+    setTheme(activeTheme);
+    document.documentElement.classList.remove("light", "dark");
+    document.documentElement.classList.add(activeTheme);
+  }, []);
 
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
@@ -107,6 +115,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white text-black px-4 py-6 font-[Open_Sans]">
       <div className="max-w-6xl mx-auto">
+        <ThemeToggle />
         <div className="flex items-center justify-between mb-6">
           <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={160} height={48} />
           <Image src="/yms_combined_calculator/legendlogo1.png" alt="Legend Seed Logo" width={160} height={48} />
