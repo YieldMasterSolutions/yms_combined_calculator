@@ -117,6 +117,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             ))}
           </select>
           <select
+            value={products[index]?.["Application Method"] || methodOptions[0]}
             onChange={(e) => {
               const updated = [...products];
               if (updated[index]) {
@@ -125,10 +126,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               }
             }}
             className="w-1/4 border rounded px-3 py-2"
-            defaultValue={methodOptions[0]}
           >
             {methodOptions.map((opt, idx) => (
-              <option key={idx} value={opt}>{opt}</option>
+              <option key={idx} value={opt}>
+                {opt}
+              </option>
             ))}
           </select>
         </div>
@@ -138,6 +140,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
   return (
     <form className="grid gap-6 text-[1rem]">
+      {/* Crop Inputs */}
       <div>
         <h2 className="text-blue-600 text-lg font-[Montserrat] mb-2">Crop Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
@@ -208,6 +211,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
+      {/* Market and ROI Inputs */}
       <div>
         <h2 className="text-blue-600 text-lg font-[Montserrat] mt-8 mb-2">Market and ROI Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
@@ -273,14 +277,30 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
+      {/* Product Inputs */}
       <div>
         <h2 className="text-blue-600 text-lg font-[Montserrat] mt-8 mb-2">Product Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
-          {renderProductSelector(productsSeedTreatment, seedProducts, setSeedProducts, "Seed Treatment Products", 2, ["Liquid ST", "Planter Box"])}
-          {renderProductSelector(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow / Foliar Products", 4, ["In-Furrow", "Foliar"])}
+          {renderProductSelector(
+            productsSeedTreatment,
+            seedProducts,
+            setSeedProducts,
+            "Seed Treatment Products",
+            2,
+            ["Liquid ST", "Planter Box"]
+          )}
+          {renderProductSelector(
+            productsInFurrowFoliar,
+            foliarProducts,
+            setFoliarProducts,
+            "In-Furrow / Foliar Products",
+            4,
+            ["In-Furrow", "Foliar"]
+          )}
         </div>
       </div>
 
+      {/* Calculate Button */}
       <div className="text-center mt-4">
         <button
           type="button"
