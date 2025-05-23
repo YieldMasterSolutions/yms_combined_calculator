@@ -160,7 +160,7 @@ export default function Home() {
           <PDFDownloadButton targetRef={pdfRef} />
         </div>
 
-        <div className="hidden">
+        <div className="hidden" ref={pdfRef}>
           <PDFResults
             growerName={growerName}
             repName={repName}
@@ -181,7 +181,3 @@ export default function Home() {
     </main>
   );
 }
-"""
-
-Path("/mnt/data/page.tsx").write_text(page_tsx_content)
-"/mnt/data/page.tsx"
