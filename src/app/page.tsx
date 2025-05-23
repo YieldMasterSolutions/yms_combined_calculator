@@ -20,14 +20,7 @@ import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement>(null);
 
-  const [theme, setTheme] = useState("light");
-  useEffect(() => {
-    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
-    const activeTheme = stored || "light";
-    setTheme(activeTheme);
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(activeTheme);
-  }, []);
+  // --- REMOVE theme state and useEffect as they are not used elsewhere
 
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
