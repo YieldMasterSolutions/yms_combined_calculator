@@ -17,7 +17,7 @@ import {
 import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 
 export default function Home() {
-  const pdfRef = useRef<HTMLDivElement | null>(null);
+  const pdfRef = useRef<HTMLDivElement>(null);
 
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
@@ -89,7 +89,9 @@ export default function Home() {
       seedData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
       foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
 
-    const roi = calculateROI(totalCost, parseFloat(marketPrice || "1"), marketPriceUnit);
+    const roi = marketPrice
+      ? calculateROI(totalCost, parseFloat(marketPrice), marketPriceUnit)
+      : { roi2to1: 0, roi3to1: 0, roi4to1: 0, roi5to1: 0 };
 
     setSeedResults(seedData);
     setFoliarResults(foliarData);
@@ -155,7 +157,6 @@ export default function Home() {
             roi3={roi3}
             roi4={roi4}
             roi5={roi5}
-            seedType={seedType}
             marketPriceUnit={marketPriceUnit}
           />
         </div>
