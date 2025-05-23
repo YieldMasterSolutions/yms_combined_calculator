@@ -30,8 +30,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   totalDiscountedCost,
   roi,
 }) => {
-  const pluralize = (word: string, count: number) =>
-    count === 1 ? word : `${word}s`;
+  const pluralize = (word: string, count: number) => (count === 1 ? word : word + "s");
 
   const renderSeedCalcBlock = (product: ProductCalculation) => (
     <div key={product.productName + "-seed"} className="mb-4 border-b pb-2">

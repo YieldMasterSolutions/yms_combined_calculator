@@ -1,109 +1,115 @@
-/* src/styles/globals.css */
+/* ──────────────────────────────────────────────
+   Tailwind Base Imports
+─────────────────────────────────────────────── */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE DEFAULTS */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  --font-mono: var(--font-geist-mono), Consolas, monospace;
+/* ──────────────────────────────────────────────
+   Font Defaults
+─────────────────────────────────────────────── */
+html {
+  font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
-/* DARK MODE OVERRIDES (Only applies if .dark class is present) */
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ──────────────────────────────────────────────
+   Light Mode Defaults Only (Dark mode removed)
+─────────────────────────────────────────────── */
+:root {
+  --yms-blue: #0d3e8c;
+  --yms-yellow: #ffc627;
+  --yms-body-bg: #ffffff;
+  --yms-body-fg: #1f2937;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
+  background-color: var(--yms-body-bg);
+  color: var(--yms-body-fg);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Fix logo scaling */
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Headings styling */
-h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--foreground);
-}
-
-h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1d4ed8;
-}
-
+/* ──────────────────────────────────────────────
+   Section & Label Styling
+─────────────────────────────────────────────── */
 .label-yellow {
-  color: #facc15;
+  color: var(--yms-yellow);
   font-weight: 600;
 }
 
-/* Section card styling */
-.card-section {
-  background-color: #0f172a;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  padding: 1.5rem;
+.section-header-blue {
+  color: var(--yms-blue);
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* PRINT OVERRIDES */
+/* ──────────────────────────────────────────────
+   Print & PDF Styling (Grayscale Safe)
+─────────────────────────────────────────────── */
 @media print {
-  body {
+  color-scheme: only light;
+
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
+  }
+
+  * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    filter: grayscale(100%);
+  }
+
+  .label-yellow,
+  .section-header-blue {
+    color: #000000 !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 0.75in;
   }
 
   .print-page-break {
     page-break-before: always;
   }
+}
 
-  .bg-zinc-800,
-  .bg-zinc-900,
-  .bg-zinc-950,
-  .bg-zinc-700 {
-    background-color: #ffffff !important;
-  }
+/* ──────────────────────────────────────────────
+   PDF Specific Cleanup for Canvas Export
+─────────────────────────────────────────────── */
+.print-grayscale * {
+  all: unset;
+  all: revert-layer;
+  font-family: 'Open Sans', sans-serif !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  filter: grayscale(100%) !important;
+  box-sizing: border-box !important;
+}
 
-  .text-yellow-300,
-  .text-blue-400,
-  .text-zinc-400,
-  .text-white {
-    color: #000000 !important;
-  }
+.print-grayscale {
+  background: #ffffff !important;
+  color: #000000 !important;
+  padding: 1rem;
+  font-family: 'Open Sans', sans-serif !important;
+}
 
-  .border-gray-600,
-  .border-gray-700 {
-    border-color: #000000 !important;
-  }
+.print-grayscale h1,
+.print-grayscale h2,
+.print-grayscale h3 {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+}
 
-  h1, h2, h3, h4, h5, h6 {
-    color: #000000 !important;
-  }
-
-  button, select, input, label {
-    color: #000000 !important;
-    background-color: transparent !important;
-    border-color: #000000 !important;
-  }
-
-  .border,
-  .shadow,
-  .rounded,
-  .p-4,
-  .p-6 {
-    all: revert;
-  }
+.print-grayscale .label-yellow,
+.print-grayscale .section-header-blue {
+  color: #000000 !important;
 }

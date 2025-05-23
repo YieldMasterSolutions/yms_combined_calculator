@@ -175,6 +175,7 @@ export default function Home() {
               roi4x: roi4,
               roi5x: roi5,
             }}
+            seedType={seedType}
           />
         </div>
       </div>

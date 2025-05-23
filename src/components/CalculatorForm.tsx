@@ -1,3 +1,5 @@
+// src/components/CalculatorForm.tsx
+
 import React from "react";
 import { ProductData, productsSeedTreatment, productsInFurrowFoliar, seedTypes } from "../utils/data";
 
@@ -140,4 +142,3 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 };
 
 export default CalculatorForm;
-""")
