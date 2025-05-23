@@ -1,7 +1,7 @@
 // src/components/CalculatorForm.tsx
 
 import React from "react";
-import { ProductData, productsSeedTreatment, productsInFurrowFoliar, seedTypes } from "../utils/data";
+import { ProductData, seedTypes } from "../utils/data";
 
 interface CalculatorFormProps {
   seedType: string;
@@ -60,23 +60,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setGrowerName,
   repName,
   setRepName,
-  seedProducts,
-  setSeedProducts,
-  foliarProducts,
-  setFoliarProducts,
-  handleCalculate,
+  seedProducts: _seedProducts,
+  setSeedProducts: _setSeedProducts,
+  foliarProducts: _foliarProducts,
+  setFoliarProducts: _setFoliarProducts,
+  handleCalculate: _handleCalculate,
 }) => {
-  const formatProductLabel = (product: ProductData): string => {
-    const rate = product["Application Rate"];
-    const rateUnit = product["Application Rate Unit"];
-    const size = product["Package Size"];
-    const units = product["Package Units"];
-    const type = product["Package Type"];
-    const treatCapacity = rate && size ? Math.floor(size / rate) : "—";
-    const pluralType = treatCapacity === 1 ? type : `${type}s`;
-    return `${product["Product Name"]} – ${size} ${units} – ${pluralType} – ${rate} ${rateUnit} – Treats ${treatCapacity} units`;
-  };
-
   return (
     <form className="grid gap-6 text-sm">
       {/* Crop Inputs */}
@@ -152,6 +141,23 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <input type="number" value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} className="w-full border rounded px-3 py-2" />
           </div>
         </div>
+      </div>
+
+      {/* Product Inputs */}
+      <div>
+        <h2 className="text-blue-600 text-lg font-[Montserrat] mt-8 mb-2">Product Inputs</h2>
+        <p className="text-gray-600 italic mb-2">(Product selectors will appear here in future builds)</p>
+      </div>
+
+      {/* Calculate Button */}
+      <div className="text-center mt-4">
+        <button
+          type="button"
+          onClick={() => _handleCalculate()}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded"
+        >
+          Calculate
+        </button>
       </div>
     </form>
   );
