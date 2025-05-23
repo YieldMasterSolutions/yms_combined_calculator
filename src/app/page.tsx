@@ -27,6 +27,7 @@ export default function Home() {
   const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
 
   const [marketPrice, setMarketPrice] = useState("");
+  const [marketPriceUnit, setMarketPriceUnit] = useState("$/bu");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
 
@@ -88,7 +89,7 @@ export default function Home() {
       seedData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
       foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
 
-    const roi = calculateROI(totalCost, parseFloat(marketPrice || "1"), "bu/acre");
+    const roi = calculateROI(totalCost, parseFloat(marketPrice || "1"), marketPriceUnit);
 
     setSeedResults(seedData);
     setFoliarResults(foliarData);
@@ -138,6 +139,8 @@ export default function Home() {
           setSeedProducts={setSeedProducts}
           foliarProducts={foliarProducts}
           setFoliarProducts={setFoliarProducts}
+          marketPriceUnit={marketPriceUnit}
+          setMarketPriceUnit={setMarketPriceUnit}
           handleCalculate={handleCalculate}
         />
 
@@ -153,6 +156,7 @@ export default function Home() {
             roi4={roi4}
             roi5={roi5}
             seedType={seedType}
+            marketPriceUnit={marketPriceUnit}
           />
         </div>
 
@@ -175,7 +179,7 @@ export default function Home() {
               roi4x: roi4,
               roi5x: roi5,
             }}
-            seedType={seedType}
+            marketPriceUnit={marketPriceUnit}
           />
         </div>
       </div>

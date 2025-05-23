@@ -15,6 +15,7 @@ interface ResultsDisplayProps {
   roi4: number;
   roi5: number;
   seedType: string;
+  marketPriceUnit: string;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -28,13 +29,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi4,
   roi5,
   seedType,
+  marketPriceUnit,
 }) => {
   const pluralize = (word: string, count: number) =>
     count === 1 ? word : `${word}s`;
 
-  const unitLabel = ["Corn", "Soybeans", "Wheat", "Sorghum"].includes(seedType)
-    ? "bu/acre"
-    : "lbs/acre";
+  const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
 
   const renderProduct = (product: ProductCalculation) => (
     <div

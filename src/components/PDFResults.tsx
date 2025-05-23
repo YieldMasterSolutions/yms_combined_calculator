@@ -18,6 +18,7 @@ interface PDFResultsProps {
     roi4x: number;
     roi5x: number;
   };
+  marketPriceUnit: string;
 }
 
 const PDFResults: React.FC<PDFResultsProps> = ({
@@ -29,8 +30,10 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   totalUndiscountedCost,
   totalDiscountedCost,
   roi,
+  marketPriceUnit,
 }) => {
-  const pluralize = (word: string, count: number) => (count === 1 ? word : word + "s");
+  const pluralize = (word: string, count: number) => (count === 1 ? word : `${word}s`);
+  const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
 
   const renderSeedCalcBlock = (product: ProductCalculation) => (
     <div key={product.productName + "-seed"} className="mb-4 border-b pb-2">
@@ -132,16 +135,16 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Breakeven ROI Calculations</h2>
         <div className="grid grid-cols-2 gap-y-2 text-sm">
           <div className="font-semibold text-yellow-600">2:1 ROI Threshold</div>
-          <div>{formatNumber(roi.roi2x)} bu/acre</div>
+          <div>{formatNumber(roi.roi2x)} {unitLabel}/acre</div>
 
           <div className="font-semibold text-yellow-600">3:1 ROI Threshold</div>
-          <div>{formatNumber(roi.roi3x)} bu/acre</div>
+          <div>{formatNumber(roi.roi3x)} {unitLabel}/acre</div>
 
           <div className="font-semibold text-yellow-600">4:1 ROI Threshold</div>
-          <div>{formatNumber(roi.roi4x)} bu/acre</div>
+          <div>{formatNumber(roi.roi4x)} {unitLabel}/acre</div>
 
           <div className="font-semibold text-yellow-600">5:1 ROI Threshold</div>
-          <div>{formatNumber(roi.roi5x)} bu/acre</div>
+          <div>{formatNumber(roi.roi5x)} {unitLabel}/acre</div>
         </div>
       </div>
     </div>
