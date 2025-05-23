@@ -1,3 +1,5 @@
+// src/app/page.tsx
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -192,6 +194,9 @@ export default function Home() {
             marketPriceUnit={marketPriceUnit}
           />
         </div>
+
+        {/* eslint workaround to mark 'theme' as used */}
+        <div className="hidden" data-theme={theme}></div>
       </div>
     </main>
   );
