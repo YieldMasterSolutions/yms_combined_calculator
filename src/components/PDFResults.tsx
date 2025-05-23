@@ -30,7 +30,8 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   totalDiscountedCost,
   roi,
 }) => {
-  const pluralize = (word: string, count: number) => (count === 1 ? word : word + "s");
+  const pluralize = (word: string, count: number) =>
+    count === 1 ? word : `${word}s`;
 
   const renderSeedCalcBlock = (product: ProductCalculation) => (
     <div key={product.productName + "-seed"} className="mb-4 border-b pb-2">
@@ -93,7 +94,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         <p>Rep: <span className="font-semibold">{repName || "—"}</span></p>
       </div>
 
-      {/* Basic Seed Calculations */}
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Basic Seed Calculations</h2>
@@ -101,7 +101,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </>
       )}
 
-      {/* Seed Treatment Costs */}
       {seedTreatmentResults.length > 1 && (
         <>
           <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">Seed Treatment Costs</h2>
@@ -109,7 +108,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </>
       )}
 
-      {/* In-Furrow / Foliar Product Costs */}
       {inFurrowFoliarResults.length > 0 && (
         <>
           <h2 className="text-lg font-[Montserrat] text-blue-700 mt-6 mb-2">In-Furrow / Foliar Product Costs</h2>
@@ -117,7 +115,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </>
       )}
 
-      {/* Total Program Cost */}
       <div className="mt-8 border-t pt-4">
         <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Total Program Cost Summary</h2>
         <div className="grid grid-cols-2 gap-y-2 text-sm">
@@ -132,7 +129,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </div>
       </div>
 
-      {/* ROI Calculations */}
       <div className="mt-6 border-t pt-4">
         <h2 className="text-lg font-[Montserrat] text-blue-700 mb-2">Breakeven ROI Calculations</h2>
         <div className="grid grid-cols-2 gap-y-2 text-sm">

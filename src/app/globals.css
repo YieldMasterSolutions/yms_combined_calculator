@@ -21,23 +21,22 @@ h1, h2, h3, h4, h5, h6 {
   --yms-body-fg: #1f2937;
 }
 
-/* Dark mode removed to enforce white PDF compatibility */
-/*
-@media (prefers-color-scheme: dark) {
-  :root {
-    --yms-body-bg: #1d1d1d;
-    --yms-body-fg: #f3f4f6;
-  }
-}
-*/
-
-/* Tailwind-compatible theming */
+/* Force light mode for PDF & consistent render */
 body {
   @apply bg-[var(--yms-body-bg)] text-[var(--yms-body-fg)];
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Section & label overrides */
+/* Font fixes for Tailwind class names */
+.font-\[Open_Sans\] {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.font-\[Montserrat\] {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Label and section coloring */
 .label-yellow {
   color: var(--yms-yellow);
 }
@@ -46,6 +45,16 @@ body {
   color: var(--yms-blue);
   font-size: 1.125rem;
   font-weight: 600;
+}
+
+/* Font size overrides */
+.text-sm {
+  font-size: 0.95rem !important;
+}
+
+/* Grid spacing fix */
+.grid-cols-2 {
+  gap: 1rem 2rem !important;
 }
 
 /* Page breaks for print */
@@ -80,7 +89,7 @@ body {
   }
 }
 
-/* PDF export specific grayscale block */
+/* PDF-specific layout */
 .print-grayscale * {
   all: unset;
   all: revert-layer;
@@ -112,4 +121,3 @@ body {
 .print-grayscale .section-header-blue {
   color: #000000 !important;
 }
-
