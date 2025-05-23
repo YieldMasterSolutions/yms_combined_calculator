@@ -14,6 +14,7 @@ interface ResultsDisplayProps {
   roi3: number;
   roi4: number;
   roi5: number;
+  seedType: string;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -26,8 +27,10 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi3,
   roi4,
   roi5,
+  seedType,
 }) => {
   const pluralize = (word: string, count: number) => (count === 1 ? word : `${word}s`);
+  const unitLabel = ["Corn", "Soybeans", "Wheat", "Sorghum"].includes(seedType) ? "bu/acre" : "lbs/acre";
 
   const renderProduct = (product: ProductCalculation) => (
     <div key={product.productName} className="mb-6 border p-4 rounded shadow-sm bg-white">
@@ -118,17 +121,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <div className="border-t pt-4">
         <h2 className="text-blue-600 text-lg font-[Montserrat]">Breakeven ROI Calculations</h2>
         <div className="grid grid-cols-2 gap-y-2 text-sm">
-          <div className="font-semibold text-yellow-600">2:1 ROI Threshold</div>
-          <div>{formatNumber(roi2)} bu/acre</div>
+          <div className="font-semibold text-yellow-600">Yield Needed for 2:1 ROI</div>
+          <div>{formatNumber(roi2)} {unitLabel}</div>
 
-          <div className="font-semibold text-yellow-600">3:1 ROI Threshold</div>
-          <div>{formatNumber(roi3)} bu/acre</div>
+          <div className="font-semibold text-yellow-600">Yield Needed for 3:1 ROI</div>
+          <div>{formatNumber(roi3)} {unitLabel}</div>
 
-          <div className="font-semibold text-yellow-600">4:1 ROI Threshold</div>
-          <div>{formatNumber(roi4)} bu/acre</div>
+          <div className="font-semibold text-yellow-600">Yield Needed for 4:1 ROI</div>
+          <div>{formatNumber(roi4)} {unitLabel}</div>
 
-          <div className="font-semibold text-yellow-600">5:1 ROI Threshold</div>
-          <div>{formatNumber(roi5)} bu/acre</div>
+          <div className="font-semibold text-yellow-600">Yield Needed for 5:1 ROI</div>
+          <div>{formatNumber(roi5)} {unitLabel}</div>
         </div>
       </div>
     </div>
