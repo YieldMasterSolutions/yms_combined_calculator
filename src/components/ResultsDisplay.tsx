@@ -3,7 +3,6 @@
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface ResultsDisplayProps {
   seedTreatmentResults: ProductCalculation[];
@@ -42,7 +41,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       key={product.productName}
       className="mb-6 border p-4 rounded shadow-sm bg-white"
     >
-      <div className="grid grid-cols-2 gap-y-2 text-sm">
+      <div className="grid grid-cols-2 gap-y-2 text-[1rem]">
         <div className="font-semibold text-yellow-600">Product Name</div>
         <div>
           {product.productName} ({product.applicationMethod})
@@ -57,17 +56,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           Total Product Needed
         </div>
         <div>
-          {formatNumber(product.totalProductNeeded)}{" "}
-          {product.rateUnit?.split("/")[0]}
+          {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
         </div>
 
         <div className="font-semibold text-yellow-600">
           Total Product Units to Order
         </div>
         <div>
-          {formatNumber(product.totalProductUnits, 0)} –{" "}
-          {product.packageSize} {product.packageUnits} –{" "}
-          {pluralize(product.packageType || "", product.totalProductUnits || 0)}
+          {formatNumber(product.totalProductUnits, 0)} – {product.packageSize} {product.packageUnits} – {pluralize(product.packageType || "", product.totalProductUnits || 0)}
         </div>
 
         <div className="font-semibold text-yellow-600">
@@ -90,14 +86,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   );
 
   return (
-    <div className="text-black text-sm font-[Open_Sans] space-y-8">
-      {/* Seed Treatment: Basic Calculations */}
+    <div className="text-black text-[1rem] font-[Open_Sans] space-y-8">
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-blue-600 text-lg font-[Montserrat]">
             Basic Seed Calculations
           </h2>
-          <div className="mb-4 border p-4 rounded shadow-sm bg-white grid grid-cols-2 gap-y-2 text-sm">
+          <div className="mb-4 border p-4 rounded shadow-sm bg-white grid grid-cols-2 gap-y-2 text-[1rem]">
             <div className="font-semibold text-yellow-600">
               Number of Bushels to Be Treated
             </div>
@@ -121,7 +116,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </>
       )}
 
-      {/* Seed Treatment: Cost Breakdown */}
       {seedTreatmentResults.length > 0 && (
         <>
           <h2 className="text-blue-600 text-lg font-[Montserrat]">
@@ -131,7 +125,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </>
       )}
 
-      {/* In-Furrow / Foliar Products */}
       {inFurrowFoliarResults.length > 0 && (
         <>
           <h2 className="text-blue-600 text-lg font-[Montserrat]">
@@ -141,12 +134,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </>
       )}
 
-      {/* Total Program Cost */}
       <div className="border-t pt-4">
         <h2 className="text-blue-600 text-lg font-[Montserrat]">
           Total Program Cost
         </h2>
-        <div className="grid grid-cols-2 gap-y-2 text-sm">
+        <div className="grid grid-cols-2 gap-y-2 text-[1rem]">
           <div className="font-semibold text-yellow-600">
             Total Undiscounted Cost
           </div>
@@ -162,33 +154,34 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       </div>
 
-      {/* ROI Calculations */}
-      <div className="border-t pt-4">
-        <h2 className="text-blue-600 text-lg font-[Montserrat]">
-          Breakeven ROI Calculations
-        </h2>
-        <div className="grid grid-cols-2 gap-y-2 text-sm">
-          <div className="font-semibold text-yellow-600">
-            Yield Needed for 2:1 ROI
-          </div>
-          <div>{formatNumber(roi2)} {unitLabel}</div>
+      {(marketPriceUnit && marketPriceUnit.length > 0) && (
+        <div className="border-t pt-4">
+          <h2 className="text-blue-600 text-lg font-[Montserrat]">
+            Breakeven ROI Calculations
+          </h2>
+          <div className="grid grid-cols-2 gap-y-2 text-[1rem]">
+            <div className="font-semibold text-yellow-600">
+              Yield Needed for 2:1 ROI
+            </div>
+            <div>{formatNumber(roi2)} {unitLabel}</div>
 
-          <div className="font-semibold text-yellow-600">
-            Yield Needed for 3:1 ROI
-          </div>
-          <div>{formatNumber(roi3)} {unitLabel}</div>
+            <div className="font-semibold text-yellow-600">
+              Yield Needed for 3:1 ROI
+            </div>
+            <div>{formatNumber(roi3)} {unitLabel}</div>
 
-          <div className="font-semibold text-yellow-600">
-            Yield Needed for 4:1 ROI
-          </div>
-          <div>{formatNumber(roi4)} {unitLabel}</div>
+            <div className="font-semibold text-yellow-600">
+              Yield Needed for 4:1 ROI
+            </div>
+            <div>{formatNumber(roi4)} {unitLabel}</div>
 
-          <div className="font-semibold text-yellow-600">
-            Yield Needed for 5:1 ROI
+            <div className="font-semibold text-yellow-600">
+              Yield Needed for 5:1 ROI
+            </div>
+            <div>{formatNumber(roi5)} {unitLabel}</div>
           </div>
-          <div>{formatNumber(roi5)} {unitLabel}</div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
