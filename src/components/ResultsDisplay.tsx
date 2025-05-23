@@ -14,7 +14,6 @@ interface ResultsDisplayProps {
   roi3: number;
   roi4: number;
   roi5: number;
-  seedType: string;
   marketPriceUnit: string;
 }
 
@@ -28,7 +27,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi3,
   roi4,
   roi5,
-  seedType,
   marketPriceUnit,
 }) => {
   const pluralize = (word: string, count: number) =>
@@ -154,7 +152,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       </div>
 
-      {(marketPriceUnit && marketPriceUnit.length > 0) && (
+      {marketPriceUnit && marketPriceUnit.length > 0 && (
         <div className="border-t pt-4">
           <h2 className="text-blue-600 text-lg font-[Montserrat]">
             Breakeven ROI Calculations
