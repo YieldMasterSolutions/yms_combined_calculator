@@ -3,6 +3,7 @@
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface ResultsDisplayProps {
   seedTreatmentResults: ProductCalculation[];
