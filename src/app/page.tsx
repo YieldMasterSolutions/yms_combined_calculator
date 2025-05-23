@@ -194,9 +194,6 @@ export default function Home() {
             marketPriceUnit={marketPriceUnit}
           />
         </div>
-
-        {/* eslint workaround to mark 'theme' as used */}
-        <div className="hidden" data-theme={theme}></div>
       </div>
     </main>
   );
