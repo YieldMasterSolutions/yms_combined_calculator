@@ -79,12 +79,16 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     value: string
   ) => {
     const productList = isSeed ? productsSeedTreatment : productsInFurrowFoliar;
-    const selected = productList.find(p => formatProductLabel(p) === value);
+    const selected = productList.find((p) => formatProductLabel(p) === value);
     if (!selected) return;
 
     const updated = isSeed ? [...seedProducts] : [...foliarProducts];
     updated[index] = { ...selected };
-    isSeed ? setSeedProducts(updated) : setFoliarProducts(updated);
+    if (isSeed) {
+      setSeedProducts(updated);
+    } else {
+      setFoliarProducts(updated);
+    }
   };
 
   const handleAppMethodChange = (
@@ -94,7 +98,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   ) => {
     const updated = isSeed ? [...seedProducts] : [...foliarProducts];
     updated[index] = { ...updated[index], ["Application Method"]: value };
-    isSeed ? setSeedProducts(updated) : setFoliarProducts(updated);
+    if (isSeed) {
+      setSeedProducts(updated);
+    } else {
+      setFoliarProducts(updated);
+    }
   };
 
   return (
