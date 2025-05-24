@@ -67,16 +67,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
-          <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
+          <div className={valueClass}>
+            {formatNumber(product.applicationRate)} {product.rateUnit}
+          </div>
 
           <div className={labelClass}>Total Amount of Product Needed</div>
-          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
+          <div className={valueClass}>
+            {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
+          </div>
 
           <div className={labelClass}>Total Number of Product Packages</div>
-          <div className={valueClass}>{formatNumber(product.totalProductUnits, 0)} {pluralize(product.packageType || "package", product.totalProductUnits || 0)}</div>
-
-          <div className={labelClass}>Product Cost per Package</div>
-          <div className={valueClass}>${formatNumber(product.packageCost)}</div>
+          <div className={valueClass}>
+            {formatNumber(product.totalProductUnits, 0)}{" "}
+            {pluralize(product.packageType || "package", product.totalProductUnits || 0)}
+          </div>
 
           <div className={labelClass}>Total Cost to the Grower</div>
           <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower)}</div>
@@ -102,16 +106,25 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </h2>
         <div className={cardClass}>
           <div className={labelClass}>Product Name</div>
-          <div className={valueClass}>{product.productName} ({product.applicationMethod})</div>
+          <div className={valueClass}>
+            {product.productName} ({product.applicationMethod})
+          </div>
 
           <div className={labelClass}>Application Rate</div>
-          <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
+          <div className={valueClass}>
+            {formatNumber(product.applicationRate)} {product.rateUnit}
+          </div>
 
           <div className={labelClass}>Total Product Needed</div>
-          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
+          <div className={valueClass}>
+            {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
+          </div>
 
           <div className={labelClass}>Total Product Units to Order</div>
-          <div className={valueClass}>{formatNumber(product.totalProductUnits, 0)} {pluralize(product.packageType || "package", product.totalProductUnits || 0)}</div>
+          <div className={valueClass}>
+            {formatNumber(product.totalProductUnits, 0)}{" "}
+            {pluralize(product.packageType || "package", product.totalProductUnits || 0)}
+          </div>
 
           <div className={labelClass}>Product Cost per Unit</div>
           <div className={valueClass}>${formatNumber(product.productCostPerOz)}</div>
@@ -153,16 +166,24 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       </h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi2)} {unitLabel}</div>
+        <div className={valueClass}>
+          {formatNumber(roi2)} {unitLabel}
+        </div>
 
         <div className={labelClass}>Yield Needed for 3:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi3)} {unitLabel}</div>
+        <div className={valueClass}>
+          {formatNumber(roi3)} {unitLabel}
+        </div>
 
         <div className={labelClass}>Yield Needed for 4:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi4)} {unitLabel}</div>
+        <div className={valueClass}>
+          {formatNumber(roi4)} {unitLabel}
+        </div>
 
         <div className={labelClass}>Yield Needed for 5:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi5)} {unitLabel}</div>
+        <div className={valueClass}>
+          {formatNumber(roi5)} {unitLabel}
+        </div>
       </div>
     </div>
   );
