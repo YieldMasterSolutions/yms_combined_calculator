@@ -152,20 +152,22 @@ export default function Home() {
           handleCalculate={handleCalculate}
         />
 
-        <div className="my-8">
-          <ResultsDisplay
-            seedTreatmentResults={seedResults}
-            inFurrowFoliarResults={foliarResults}
-            totalCostPerAcre={totalCostPerAcre}
-            totalUndiscountedCost={totalUndiscountedCost}
-            totalDiscountedCost={totalDiscountedCost}
-            roi2={roi2}
-            roi3={roi3}
-            roi4={roi4}
-            roi5={roi5}
-            marketPriceUnit={marketPriceUnit}
-          />
-        </div>
+        {seedResults.length > 0 || foliarResults.length > 0 ? (
+          <div className="my-8">
+            <ResultsDisplay
+              seedTreatmentResults={seedResults}
+              inFurrowFoliarResults={foliarResults}
+              totalCostPerAcre={totalCostPerAcre}
+              totalUndiscountedCost={totalUndiscountedCost}
+              totalDiscountedCost={totalDiscountedCost}
+              roi2={roi2}
+              roi3={roi3}
+              roi4={roi4}
+              roi5={roi5}
+              marketPriceUnit={marketPriceUnit}
+            />
+          </div>
+        ) : null}
 
         <div className="text-center mb-4">
           <PDFDownloadButton targetRef={pdfRef} />

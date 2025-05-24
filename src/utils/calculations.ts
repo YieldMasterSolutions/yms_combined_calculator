@@ -46,21 +46,23 @@ export function calculateSeedTreatmentData(
 ): ProductCalculation[] {
   const seedsPerPound = seedsPerPoundOverride || 2800;
   const lbsPerUnit = 50;
-  return selectedProducts.map(({ product, applicationMethod }) => {
-    const base = calculateProductData(
-      acres,
-      product,
-      dealerDiscount,
-      growerDiscount,
-      seedType,
-      seedsPerPound,
-      lbsPerUnit,
-      seedingRate,
-      seedingRateUnit,
-      seedsPerUnitOverride
-    );
-    return { ...base, applicationMethod };
-  });
+  return selectedProducts
+    .filter(({ product }) => product && product["Application Rate"] && product["Package Size"])
+    .map(({ product, applicationMethod }) => {
+      const base = calculateProductData(
+        acres,
+        product,
+        dealerDiscount,
+        growerDiscount,
+        seedType,
+        seedsPerPound,
+        lbsPerUnit,
+        seedingRate,
+        seedingRateUnit,
+        seedsPerUnitOverride
+      );
+      return { ...base, applicationMethod };
+    });
 }
 
 export function calculateAllFoliarProductCosts(
@@ -75,20 +77,22 @@ export function calculateAllFoliarProductCosts(
   const seedingRate = 32000;
   const seedingRateUnit = "seeds/acre";
 
-  return selectedProducts.map(({ product, applicationMethod }) => {
-    const base = calculateProductData(
-      acres,
-      product,
-      dealerDiscount,
-      growerDiscount,
-      seedType,
-      seedsPerPound,
-      lbsPerUnit,
-      seedingRate,
-      seedingRateUnit
-    );
-    return { ...base, applicationMethod };
-  });
+  return selectedProducts
+    .filter(({ product }) => product && product["Application Rate"] && product["Package Size"])
+    .map(({ product, applicationMethod }) => {
+      const base = calculateProductData(
+        acres,
+        product,
+        dealerDiscount,
+        growerDiscount,
+        seedType,
+        seedsPerPound,
+        lbsPerUnit,
+        seedingRate,
+        seedingRateUnit
+      );
+      return { ...base, applicationMethod };
+    });
 }
 
 export function calculateROI(

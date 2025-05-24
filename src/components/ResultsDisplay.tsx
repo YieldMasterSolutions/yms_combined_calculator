@@ -29,24 +29,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi5,
   marketPriceUnit,
 }) => {
-  const pluralize = (word: string, count: number) =>
-    count === 1 ? word : `${word}s`;
+  const pluralize = (word: string, count: number) => (count === 1 ? word : `${word}s`);
+  const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
 
-  const unitLabel = marketPriceUnit.includes("/")
-    ? marketPriceUnit.split("/")[1]
-    : marketPriceUnit;
+  const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#13213c]";
+  const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
+  const valueClass = "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
 
-  // Card styling for light/dark
-  const cardClass =
-    "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg " +
-    "bg-gray-100 dark:bg-[#13213c]";
-
-  const labelClass =
-    "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
-  const valueClass =
-    "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
-
-  // ---- Seed Calculations Card ----
   const renderBasicSeedCalculations = () =>
     seedTreatmentResults.length > 0 && (
       <>
@@ -54,30 +43,21 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           Basic Seed Calculations
         </h2>
         <div className={cardClass}>
-          <div className={labelClass}>Total Number of Seeds to be Treated</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].totalSeeds)}
-          </div>
+          <div className={labelClass}>Total Number of Units to Be Treated</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</div>
 
-          <div className={labelClass}>Total Weight of Seeds to be Treated</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].totalWeight)}
-          </div>
+          <div className={labelClass}>Number of Bushels to Be Treated</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalBushels)}</div>
 
-          <div className={labelClass}>Total Number of Units to be Treated</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].unitsToBeTreated)}
-          </div>
+          <div className={labelClass}>Total Weight of Seeds to Be Treated (lbs)</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
 
           <div className={labelClass}>Number of Seeds per Unit</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].seedsPerUnit)}
-          </div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
         </div>
       </>
     );
 
-  // ---- Seed Treatment Cost Card ----
   const renderSeedTreatmentCosts = () =>
     seedTreatmentResults.length > 0 &&
     seedTreatmentResults.map((product) => (
@@ -87,40 +67,32 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
-          <div className={valueClass}>
-            {formatNumber(product.applicationRate)} {product.rateUnit}
-          </div>
+          <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
+
           <div className={labelClass}>Total Amount of Product Needed</div>
-          <div className={valueClass}>
-            {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
-          </div>
+          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
+
           <div className={labelClass}>Total Number of Product Packages</div>
-          <div className={valueClass}>
-            {formatNumber(product.totalProductUnits, 0)}{" "}
-            {pluralize(product.packageType || "package", product.totalProductUnits || 0)}
-          </div>
-          {/* Removed Product Cost per Package – property does not exist */}
+          <div className={valueClass}>{formatNumber(product.totalProductUnits, 0)} {pluralize(product.packageType || "package", product.totalProductUnits || 0)}</div>
+
+          <div className={labelClass}>Product Cost per Package</div>
+          <div className={valueClass}>${formatNumber(product.packageCost)}</div>
+
           <div className={labelClass}>Total Cost to the Grower</div>
-          <div className={valueClass}>
-            ${formatNumber(product.discountedTotalCostToGrower)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower)}</div>
+
           <div className={labelClass}>Product Cost per Ounce</div>
-          <div className={valueClass}>
-            ${formatNumber(product.productCostPerOz)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.productCostPerOz)}</div>
+
           <div className={labelClass}>Product Cost per Unit of Treated Seed</div>
-          <div className={valueClass}>
-            ${formatNumber(product.costPerUnitSeed)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.costPerUnitSeed)}</div>
+
           <div className={labelClass}>Product Cost per Acre</div>
-          <div className={valueClass}>
-            ${formatNumber(product.individualCostPerAcre)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.individualCostPerAcre)}</div>
         </div>
       </div>
     ));
 
-  // ---- In-Furrow / Foliar Costs Card ----
   const renderInFurrowFoliarCosts = () =>
     inFurrowFoliarResults.length > 0 &&
     inFurrowFoliarResults.map((product) => (
@@ -130,43 +102,32 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </h2>
         <div className={cardClass}>
           <div className={labelClass}>Product Name</div>
-          <div className={valueClass}>
-            {product.productName} ({product.applicationMethod})
-          </div>
+          <div className={valueClass}>{product.productName} ({product.applicationMethod})</div>
+
           <div className={labelClass}>Application Rate</div>
-          <div className={valueClass}>
-            {formatNumber(product.applicationRate)} {product.rateUnit}
-          </div>
+          <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
+
           <div className={labelClass}>Total Product Needed</div>
-          <div className={valueClass}>
-            {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
-          </div>
+          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
+
           <div className={labelClass}>Total Product Units to Order</div>
-          <div className={valueClass}>
-            {formatNumber(product.totalProductUnits, 0)}{" "}
-            {pluralize(product.packageType || "package", product.totalProductUnits || 0)}
-          </div>
+          <div className={valueClass}>{formatNumber(product.totalProductUnits, 0)} {pluralize(product.packageType || "package", product.totalProductUnits || 0)}</div>
+
           <div className={labelClass}>Product Cost per Unit</div>
-          <div className={valueClass}>
-            ${formatNumber(product.productCostPerOz)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.productCostPerOz)}</div>
+
           <div className={labelClass}>Total MSRP</div>
-          <div className={valueClass}>
-            ${formatNumber(product.originalTotalCostToGrower)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.originalTotalCostToGrower)}</div>
+
           <div className={labelClass}>Total Discounted Cost</div>
-          <div className={valueClass}>
-            ${formatNumber(product.discountedTotalCostToGrower)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower)}</div>
+
           <div className={labelClass}>Cost per Acre</div>
-          <div className={valueClass}>
-            ${formatNumber(product.individualCostPerAcre)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.individualCostPerAcre)}</div>
         </div>
       </div>
     ));
 
-  // ---- Total Program Cost Card ----
   const renderTotalProgramCost = () => (
     <div>
       <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
@@ -175,15 +136,16 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <div className={cardClass}>
         <div className={labelClass}>Total Undiscounted Cost</div>
         <div className={valueClass}>${formatNumber(totalUndiscountedCost)}</div>
+
         <div className={labelClass}>Total Discounted Cost</div>
         <div className={valueClass}>${formatNumber(totalDiscountedCost)}</div>
+
         <div className={labelClass}>Cost per Acre</div>
         <div className={valueClass}>${formatNumber(totalCostPerAcre)}</div>
       </div>
     </div>
   );
 
-  // ---- ROI Card ----
   const renderROI = () => (
     <div>
       <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
@@ -191,26 +153,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       </h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
-        <div className={valueClass}>
-          {formatNumber(roi2)} {unitLabel}
-        </div>
+        <div className={valueClass}>{formatNumber(roi2)} {unitLabel}</div>
+
         <div className={labelClass}>Yield Needed for 3:1 ROI</div>
-        <div className={valueClass}>
-          {formatNumber(roi3)} {unitLabel}
-        </div>
+        <div className={valueClass}>{formatNumber(roi3)} {unitLabel}</div>
+
         <div className={labelClass}>Yield Needed for 4:1 ROI</div>
-        <div className={valueClass}>
-          {formatNumber(roi4)} {unitLabel}
-        </div>
+        <div className={valueClass}>{formatNumber(roi4)} {unitLabel}</div>
+
         <div className={labelClass}>Yield Needed for 5:1 ROI</div>
-        <div className={valueClass}>
-          {formatNumber(roi5)} {unitLabel}
-        </div>
+        <div className={valueClass}>{formatNumber(roi5)} {unitLabel}</div>
       </div>
     </div>
   );
 
-  // ---- RENDER ALL ----
   return (
     <div className="text-black dark:text-white text-[1.1rem] font-[Open_Sans]">
       {renderBasicSeedCalculations()}
