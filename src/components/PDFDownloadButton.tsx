@@ -15,35 +15,48 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const input = targetRef.current;
     if (!input) return;
 
-    // Force visibility in case it's hidden
+    // Show for rendering (in case hidden)
+    const originalDisplay = input.style.display;
     input.style.display = "block";
 
-    // Temporarily scroll to top to ensure full render
+    // Scroll to top to ensure proper rendering
     window.scrollTo(0, 0);
 
+    // Use html2canvas to capture styled content
     const canvas = await html2canvas(input, {
-      backgroundColor: "#ffffff",
+      backgroundColor: "#fff",
       scale: 2,
       useCORS: true,
+      // remove container shadows for PDF clarity
+      ignoreElements: (el) => el.classList?.contains("no-print"),
     });
 
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "pt", "a4");
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    // Scale the image to fit PDF page width
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgWidth = pageWidth;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+    // Center vertically if needed (small reports)
+    const y = imgHeight < pageHeight ? (pageHeight - imgHeight) / 2 : 0;
+    pdf.addImage(imgData, "PNG", 0, y, imgWidth, imgHeight);
+
     pdf.save("YMS_Program_Summary.pdf");
 
-    // Hide the print content again
-    input.style.display = "none";
+    // Restore original display
+    input.style.display = originalDisplay;
   };
 
   return (
     <button
+      type="button"
       onClick={handleDownload}
-      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
+      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded text-lg shadow"
+      aria-label="Download PDF"
     >
       Download PDF
     </button>

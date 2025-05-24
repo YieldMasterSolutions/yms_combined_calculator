@@ -35,120 +35,131 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   const pluralize = (word: string, count: number) => (count === 1 ? word : `${word}s`);
   const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
 
-  const renderSeedCalcBlock = (product: ProductCalculation) => (
-    <div key={product.productName + "-seed"} className="mb-4 border-b pb-2">
-      <div className="grid grid-cols-2 gap-2 text-[1rem] text-black">
-        <div className="font-semibold">Product Name</div>
-        <div>{product.productName} ({product.applicationMethod})</div>
+  // Card/grid styling, bold/large font for PDF
+  const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-gray-100";
+  const headerClass = "text-2xl font-bold font-[Montserrat] mb-2 text-black";
+  const labelClass = "font-bold text-[1.09rem] font-[Montserrat] text-black";
+  const valueClass = "font-bold text-[1.09rem] font-[Open_Sans] text-black";
 
-        <div className="font-semibold">Number of Bushels to Be Treated</div>
-        <div>{formatNumber(product.totalBushels)}</div>
-
-        <div className="font-semibold">Total Weight of Seeds to Be Treated</div>
-        <div>{formatNumber(product.totalWeight)} lbs</div>
-
-        <div className="font-semibold">Total Units to Be Treated</div>
-        <div>{formatNumber(product.unitsToBeTreated)}</div>
-
-        <div className="font-semibold">Seeds per Unit</div>
-        <div>{formatNumber(product.seedsPerUnit, 0)}</div>
-
-        <div className="font-semibold">Application Rate</div>
-        <div>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
-
-        <div className="font-semibold">Total Amount of Product Needed</div>
-        <div>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
-
-        <div className="font-semibold">Total Product Units to Order</div>
-        <div>
-          {formatNumber(product.totalProductUnits, 0)} – {product.packageSize} {product.packageUnits} – {pluralize(product.packageType || "", product.totalProductUnits || 0)}
+  // ---- Basic Seed Calculations ----
+  const renderBasicSeedCalculations = () =>
+    seedTreatmentResults.length > 0 && (
+      <>
+        <h2 className={headerClass}>Basic Seed Calculations</h2>
+        <div className={cardClass}>
+          <div className={labelClass}>Total Number of Seeds to be Treated</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalSeeds)}</div>
+          <div className={labelClass}>Total Weight of Seeds to be Treated</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
+          <div className={labelClass}>Total Number of Units to be Treated</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</div>
+          <div className={labelClass}>Number of Seeds per Unit</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
         </div>
-      </div>
-    </div>
-  );
+      </>
+    );
 
-  const renderProductCostBlock = (product: ProductCalculation) => (
-    <div key={product.productName + "-cost"} className="mb-4 border-b pb-2">
-      <div className="grid grid-cols-2 gap-2 text-[1rem] text-black">
-        <div className="font-semibold">Product Name</div>
-        <div>{product.productName} ({product.applicationMethod})</div>
-
-        <div className="font-semibold">Product Cost per Unit</div>
-        <div>${formatNumber(product.productCostPerOz)}</div>
-
-        <div className="font-semibold">Total MSRP</div>
-        <div>${formatNumber(product.originalTotalCostToGrower)}</div>
-
-        <div className="font-semibold">Total Discounted Cost</div>
-        <div>${formatNumber(product.discountedTotalCostToGrower)}</div>
-
-        <div className="font-semibold">Cost per Acre</div>
-        <div>${formatNumber(product.individualCostPerAcre)}</div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="print-grayscale p-6 text-black bg-white text-[1rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
-      <div className="mb-4 text-center">
-        <h1 className="text-xl font-[Montserrat] font-bold mb-2">YMS Program Calculator Summary</h1>
-        <p>Grower: <span className="font-semibold">{growerName || "—"}</span></p>
-        <p>Rep: <span className="font-semibold">{repName || "—"}</span></p>
-      </div>
-
-      {seedTreatmentResults.length > 0 && (
-        <>
-          <h2 className="text-lg font-[Montserrat] font-bold mb-2">Basic Seed Calculations</h2>
-          {renderSeedCalcBlock(seedTreatmentResults[0])}
-        </>
-      )}
-
-      {seedTreatmentResults.length > 1 && (
-        <>
-          <h2 className="text-lg font-[Montserrat] font-bold mt-6 mb-2">Seed Treatment Costs</h2>
-          {seedTreatmentResults.slice(1).map(renderProductCostBlock)}
-        </>
-      )}
-
-      {inFurrowFoliarResults.length > 0 && (
-        <>
-          <h2 className="text-lg font-[Montserrat] font-bold mt-6 mb-2">In-Furrow / Foliar Product Costs</h2>
-          {inFurrowFoliarResults.map(renderProductCostBlock)}
-        </>
-      )}
-
-      <div className="mt-8 border-t pt-4">
-        <h2 className="text-lg font-[Montserrat] font-bold mb-2">Total Program Cost Summary</h2>
-        <div className="grid grid-cols-2 gap-y-2 text-[1rem]">
-          <div className="font-semibold">Total Undiscounted Cost</div>
-          <div>${formatNumber(totalUndiscountedCost)}</div>
-
-          <div className="font-semibold">Total Discounted Cost</div>
-          <div>${formatNumber(totalDiscountedCost)}</div>
-
-          <div className="font-semibold">Cost per Acre</div>
-          <div>${formatNumber(totalCostPerAcre)}</div>
-        </div>
-      </div>
-
-      {(marketPriceUnit && marketPriceUnit.length > 0) && (
-        <div className="mt-6 border-t pt-4">
-          <h2 className="text-lg font-[Montserrat] font-bold mb-2">Breakeven ROI Calculations</h2>
-          <div className="grid grid-cols-2 gap-y-2 text-[1rem]">
-            <div className="font-semibold">2:1 ROI Threshold</div>
-            <div>{formatNumber(roi.roi2x)} {unitLabel}/acre</div>
-
-            <div className="font-semibold">3:1 ROI Threshold</div>
-            <div>{formatNumber(roi.roi3x)} {unitLabel}/acre</div>
-
-            <div className="font-semibold">4:1 ROI Threshold</div>
-            <div>{formatNumber(roi.roi4x)} {unitLabel}/acre</div>
-
-            <div className="font-semibold">5:1 ROI Threshold</div>
-            <div>{formatNumber(roi.roi5x)} {unitLabel}/acre</div>
+  // ---- Seed Treatment Costs ----
+  const renderSeedTreatmentCosts = () =>
+    seedTreatmentResults.length > 0 &&
+    seedTreatmentResults.map((product, i) => (
+      <div key={product.productName + "-seedcost"}>
+        <h2 className={headerClass}>Seed Treatment Costs</h2>
+        <div className={cardClass}>
+          <div className={labelClass}>Application Rate</div>
+          <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
+          <div className={labelClass}>Total Amount of Product Needed</div>
+          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
+          <div className={labelClass}>Total Number of Product Packages</div>
+          <div className={valueClass}>
+            {formatNumber(product.totalProductUnits, 0)} {pluralize(product.packageType || "package", product.totalProductUnits || 0)}
           </div>
+          <div className={labelClass}>Product Cost per Ounce</div>
+          <div className={valueClass}>${formatNumber(product.productCostPerOz)}</div>
+          <div className={labelClass}>Total Cost to the Grower</div>
+          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower)}</div>
+          <div className={labelClass}>Product Cost per Unit of Treated Seed</div>
+          <div className={valueClass}>${formatNumber(product.costPerUnitSeed)}</div>
+          <div className={labelClass}>Product Cost per Acre</div>
+          <div className={valueClass}>${formatNumber(product.individualCostPerAcre)}</div>
         </div>
-      )}
+      </div>
+    ));
+
+  // ---- In-Furrow / Foliar Costs ----
+  const renderInFurrowFoliarCosts = () =>
+    inFurrowFoliarResults.length > 0 &&
+    inFurrowFoliarResults.map((product) => (
+      <div key={product.productName + "-foliarcost"}>
+        <h2 className={headerClass}>In-Furrow / Foliar Product Costs</h2>
+        <div className={cardClass}>
+          <div className={labelClass}>Product Name</div>
+          <div className={valueClass}>{product.productName} ({product.applicationMethod})</div>
+          <div className={labelClass}>Application Rate</div>
+          <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
+          <div className={labelClass}>Total Product Needed</div>
+          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
+          <div className={labelClass}>Total Product Units to Order</div>
+          <div className={valueClass}>
+            {formatNumber(product.totalProductUnits, 0)} {pluralize(product.packageType || "package", product.totalProductUnits || 0)}
+          </div>
+          <div className={labelClass}>Product Cost per Unit</div>
+          <div className={valueClass}>${formatNumber(product.productCostPerOz)}</div>
+          <div className={labelClass}>Total MSRP</div>
+          <div className={valueClass}>${formatNumber(product.originalTotalCostToGrower)}</div>
+          <div className={labelClass}>Total Discounted Cost</div>
+          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower)}</div>
+          <div className={labelClass}>Cost per Acre</div>
+          <div className={valueClass}>${formatNumber(product.individualCostPerAcre)}</div>
+        </div>
+      </div>
+    ));
+
+  // ---- Total Program Cost Card ----
+  const renderTotalProgramCost = () => (
+    <div>
+      <h2 className={headerClass}>Total Program Cost</h2>
+      <div className={cardClass}>
+        <div className={labelClass}>Total Undiscounted Cost</div>
+        <div className={valueClass}>${formatNumber(totalUndiscountedCost)}</div>
+        <div className={labelClass}>Total Discounted Cost</div>
+        <div className={valueClass}>${formatNumber(totalDiscountedCost)}</div>
+        <div className={labelClass}>Cost per Acre</div>
+        <div className={valueClass}>${formatNumber(totalCostPerAcre)}</div>
+      </div>
+    </div>
+  );
+
+  // ---- ROI Card ----
+  const renderROI = () => (
+    <div>
+      <h2 className={headerClass}>Breakeven ROI Calculations</h2>
+      <div className={cardClass}>
+        <div className={labelClass}>Yield Needed for 2:1 ROI</div>
+        <div className={valueClass}>{formatNumber(roi.roi2x)} {unitLabel}</div>
+        <div className={labelClass}>Yield Needed for 3:1 ROI</div>
+        <div className={valueClass}>{formatNumber(roi.roi3x)} {unitLabel}</div>
+        <div className={labelClass}>Yield Needed for 4:1 ROI</div>
+        <div className={valueClass}>{formatNumber(roi.roi4x)} {unitLabel}</div>
+        <div className={labelClass}>Yield Needed for 5:1 ROI</div>
+        <div className={valueClass}>{formatNumber(roi.roi5x)} {unitLabel}</div>
+      </div>
+    </div>
+  );
+
+  // ---- RENDER ALL ----
+  return (
+    <div className="print-grayscale p-6 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
+      <div className="mb-6 text-center">
+        <h1 className="text-3xl font-[Montserrat] font-bold mb-2">YMS Program Calculator Summary</h1>
+        <p className="text-lg">Grower: <span className="font-bold">{growerName || "—"}</span></p>
+        <p className="text-lg">Rep: <span className="font-bold">{repName || "—"}</span></p>
+      </div>
+      {renderBasicSeedCalculations()}
+      {renderSeedTreatmentCosts()}
+      {renderInFurrowFoliarCosts()}
+      {renderTotalProgramCost()}
+      {renderROI()}
     </div>
   );
 };
