@@ -62,7 +62,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   // ---- Seed Treatment Costs ----
   const renderSeedTreatmentCosts = () =>
     seedTreatmentResults.length > 0 &&
-    seedTreatmentResults.map((product, i) => (
+    seedTreatmentResults.map((product) => (
       <div key={product.productName + "-seedcost"}>
         <h2 className={headerClass}>Seed Treatment Costs</h2>
         <div className={cardClass}>
