@@ -133,7 +133,7 @@ export function calculateProductData(
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
   let rateUnit: string | undefined;
-  let totalProductNeeded = 0;
+  let totalProductNeeded: number = 0;
 
   const seedsPerUnit = seedsPerUnitOverride
     ? seedsPerUnitOverride
@@ -179,24 +179,25 @@ export function calculateProductData(
     totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
   }
 
-  const packageSize = product["Package Size"] || 1;
-  const packageUnits = product["Package Units"] || "unit";
-  const packageType = product["Package Type"] || "package";
+  const packageSize = product["Package Size"];
+  const packageUnits = product["Package Units"];
+  const packageType = product["Package Type"];
   const pluralize = (word: string, count: number) => {
-    if (word.toLowerCase() === "box") return "Boxes";
-    if (word.toLowerCase() === "pouch") return "Pouches";
+    if (word.toLowerCase() === "box") return count === 1 ? "Box" : "Boxes";
+    if (word.toLowerCase() === "pouch") return count === 1 ? "Pouch" : "Pouches";
     return count === 1 ? word : `${word}s`;
   };
-
-  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
+  const productPackageString = `${packageSize} ${packageUnits} - ${pluralize(packageType, Math.ceil(totalProductNeeded / packageSize))}`;
   const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
+  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const totalCostToGrower = packagesNeeded * productCostPerPackage;
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discountedCostToGrower = totalCostToGrower * discountFactor;
 
-  const individualCostPerAcre = rateUnit?.includes("/acre")
-    ? (applicationRate ?? 0) * (costPerUnit ?? 0) * discountFactor
-    : ((totalProductNeeded ?? 0) * (costPerUnit ?? 0)) / acres;
+  const individualCostPerAcre =
+    rateUnit?.includes("/acre")
+      ? (applicationRate ?? 0) * (costPerUnit ?? 0) * discountFactor
+      : ((totalProductNeeded ?? 0) * (costPerUnit ?? 0)) / acres;
 
   const productCostPerUnitSeed = discountedCostToGrower / acres;
 
@@ -212,9 +213,9 @@ export function calculateProductData(
     productName: product["Product Name"],
     productForm: product["Product Form"],
     packagesNeeded,
-    productPackageString: `${packageSize} ${packageUnits} - ${pluralize(packageType, packagesNeeded)}`,
+    productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower,
+    discountedTotalCostToGrower: discountedCostToGrower,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
