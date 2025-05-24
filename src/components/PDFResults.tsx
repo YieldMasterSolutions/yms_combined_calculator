@@ -77,7 +77,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
     return (
-      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}> 
+      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}>
         <h2 className={headerClass}>{product.productName} ({product.applicationMethod})</h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
@@ -90,26 +90,26 @@ const PDFResults: React.FC<PDFResultsProps> = ({
           <div className={valueClass}>{packageLabel}</div>
 
           <div className={labelClass}>Product Cost per Package</div>
-          <div className={valueClass}>${formatNumber(product.productCostPerPackage, 2, true)}</div>
+          <div className={valueClass}>${formatNumber(product.productCostPerPackage, 2)}</div>
 
           <div className={labelClass}>{getCostPerUnitLabel(product.rateUnit || "")}</div>
-          <div className={valueClass}>${formatNumber(product.productCostPerOz, 2, true)}</div>
+          <div className={valueClass}>${formatNumber(product.productCostPerOz, 2)}</div>
 
           <div className={labelClass}>Total Undiscounted Cost</div>
-          <div className={valueClass}>${formatNumber(product.originalTotalCostToGrower, 2, true)}</div>
+          <div className={valueClass}>${formatNumber(product.originalTotalCostToGrower, 2)}</div>
 
           <div className={labelClass}>Total Discounted Cost</div>
-          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower, 2, true)}</div>
+          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower, 2)}</div>
 
           {isSeed && (
             <>
               <div className={labelClass}>Product Cost per Unit of Treated Seed</div>
-              <div className={valueClass}>${formatNumber(product.costPerUnitSeed, 2, true)}</div>
+              <div className={valueClass}>${formatNumber(product.costPerUnitSeed, 2)}</div>
             </>
           )}
 
           <div className={labelClass}>Product Cost per Acre</div>
-          <div className={valueClass}>${formatNumber(product.individualCostPerAcre, 2, true)}</div>
+          <div className={valueClass}>${formatNumber(product.individualCostPerAcre, 2)}</div>
         </div>
       </div>
     );
@@ -126,13 +126,13 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       <h2 className={headerClass}>Total Program Cost</h2>
       <div className={cardClass}>
         <div className={labelClass}>Total Undiscounted Cost</div>
-        <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2, true)}</div>
+        <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2)}</div>
 
         <div className={labelClass}>Total Discounted Cost</div>
-        <div className={valueClass}>${formatNumber(totalDiscountedCost, 2, true)}</div>
+        <div className={valueClass}>${formatNumber(totalDiscountedCost, 2)}</div>
 
         <div className={labelClass}>Cost per Acre</div>
-        <div className={valueClass}>${formatNumber(totalCostPerAcre, 2, true)}</div>
+        <div className={valueClass}>${formatNumber(totalCostPerAcre, 2)}</div>
       </div>
     </div>
   );
@@ -141,6 +141,9 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     <div>
       <h2 className={headerClass}>Breakeven ROI Calculations</h2>
       <div className={cardClass}>
+        <div className={labelClass}>Yield Needed to Breakeven</div>
+        <div className={valueClass}>{formatNumber(totalCostPerAcre)} {unitLabel}</div>
+
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi.roi2x)} {unitLabel}</div>
 

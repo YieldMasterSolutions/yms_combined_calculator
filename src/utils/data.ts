@@ -60,13 +60,12 @@ export const seedTypes: SeedType[] = [
   { "Seed Type": "Wheat", "Seeds/lb": "18000", "Lbs/Unit": 50 }
 ];
 
-// Package Type values restored to singular for smart pluralization logic elsewhere
 export const productsSeedTreatment: ProductData[] = [
   {
     "Product Name": "Soyfx ST",
     "Package Size": 120,
     "Package Units": "fl oz",
-    "Package Type": "Jug",
+    "Package Type": "Jugs",
     "Product Cost per oz": 9.16,
     "Application Rate": 1,
     "Application Method": "Seed Coating",
@@ -77,7 +76,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Product Name": "OmniSync",
     "Package Size": 320,
     "Package Units": "oz",
-    "Package Type": "Pail",
+    "Package Type": "Pails",
     "Product Cost per oz": 2.98,
     "Application Rate": 2,
     "Application Method": "Planter Box Treatment",
@@ -88,7 +87,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Product Name": "Nutriquire + Terrasym 450 Corn",
     "Package Size": 12.5,
     "Package Units": "oz",
-    "Package Type": "Pouch",
+    "Package Type": "Pouches",
     "Product Cost per oz": 70.56,
     "Application Rate": 0.5,
     "Application Method": "Planter Box Treatment",
@@ -99,7 +98,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Product Name": "Nutriquire + Terrasym 401 Soybean",
     "Package Size": 20,
     "Package Units": "oz",
-    "Package Type": "Pouch",
+    "Package Type": "Pouches",
     "Product Cost per oz": 29.90,
     "Application Rate": 0.5,
     "Application Method": "Planter Box Treatment",
@@ -110,7 +109,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Product Name": "Terrasym 450 + DUST + TS201",
     "Package Size": 25,
     "Package Units": "oz",
-    "Package Type": "Pouch",
+    "Package Type": "Pouches",
     "Product Cost per oz": 69.60,
     "Application Rate": 0.5,
     "Application Method": "Planter Box Treatment",
@@ -126,7 +125,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per fl oz": 0.75,
     "Package Size": 320,
     "Package Units": "fl oz",
-    "Package Type": "Jug",
+    "Package Type": "Jugs",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/acre"
@@ -137,7 +136,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per fl oz": 0.75,
     "Package Size": 320,
     "Package Units": "fl oz",
-    "Package Type": "Jug",
+    "Package Type": "Jugs",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/acre"
@@ -148,7 +147,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per gram": 2.99,
     "Package Size": 200,
     "Package Units": "grams",
-    "Package Type": "Box",
+    "Package Type": "Boxes",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Dry",
     "Application Rate Unit": "g/acre"
@@ -159,7 +158,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per gram": 2.99,
     "Package Size": 200,
     "Package Units": "grams",
-    "Package Type": "Box",
+    "Package Type": "Boxes",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Dry",
     "Application Rate Unit": "g/acre"
@@ -170,7 +169,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per fl oz": 18.69,
     "Package Size": 32,
     "Package Units": "fl oz",
-    "Package Type": "Jug",
+    "Package Type": "Jugs",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/acre"
@@ -181,7 +180,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per fl oz": 0.44,
     "Package Size": 320,
     "Package Units": "fl oz",
-    "Package Type": "Jug",
+    "Package Type": "Jugs",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/acre"
@@ -192,7 +191,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per fl oz": 0.44,
     "Package Size": 35200,
     "Package Units": "fl oz",
-    "Package Type": "Tote",
+    "Package Type": "Totes",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/acre"
@@ -203,7 +202,7 @@ export const productsInFurrowFoliar: ProductData[] = [
     "Product Cost per fl oz": 0.34,
     "Package Size": 320,
     "Package Units": "fl oz",
-    "Package Type": "Jug",
+    "Package Type": "Jugs",
     "Application Method": "In-Furrow or Foliar",
     "Product Form": "Liquid",
     "Application Rate Unit": "fl oz/acre"

@@ -75,7 +75,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
     return (
-      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}> 
+      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}>
         <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
           {product.productName} ({product.applicationMethod})
         </h2>
@@ -145,6 +145,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         Breakeven ROI Calculations
       </h2>
       <div className={cardClass}>
+        <div className={labelClass}>Yield Needed to Breakeven</div>
+        <div className={valueClass}>{formatNumber(totalCostPerAcre)} {unitLabel}</div>
+
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi2)} {unitLabel}</div>
 

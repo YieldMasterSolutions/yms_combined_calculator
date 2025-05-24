@@ -98,7 +98,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     methodOptions: string[]
   ) => (
     <div>
-      <h3 className="font-semibold mt-2 mb-1 text-blue-600 text-xl font-[Montserrat]">{title}</h3>
+      <h3 className="font-semibold mt-2 mb-1 text-blue-600 text-xl font-[Montserrat] dark:text-blue-300">{title}</h3>
       {[...Array(count)].map((_, index) => (
         <div key={index} className="flex gap-2 mb-2">
           <select
@@ -111,7 +111,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               updated[index] = selected ? { ...selected, "Application Method": products[index]?.["Application Method"] || methodOptions[0] } : null;
               setProducts(updated);
             }}
-            className="w-3/4 border rounded px-3 py-2 text-lg"
+            className="w-3/4 border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
           >
             <option value="">Select a product</option>
             {productList.map((product, i) => (
@@ -129,7 +129,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 setProducts(updated);
               }
             }}
-            className="w-1/4 border rounded px-3 py-2 text-lg"
+            className="w-1/4 border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
           >
             {methodOptions.map((opt, idx) => (
               <option key={idx} value={opt}>{opt}</option>
@@ -142,16 +142,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
   return (
     <form className="grid gap-8 text-[1.15rem]">
-      {/* Crop Inputs */}
       <div>
-        <h2 className="text-blue-600 text-2xl font-bold font-[Montserrat] mb-2">Crop Inputs</h2>
+        <h2 className="text-blue-600 text-2xl font-bold font-[Montserrat] mb-2 dark:text-blue-300">Crop Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block mb-1 font-semibold">Seed Type</label>
             <select
               value={seedType}
               onChange={(e) => setSeedType(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             >
               <option value="">Select seed type</option>
               {seedTypes.map((seed, index) => (
@@ -167,7 +166,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="number"
               value={acres}
               onChange={(e) => setAcres(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             />
           </div>
           <div>
@@ -176,7 +175,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="number"
               value={seedingRate}
               onChange={(e) => setSeedingRate(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             />
           </div>
           <div>
@@ -184,7 +183,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={seedingRateUnit}
               onChange={(e) => setSeedingRateUnit(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             >
               <option value="seeds/acre">seeds/acre</option>
               <option value="lbs/acre">lbs/acre</option>
@@ -196,7 +195,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="number"
               value={overrideSeeds}
               onChange={(e) => setOverrideSeeds(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
               placeholder="Optional"
             />
           </div>
@@ -206,16 +205,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="number"
               value={seedsPerUnitOverride}
               onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
               placeholder="Optional"
             />
           </div>
         </div>
       </div>
 
-      {/* Market and ROI Inputs */}
       <div>
-        <h2 className="text-blue-600 text-2xl font-bold font-[Montserrat] mt-8 mb-2">Market and ROI Inputs</h2>
+        <h2 className="text-blue-600 text-2xl font-bold font-[Montserrat] mt-8 mb-2 dark:text-blue-300">Market and ROI Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block mb-1 font-semibold">Grower Name</label>
@@ -223,7 +221,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={growerName}
               onChange={(e) => setGrowerName(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             />
           </div>
           <div>
@@ -232,7 +230,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={repName}
               onChange={(e) => setRepName(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             />
           </div>
           <div>
@@ -241,7 +239,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="number"
               value={marketPrice}
               onChange={(e) => setMarketPrice(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
               placeholder="Optional"
             />
           </div>
@@ -250,7 +248,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={marketPriceUnit}
               onChange={(e) => setMarketPriceUnit(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             >
               <option value="$/bu">$/bu</option>
               <option value="$/lb">$/lb</option>
@@ -264,7 +262,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="number"
               value={dealerDiscount}
               onChange={(e) => setDealerDiscount(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             />
           </div>
           <div>
@@ -273,15 +271,14 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="number"
               value={growerDiscount}
               onChange={(e) => setGrowerDiscount(e.target.value)}
-              className="w-full border rounded px-3 py-2 text-lg"
+              className="w-full border rounded px-3 py-2 text-lg text-black dark:text-white bg-white dark:bg-[#1f2937]"
             />
           </div>
         </div>
       </div>
 
-      {/* Product Inputs */}
       <div>
-        <h2 className="text-blue-600 text-2xl font-bold font-[Montserrat] mt-8 mb-2">Product Inputs</h2>
+        <h2 className="text-blue-600 text-2xl font-bold font-[Montserrat] mt-8 mb-2 dark:text-blue-300">Product Inputs</h2>
         <div className="grid grid-cols-2 gap-4">
           {renderProductSelector(
             productsSeedTreatment,
@@ -302,7 +299,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* Calculate Button */}
       <div className="text-center mt-4">
         <button
           type="button"

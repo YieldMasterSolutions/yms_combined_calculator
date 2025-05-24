@@ -17,11 +17,10 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
 
     const originalDisplay = input.style.display;
     input.style.display = "block";
-
     window.scrollTo(0, 0);
 
     const canvas = await html2canvas(input, {
-      backgroundColor: "#fff",
+      backgroundColor: "#ffffff",
       scale: 2,
       useCORS: true,
       ignoreElements: (el) => el.classList?.contains("no-print"),
@@ -29,7 +28,6 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
 
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "pt", "a4");
-
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -37,9 +35,12 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const imgWidth = pageWidth;
     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-    const y = imgHeight < pageHeight ? (pageHeight - imgHeight) / 2 : 0;
-    pdf.addImage(imgData, "PNG", 0, y, imgWidth, imgHeight);
+    let y = 0;
+    if (imgHeight < pageHeight) {
+      y = (pageHeight - imgHeight) / 2;
+    }
 
+    pdf.addImage(imgData, "PNG", 0, y, imgWidth, imgHeight);
     pdf.save("Biological_Program_Summary.pdf");
 
     input.style.display = originalDisplay;
