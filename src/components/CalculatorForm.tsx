@@ -73,15 +73,20 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setFoliarProducts,
   handleCalculate,
 }) => {
+  const pluralize = (word: string, count: number) => {
+    if (word.toLowerCase() === "box") return count === 1 ? "Box" : "Boxes";
+    if (word.toLowerCase() === "pouch") return count === 1 ? "Pouch" : "Pouches";
+    return count === 1 ? word : `${word}s`;
+  };
+
   const formatProductLabel = (product: ProductData): string => {
     const rate = product["Application Rate"];
     const rateUnit = product["Application Rate Unit"];
     const size = product["Package Size"];
     const units = product["Package Units"];
     const type = product["Package Type"];
-    const treatCapacity = rate && size ? Math.floor(size / rate) : "—";
-    const pluralType = treatCapacity === 1 ? type : `${type}s`;
-    return `${product["Product Name"]} – ${size} ${units} – ${pluralType} – ${rate} ${rateUnit} – Treats ${treatCapacity} units`;
+    const capacity = rate && size ? Math.floor(size / rate) : 1;
+    return `${product["Product Name"]} – ${size} ${units} – ${pluralize(type, capacity)} – ${rate} ${rateUnit} – Treats ${capacity} acres`;
   };
 
   const renderProductSelector = (
@@ -103,12 +108,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 (p) => formatProductLabel(p) === e.target.value
               );
               const updated = [...products];
-              updated[index] = selected
-                ? {
-                    ...selected,
-                    "Application Method": products[index]?.["Application Method"] || methodOptions[0],
-                  }
-                : null;
+              updated[index] = selected ? { ...selected, "Application Method": products[index]?.["Application Method"] || methodOptions[0] } : null;
               setProducts(updated);
             }}
             className="w-3/4 border rounded px-3 py-2 text-lg"
@@ -132,9 +132,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             className="w-1/4 border rounded px-3 py-2 text-lg"
           >
             {methodOptions.map((opt, idx) => (
-              <option key={idx} value={opt}>
-                {opt}
-              </option>
+              <option key={idx} value={opt}>{opt}</option>
             ))}
           </select>
         </div>
@@ -229,7 +227,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             />
           </div>
           <div>
-            <label className="block mb-1 font-semibold">Rep Name</label>
+            <label className="block mb-1 font-semibold">Dealer/Rep Name</label>
             <input
               type="text"
               value={repName}

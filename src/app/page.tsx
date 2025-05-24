@@ -15,11 +15,7 @@ import {
   calculateAllFoliarProductCosts,
   calculateROI,
 } from "../utils/calculations";
-import {
-  ProductData,
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-} from "../utils/data";
+import { ProductData } from "../utils/data";
 
 // ✅ Component: Home
 export default function Home() {
@@ -115,15 +111,17 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-white text-black px-4 py-6 font-[Open_Sans]">
+    <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white px-4 py-6 font-[Open_Sans]">
       <div className="max-w-6xl mx-auto">
         <ThemeToggle />
         <div className="flex items-center justify-between mb-6">
-          <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={160} height={48} />
-          <Image src="/yms_combined_calculator/legendlogo1.png" alt="Legend Seed Logo" width={160} height={48} />
+          <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={180} height={52} />
+          <Image src="/yms_combined_calculator/legendlogo1.png" alt="Legend Seed Logo" width={180} height={52} />
         </div>
 
-        <h1 className="text-2xl font-[Montserrat] text-blue-700 mb-4">YMS Program Calculator</h1>
+        <h1 className="text-2xl font-[Montserrat] text-blue-700 dark:text-blue-300 mb-4">
+          Biological Program Calculator
+        </h1>
 
         <CalculatorForm
           seedType={seedType}

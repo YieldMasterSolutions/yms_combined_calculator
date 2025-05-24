@@ -1,17 +1,27 @@
 // src/utils/formatNumber.ts
 
 /**
- * Format a number with comma separators and fixed decimal places.
- * Defaults to 2 decimals unless overridden.
+ * Format a number with comma separators.
+ * Non-dollar numbers drop decimals if whole.
+ * Dollar amounts always show two decimals.
  *
  * @param n - The number to format
- * @param decimals - Number of decimal places to show (default: 2)
- * @returns Formatted string (e.g., 1234.56 -> "1,234.56")
+ * @param decimals - Number of decimal places (default: 2)
+ * @param isCurrency - Forces fixed 2-decimal output if true
+ * @returns Formatted string
  */
-export const formatNumber = (n: number | undefined, decimals: number = 2): string => {
+export const formatNumber = (
+  n: number | undefined,
+  decimals: number = 2,
+  isCurrency: boolean = false
+): string => {
   if (n === undefined || isNaN(n)) return "-";
-  return n.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+
+  const rounded = Number(n.toFixed(decimals));
+  const isWhole = Number.isInteger(rounded);
+
+  return rounded.toLocaleString(undefined, {
+    minimumFractionDigits: isCurrency ? 2 : isWhole ? 0 : decimals,
+    maximumFractionDigits: isCurrency ? 2 : decimals,
   });
 };

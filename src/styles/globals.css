@@ -96,8 +96,7 @@ body {
    PDF Specific Cleanup for Canvas Export
 ─────────────────────────────────────────────── */
 .print-grayscale * {
-  all: unset;
-  all: revert-layer;
+  all: revert !important;
   font-family: 'Open Sans', sans-serif !important;
   background: #ffffff !important;
   color: #000000 !important;

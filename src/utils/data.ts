@@ -60,6 +60,7 @@ export const seedTypes: SeedType[] = [
   { "Seed Type": "Wheat", "Seeds/lb": "18000", "Lbs/Unit": 50 }
 ];
 
+// Package Type values restored to singular for smart pluralization logic elsewhere
 export const productsSeedTreatment: ProductData[] = [
   {
     "Product Name": "Soyfx ST",
