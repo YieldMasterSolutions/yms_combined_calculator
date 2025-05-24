@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useRef, useState } from "react"; // <-- removed useEffect here
+import React, { useRef, useState } from "react";
 import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
@@ -20,7 +20,6 @@ import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement>(null);
 
-  // All your state/logic unchanged...
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
@@ -36,8 +35,8 @@ export default function Home() {
   const [growerName, setGrowerName] = useState("");
   const [repName, setRepName] = useState("");
 
-  const [seedProducts, setSeedProducts] = useState(productsSeedTreatment.slice(0, 2));
-  const [foliarProducts, setFoliarProducts] = useState(productsInFurrowFoliar.slice(0, 4));
+  const [seedProducts, setSeedProducts] = useState(productsSeedTreatment.slice(0, 2).map(() => null));
+  const [foliarProducts, setFoliarProducts] = useState(productsInFurrowFoliar.slice(0, 4).map(() => null));
 
   const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -50,15 +49,19 @@ export default function Home() {
   const [roi5, setROI5] = useState(0);
 
   const handleCalculate = () => {
-    const selectedSeedProducts = seedProducts.map((product) => ({
-      product,
-      applicationMethod: product["Application Method"] || "Seed Treatment",
-    }));
+    const selectedSeedProducts = seedProducts
+      .filter((product): product is ProductData => product !== null)
+      .map((product) => ({
+        product,
+        applicationMethod: product["Application Method"] || "Seed Treatment",
+      }));
 
-    const selectedFoliarProducts = foliarProducts.map((product) => ({
-      product,
-      applicationMethod: product["Application Method"] || "In-Furrow",
-    }));
+    const selectedFoliarProducts = foliarProducts
+      .filter((product): product is ProductData => product !== null)
+      .map((product) => ({
+        product,
+        applicationMethod: product["Application Method"] || "In-Furrow",
+      }));
 
     const seedData = calculateSeedTreatmentData(
       seedType,

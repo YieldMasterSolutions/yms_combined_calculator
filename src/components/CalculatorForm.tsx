@@ -35,10 +35,10 @@ interface CalculatorFormProps {
   setGrowerName: (value: string) => void;
   repName: string;
   setRepName: (value: string) => void;
-  seedProducts: ProductData[];
-  setSeedProducts: (products: ProductData[]) => void;
-  foliarProducts: ProductData[];
-  setFoliarProducts: (products: ProductData[]) => void;
+  seedProducts: (ProductData | null)[];
+  setSeedProducts: (products: (ProductData | null)[]) => void;
+  foliarProducts: (ProductData | null)[];
+  setFoliarProducts: (products: (ProductData | null)[]) => void;
   handleCalculate: () => void;
 }
 
@@ -84,11 +84,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     return `${product["Product Name"]} – ${size} ${units} – ${pluralType} – ${rate} ${rateUnit} – Treats ${treatCapacity} units`;
   };
 
-  // Product selectors with application method dropdowns
   const renderProductSelector = (
     productList: ProductData[],
-    products: ProductData[],
-    setProducts: (p: ProductData[]) => void,
+    products: (ProductData | null)[],
+    setProducts: (p: (ProductData | null)[]) => void,
     title: string,
     count: number,
     methodOptions: string[]
@@ -98,14 +97,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       {[...Array(count)].map((_, index) => (
         <div key={index} className="flex gap-2 mb-2">
           <select
-            value={products[index]?.["Product Name"] || ""}
+            value={products[index] ? formatProductLabel(products[index]!) : ""}
             onChange={(e) => {
               const selected = productList.find(
                 (p) => formatProductLabel(p) === e.target.value
               );
-              if (!selected) return;
               const updated = [...products];
-              updated[index] = { ...selected, "Application Method": products[index]?.["Application Method"] || methodOptions[0] };
+              updated[index] = selected ? { ...selected, "Application Method": methodOptions[0] } : null;
               setProducts(updated);
             }}
             className="w-3/4 border rounded px-3 py-2 text-lg"
@@ -122,7 +120,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             onChange={(e) => {
               const updated = [...products];
               if (updated[index]) {
-                updated[index]["Application Method"] = e.target.value;
+                updated[index]!["Application Method"] = e.target.value;
                 setProducts(updated);
               }
             }}
