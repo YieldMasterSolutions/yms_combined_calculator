@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react"; // <-- removed useEffect here
 import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
@@ -20,8 +20,7 @@ import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement>(null);
 
-  // --- REMOVE theme state and useEffect as they are not used elsewhere
-
+  // All your state/logic unchanged...
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
