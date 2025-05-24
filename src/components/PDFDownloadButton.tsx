@@ -28,6 +28,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
 
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "pt", "a4");
+
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -35,10 +36,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const imgWidth = pageWidth;
     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
-    let y = 0;
-    if (imgHeight < pageHeight) {
-      y = (pageHeight - imgHeight) / 2;
-    }
+    const y = imgHeight < pageHeight ? (pageHeight - imgHeight) / 2 : 0;
 
     pdf.addImage(imgData, "PNG", 0, y, imgWidth, imgHeight);
     pdf.save("Biological_Program_Summary.pdf");

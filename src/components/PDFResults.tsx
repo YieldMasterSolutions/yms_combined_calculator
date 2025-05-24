@@ -1,5 +1,3 @@
-// src/components/PDFResults.tsx
-
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
@@ -35,6 +33,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   const pluralize = (word: string, count: number) => {
     if (word.toLowerCase() === "box") return count === 1 ? "Box" : "Boxes";
     if (word.toLowerCase() === "pouch") return count === 1 ? "Pouch" : "Pouches";
+    if (word.toLowerCase() === "pail") return count === 1 ? "Pail" : "Pails";
     return count === 1 ? word : `${word}s`;
   };
 
@@ -73,12 +72,12 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
     const isJug = product.packageType?.toLowerCase() === "jug" && product.packageSize === 320;
-    const packageLabel = `${formatNumber(product.totalProductUnits, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
+    const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
       (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
     return (
-      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}>
-        <h2 className={headerClass}>{product.productName} ({product.applicationMethod})</h2>
+      <div key={product.productPackageString + (isSeed ? "-seedcost" : "-foliarcost")}>
+        <h2 className={headerClass}>{product.productPackageString} ({product.applicationMethod})</h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
           <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>

@@ -30,9 +30,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   marketPriceUnit,
 }) => {
   const pluralize = (word: string, count: number) => {
-    if (word.toLowerCase() === "box") return count === 1 ? "Box" : "Boxes";
-    if (word.toLowerCase() === "pouch") return count === 1 ? "Pouch" : "Pouches";
-    return count === 1 ? word : `${word}s`;
+    const lower = word.toLowerCase();
+    if (count === 1) return word;
+    if (lower === "box") return "Boxes";
+    if (lower === "pouch") return "Pouches";
+    if (lower === "pail") return "Pails";
+    if (lower === "jug") return "Jugs";
+    return word.endsWith("s") ? word : `${word}s`;
   };
 
   const getCostPerUnitLabel = (unit: string) => {
@@ -74,10 +78,12 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     const packageLabel = `${formatNumber(product.totalProductUnits, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
       (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
+    const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} acres`;
+
     return (
-      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}>
+      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}> 
         <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
-          {product.productName} ({product.applicationMethod})
+          {title}
         </h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
