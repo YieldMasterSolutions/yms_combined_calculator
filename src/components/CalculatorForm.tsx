@@ -103,7 +103,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 (p) => formatProductLabel(p) === e.target.value
               );
               const updated = [...products];
-              updated[index] = selected ? { ...selected, "Application Method": products[index]?.["Application Method"] || methodOptions[0] } : null;
+              updated[index] = selected
+                ? {
+                    ...selected,
+                    "Application Method": products[index]?.["Application Method"] || methodOptions[0],
+                  }
+                : null;
               setProducts(updated);
             }}
             className="w-3/4 border rounded px-3 py-2 text-lg"
@@ -127,7 +132,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             className="w-1/4 border rounded px-3 py-2 text-lg"
           >
             {methodOptions.map((opt, idx) => (
-              <option key={idx} value={opt}>{opt}</option>
+              <option key={idx} value={opt}>
+                {opt}
+              </option>
             ))}
           </select>
         </div>

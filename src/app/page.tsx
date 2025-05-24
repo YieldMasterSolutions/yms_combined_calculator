@@ -15,8 +15,13 @@ import {
   calculateAllFoliarProductCosts,
   calculateROI,
 } from "../utils/calculations";
-import { productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
+import {
+  ProductData,
+  productsSeedTreatment,
+  productsInFurrowFoliar,
+} from "../utils/data";
 
+// ✅ Component: Home
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement>(null);
 
@@ -35,8 +40,8 @@ export default function Home() {
   const [growerName, setGrowerName] = useState("");
   const [repName, setRepName] = useState("");
 
-  const [seedProducts, setSeedProducts] = useState(productsSeedTreatment.slice(0, 2).map(() => null));
-  const [foliarProducts, setFoliarProducts] = useState(productsInFurrowFoliar.slice(0, 4).map(() => null));
+  const [seedProducts, setSeedProducts] = useState<(ProductData | null)[]>([null, null]);
+  const [foliarProducts, setFoliarProducts] = useState<(ProductData | null)[]>([null, null, null, null]);
 
   const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
   const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
@@ -152,7 +157,7 @@ export default function Home() {
           handleCalculate={handleCalculate}
         />
 
-        {seedResults.length > 0 || foliarResults.length > 0 ? (
+        {(seedResults.length > 0 || foliarResults.length > 0) && (
           <div className="my-8">
             <ResultsDisplay
               seedTreatmentResults={seedResults}
@@ -167,7 +172,7 @@ export default function Home() {
               marketPriceUnit={marketPriceUnit}
             />
           </div>
-        ) : null}
+        )}
 
         <div className="text-center mb-4">
           <PDFDownloadButton targetRef={pdfRef} />
