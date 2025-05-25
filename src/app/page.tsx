@@ -158,7 +158,7 @@ export default function Home() {
           setSeedProducts={setSeedProducts}
           foliarProducts={foliarProducts}
           setFoliarProducts={setFoliarProducts}
-          onCalculate={handleCalculate}
+          handleCalculate={handleCalculate}
         />
 
         {(seedResults.length > 0 || foliarResults.length > 0) && (
@@ -174,7 +174,6 @@ export default function Home() {
               roi4={roi4}
               roi5={roi5}
               marketPriceUnit={marketPriceUnit}
-              seedType={seedType}
             />
           </div>
         )}
