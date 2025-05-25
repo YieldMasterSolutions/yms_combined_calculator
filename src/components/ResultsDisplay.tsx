@@ -15,6 +15,7 @@ interface ResultsDisplayProps {
   roi4: number;
   roi5: number;
   marketPriceUnit: string;
+  seedType: string;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -28,6 +29,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi4,
   roi5,
   marketPriceUnit,
+  seedType,
 }) => {
   const pluralize = (word: string, count: number) => {
     const lower = word.toLowerCase();
@@ -50,7 +52,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     return "Product Cost per Unit";
   };
 
-  const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
+  const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[0] : marketPriceUnit;
 
   const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#13213c]";
   const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
@@ -87,7 +89,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
-      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}> 
+      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}>
         <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
           {title}
         </h2>
