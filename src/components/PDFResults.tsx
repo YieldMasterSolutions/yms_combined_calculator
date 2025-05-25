@@ -90,7 +90,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
-      <div key={product.productPackageString + (isSeed ? "-seedcost" : "-foliarcost")}> 
+      <div key={product.productPackageString + (isSeed ? "-seedcost" : "-foliarcost")}>
         <h2 className={headerClass}>{title} ({product.applicationMethod})</h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>

@@ -28,7 +28,7 @@ export default function Home() {
   const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
 
   const [marketPrice, setMarketPrice] = useState("");
-  const [marketPriceUnit, setMarketPriceUnit] = useState("$/bu");
+  const [marketPriceUnit, setMarketPriceUnit] = useState("bu");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
 
@@ -121,8 +121,8 @@ export default function Home() {
       <div className="max-w-6xl mx-auto">
         <ThemeToggle />
         <div className="flex items-center justify-between mb-6">
-          <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={180} height={52} />
           <Image src="/yms_combined_calculator/legendlogo1.png" alt="Legend Seed Logo" width={180} height={52} />
+          <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={180} height={52} />
         </div>
 
         <h1 className="text-2xl font-[Montserrat] text-blue-700 dark:text-blue-300 mb-4">
@@ -144,6 +144,8 @@ export default function Home() {
           setSeedsPerUnitOverride={setSeedsPerUnitOverride}
           marketPrice={marketPrice}
           setMarketPrice={setMarketPrice}
+          marketPriceUnit={marketPriceUnit}
+          setMarketPriceUnit={setMarketPriceUnit}
           dealerDiscount={dealerDiscount}
           setDealerDiscount={setDealerDiscount}
           growerDiscount={growerDiscount}
@@ -156,9 +158,7 @@ export default function Home() {
           setSeedProducts={setSeedProducts}
           foliarProducts={foliarProducts}
           setFoliarProducts={setFoliarProducts}
-          marketPriceUnit={marketPriceUnit}
-          setMarketPriceUnit={setMarketPriceUnit}
-          handleCalculate={handleCalculate}
+          onCalculate={handleCalculate}
         />
 
         {(seedResults.length > 0 || foliarResults.length > 0) && (
@@ -174,13 +174,16 @@ export default function Home() {
               roi4={roi4}
               roi5={roi5}
               marketPriceUnit={marketPriceUnit}
+              seedType={seedType}
             />
           </div>
         )}
 
-        <div className="text-center mb-4">
-          <PDFDownloadButton targetRef={pdfRef} />
-        </div>
+        {(seedResults.length > 0 || foliarResults.length > 0) && (
+          <div className="text-center mb-4">
+            <PDFDownloadButton targetRef={pdfRef} />
+          </div>
+        )}
 
         <div className="hidden" ref={pdfRef}>
           <PDFResults
