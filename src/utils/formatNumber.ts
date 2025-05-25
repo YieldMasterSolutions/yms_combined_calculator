@@ -2,20 +2,20 @@
 
 /**
  * Format a number with comma separators.
- * Non-dollar numbers drop decimals if whole.
- * Dollar amounts always show two decimals.
+ * Currency values always show two decimals.
+ * Non-currency values omit decimals if the number is whole.
  *
  * @param n - The number to format
  * @param decimals - Number of decimal places (default: 2)
- * @param isCurrency - Forces fixed 2-decimal output if true
- * @returns Formatted string
+ * @param isCurrency - If true, always show 2 decimal places
+ * @returns Formatted string or "-" if invalid
  */
 export const formatNumber = (
   n: number | undefined,
   decimals: number = 2,
   isCurrency: boolean = false
 ): string => {
-  if (n === undefined || isNaN(n)) return "-";
+  if (typeof n !== "number" || isNaN(n)) return "-";
 
   const rounded = Number(n.toFixed(decimals));
   const isWhole = Number.isInteger(rounded);

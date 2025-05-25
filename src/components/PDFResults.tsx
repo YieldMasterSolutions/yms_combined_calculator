@@ -1,3 +1,5 @@
+// src/components/PDFResults.tsx
+
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
@@ -31,10 +33,13 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   marketPriceUnit,
 }) => {
   const pluralize = (word: string, count: number) => {
-    if (word.toLowerCase() === "box") return count === 1 ? "Box" : "Boxes";
-    if (word.toLowerCase() === "pouch") return count === 1 ? "Pouch" : "Pouches";
-    if (word.toLowerCase() === "pail") return count === 1 ? "Pail" : "Pails";
-    return count === 1 ? word : `${word}s`;
+    const lower = word.toLowerCase();
+    if (count === 1) return word;
+    if (lower === "box") return "Boxes";
+    if (lower === "pouch") return "Pouches";
+    if (lower === "pail") return "Pails";
+    if (lower === "jug") return "Jugs";
+    return word.endsWith("s") ? word : `${word}s`;
   };
 
   const getCostPerUnitLabel = (unit: string) => {
@@ -45,8 +50,8 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
   const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
 
-  const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-gray-100";
-  const headerClass = "text-2xl font-bold font-[Montserrat] mb-2 text-black";
+  const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-gray-200";
+  const headerClass = "text-2xl font-bold font-[Montserrat] mb-2 text-yellow-600";
   const labelClass = "font-bold text-[1.09rem] font-[Montserrat] text-black";
   const valueClass = "font-bold text-[1.09rem] font-[Open_Sans] text-black";
 
@@ -75,9 +80,11 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
       (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
+    const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} acres`;
+
     return (
-      <div key={product.productPackageString + (isSeed ? "-seedcost" : "-foliarcost")}>
-        <h2 className={headerClass}>{product.productPackageString} ({product.applicationMethod})</h2>
+      <div key={product.productPackageString + (isSeed ? "-seedcost" : "-foliarcost")}> 
+        <h2 className={headerClass}>{title} ({product.applicationMethod})</h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
           <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
@@ -161,7 +168,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   return (
     <div className="print-grayscale p-6 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-[Montserrat] font-bold mb-2">Biological Program Calculator Summary</h1>
+        <h1 className="text-3xl font-[Montserrat] font-bold mb-2 text-yellow-600">Biological Program Calculator Summary</h1>
         <p className="text-lg">
           Grower: <span className="font-bold">{growerName || "—"}</span>
         </p>

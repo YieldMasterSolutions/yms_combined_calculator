@@ -75,7 +75,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
     const isJug = product.packageType?.toLowerCase() === "jug" && product.packageSize === 320;
-    const packageLabel = `${formatNumber(product.totalProductUnits, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
+    const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
       (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
     const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} acres`;
@@ -147,7 +147,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   const renderROI = () => (
     <div>
-      <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
+      <h2 className="text-2xl font-bold text-yellow-600 dark:text-yellow-300 font-[Montserrat] mb-2">
         Breakeven ROI Calculations
       </h2>
       <div className={cardClass}>

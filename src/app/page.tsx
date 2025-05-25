@@ -17,7 +17,6 @@ import {
 } from "../utils/calculations";
 import { ProductData } from "../utils/data";
 
-// ✅ Component: Home
 export default function Home() {
   const pdfRef = useRef<HTMLDivElement>(null);
 
@@ -97,7 +96,7 @@ export default function Home() {
 
     const roi = marketPrice
       ? calculateROI(totalCost, parseFloat(marketPrice), marketPriceUnit)
-      : { roi2to1: 0, roi3to1: 0, roi4to1: 0, roi5to1: 0 };
+      : { breakevenYield: 0, roi2to1: 0, roi3to1: 0, roi4to1: 0, roi5to1: 0, unit: marketPriceUnit };
 
     setSeedResults(seedData);
     setFoliarResults(foliarData);
