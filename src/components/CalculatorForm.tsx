@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 // src/components/CalculatorForm.tsx
 
 import React from "react";
@@ -35,10 +33,10 @@ interface CalculatorFormProps {
   setGrowerName: (value: string) => void;
   repName: string;
   setRepName: (value: string) => void;
-  seedProducts: ProductData[];
-  setSeedProducts: (products: ProductData[]) => void;
-  foliarProducts: ProductData[];
-  setFoliarProducts: (products: ProductData[]) => void;
+  seedProducts: (ProductData | null)[];
+  setSeedProducts: (products: (ProductData | null)[]) => void;
+  foliarProducts: (ProductData | null)[];
+  setFoliarProducts: (products: (ProductData | null)[]) => void;
   onCalculate: () => void;
 }
 
@@ -74,25 +72,21 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   onCalculate,
 }) => {
   const handleSeedProductChange = (index: number, value: string) => {
-    const selectedProduct = productsSeedTreatment.find((p) => p.Product === value);
-    if (selectedProduct) {
-      const updated = [...seedProducts];
-      updated[index] = selectedProduct;
-      setSeedProducts(updated);
-    }
+    const selectedProduct = productsSeedTreatment.find((p) => p["Product Name"] === value) || null;
+    const updated = [...seedProducts];
+    updated[index] = selectedProduct;
+    setSeedProducts(updated);
   };
 
   const handleFoliarProductChange = (index: number, value: string) => {
-    const selectedProduct = productsInFurrowFoliar.find((p) => p.Product === value);
-    if (selectedProduct) {
-      const updated = [...foliarProducts];
-      updated[index] = selectedProduct;
-      setFoliarProducts(updated);
-    }
+    const selectedProduct = productsInFurrowFoliar.find((p) => p["Product Name"] === value) || null;
+    const updated = [...foliarProducts];
+    updated[index] = selectedProduct;
+    setFoliarProducts(updated);
   };
 
   const formatProductLabel = (product: ProductData) => {
-    return `${product.Product} – ${product["Package Size"]} ${product["Package Units"]} ${product["Package Type"]} – ${product["Rate"]} ${product["Rate Unit"]}/${product["Rate Basis"]}`;
+    return `${product["Product Name"]} – ${product["Package Size"]} ${product["Package Units"]} ${product["Package Type"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]}`;
   };
 
   return (
@@ -129,8 +123,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           >
             <option value="">Select Seed Type</option>
             {seedTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
+              <option key={type["Seed Type"]} value={type["Seed Type"]}>
+                {type["Seed Type"]}
               </option>
             ))}
           </select>
@@ -217,13 +211,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           {[0, 1].map((index) => (
             <select
               key={index}
-              value={seedProducts[index]?.Product || ""}
+              value={seedProducts[index]?.["Product Name"] || ""}
               onChange={(e) => handleSeedProductChange(index, e.target.value)}
               className="border p-2 w-full"
             >
               <option value="">Select Seed Treatment Product</option>
               {productsSeedTreatment.map((product) => (
-                <option key={product.Product} value={product.Product}>
+                <option key={product["Product Name"]} value={product["Product Name"]}>
                   {formatProductLabel(product)}
                 </option>
               ))}
@@ -239,13 +233,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           {[0, 1, 2, 3].map((index) => (
             <select
               key={index}
-              value={foliarProducts[index]?.Product || ""}
+              value={foliarProducts[index]?.["Product Name"] || ""}
               onChange={(e) => handleFoliarProductChange(index, e.target.value)}
               className="border p-2 w-full"
             >
               <option value="">Select Product</option>
               {productsInFurrowFoliar.map((product) => (
-                <option key={product.Product} value={product.Product}>
+                <option key={product["Product Name"]} value={product["Product Name"]}>
                   {formatProductLabel(product)}
                 </option>
               ))}

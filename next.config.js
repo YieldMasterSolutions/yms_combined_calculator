@@ -11,6 +11,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  typescript: {
+    // ✅ Prevents Next.js from auto-editing tsconfig.json
+    ignoreBuildErrors: false,
+  },
 };
 
 module.exports = nextConfig;
