@@ -23,6 +23,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
       backgroundColor: "#ffffff",
       scale: 2,
       useCORS: true,
+      scrollY: -window.scrollY,
       ignoreElements: (el) => el.classList?.contains("no-print"),
     });
 
@@ -36,14 +37,14 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const imgWidth = pageWidth;
     const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
 
+    let heightLeft = imgHeight;
     let position = 0;
-    let remainingHeight = imgHeight;
 
-    while (remainingHeight > 0) {
+    while (heightLeft > 0) {
       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      remainingHeight -= pageHeight;
+      heightLeft -= pageHeight;
       position -= pageHeight;
-      if (remainingHeight > 0) pdf.addPage();
+      if (heightLeft > 0) pdf.addPage();
     }
 
     pdf.save("Biological_Program_Summary.pdf");

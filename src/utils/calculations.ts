@@ -107,7 +107,7 @@ export function calculateROI(
   roi5to1: number;
   unit: string;
 } {
-  const breakevenYield = totalCostPerAcre / marketPrice;
+  const breakevenYield = marketPrice > 0 ? totalCostPerAcre / marketPrice : 0;
   return {
     breakevenYield,
     roi2to1: breakevenYield * 2,
@@ -185,9 +185,12 @@ export function calculateProductData(
   const pluralize = (word: string, count: number) => {
     if (word.toLowerCase() === "box") return count === 1 ? "Box" : "Boxes";
     if (word.toLowerCase() === "pouch") return count === 1 ? "Pouch" : "Pouches";
+    if (word.toLowerCase() === "pail") return count === 1 ? "Pail" : "Pails";
+    if (word.toLowerCase() === "jug") return count === 1 ? "Jug" : "Jugs";
     return count === 1 ? word : `${word}s`;
   };
-  const productPackageString = `${packageSize} ${packageUnits} - ${pluralize(packageType, Math.ceil(totalProductNeeded / packageSize))}`;
+
+  const productPackageString = `${product["Product Name"]} – ${packageSize} ${packageUnits} – ${pluralize(packageType, Math.ceil(totalProductNeeded / packageSize))} – ${applicationRate} ${rateUnit} – Treats ${packageSize && applicationRate ? Math.floor(packageSize / applicationRate) : "-"} acres`;
   const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const totalCostToGrower = packagesNeeded * productCostPerPackage;

@@ -13,10 +13,11 @@ interface PDFResultsProps {
   totalUndiscountedCost: number;
   totalDiscountedCost: number;
   roi: {
-    roi2x: number;
-    roi3x: number;
-    roi4x: number;
-    roi5x: number;
+    breakevenYield: number;
+    roi2to1: number;
+    roi3to1: number;
+    roi4to1: number;
+    roi5to1: number;
   };
   marketPriceUnit: string;
 }
@@ -148,19 +149,19 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       <h2 className={headerClass}>Breakeven ROI Calculations</h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed to Breakeven</div>
-        <div className={valueClass}>{formatNumber(totalCostPerAcre)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi.breakevenYield)} {unitLabel}</div>
 
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi2x)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi.roi2to1)} {unitLabel}</div>
 
         <div className={labelClass}>Yield Needed for 3:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi3x)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi.roi3to1)} {unitLabel}</div>
 
         <div className={labelClass}>Yield Needed for 4:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi4x)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi.roi4to1)} {unitLabel}</div>
 
         <div className={labelClass}>Yield Needed for 5:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi5x)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi.roi5to1)} {unitLabel}</div>
       </div>
     </div>
   );
