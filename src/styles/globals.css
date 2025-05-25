@@ -131,3 +131,30 @@ body {
   font-family: 'Montserrat', sans-serif !important;
   font-size: 1.25rem !important;
 }
+
+/* ──────────────────────────────────────────────
+   Input & Dropdown Enhancements
+─────────────────────────────────────────────── */
+input, select, textarea {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+}
+
+select option {
+  font-size: 0.95rem;
+  font-family: 'Open Sans', sans-serif;
+}
+
+button {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}

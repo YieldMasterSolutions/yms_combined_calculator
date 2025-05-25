@@ -86,164 +86,206 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   };
 
   const formatProductLabel = (product: ProductData) => {
-    return `${product["Product Name"]} – ${product["Package Size"]} ${product["Package Units"]} ${product["Package Type"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]}`;
+    const name = product["Product Name"];
+    const size = product["Package Size"];
+    const units = product["Package Units"];
+    const type = product["Package Type"];
+    const rate = product["Application Rate"];
+    const rateUnit = product["Application Rate Unit"];
+    const method = product["Application Method"] || "Seed Treatment";
+    const capacity = rate && size ? Math.floor(size / rate) : "-";
+    const treatedUnit = rateUnit?.includes("/unit") ? "units" : "acres";
+    return `${name} (${method}) – ${size} ${units} ${type} – ${rate} ${rateUnit} – Treats ${capacity} ${treatedUnit}`;
   };
 
   return (
-    <form className="space-y-6 text-base font-[Open_Sans]">
+    <form className="space-y-6 text-[1rem] font-[Open_Sans]">
       {/* Grower & Rep Info */}
       <div>
-        <h2 className="text-blue-600 text-lg font-[Montserrat]">Grower & Rep Info</h2>
+        <h2 className="section-header-blue">Grower & Rep Info</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="Grower Name"
-            value={growerName}
-            onChange={(e) => setGrowerName(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <input
-            type="text"
-            placeholder="Rep Name"
-            value={repName}
-            onChange={(e) => setRepName(e.target.value)}
-            className="border p-2 w-full"
-          />
+          <div>
+            <label className="block mb-1 font-semibold">Grower Name</label>
+            <input
+              type="text"
+              value={growerName}
+              onChange={(e) => setGrowerName(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Rep Name</label>
+            <input
+              type="text"
+              value={repName}
+              onChange={(e) => setRepName(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
         </div>
       </div>
 
       {/* Crop Inputs */}
       <div>
-        <h2 className="text-blue-600 text-lg font-[Montserrat]">Crop Inputs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <select
-            value={seedType}
-            onChange={(e) => setSeedType(e.target.value)}
-            className="border p-2 w-full"
-          >
-            <option value="">Select Seed Type</option>
-            {seedTypes.map((type) => (
-              <option key={type["Seed Type"]} value={type["Seed Type"]}>
-                {type["Seed Type"]}
-              </option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Acres"
-            value={acres}
-            onChange={(e) => setAcres(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <input
-            type="text"
-            placeholder="Seeding Rate"
-            value={seedingRate}
-            onChange={(e) => setSeedingRate(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <select
-            value={seedingRateUnit}
-            onChange={(e) => setSeedingRateUnit(e.target.value)}
-            className="border p-2 w-full"
-          >
-            <option value="seeds/acre">seeds/acre</option>
-            <option value="lbs/acre">lbs/acre</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Seeds Per Pound (optional)"
-            value={overrideSeeds}
-            onChange={(e) => setOverrideSeeds(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <input
-            type="text"
-            placeholder="Seeds Per Unit (override)"
-            value={seedsPerUnitOverride}
-            onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-            className="border p-2 w-full"
-          />
+        <h2 className="section-header-blue">Crop Inputs</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 font-semibold">Seed Type</label>
+            <select
+              value={seedType}
+              onChange={(e) => setSeedType(e.target.value)}
+              className="border p-2 w-full truncate"
+            >
+              <option value="">Select Seed Type</option>
+              {seedTypes.map((type) => (
+                <option key={type["Seed Type"]} value={type["Seed Type"]}>
+                  {type["Seed Type"]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Acres</label>
+            <input
+              type="text"
+              value={acres}
+              onChange={(e) => setAcres(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Seeding Rate</label>
+            <input
+              type="text"
+              value={seedingRate}
+              onChange={(e) => setSeedingRate(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Rate Unit</label>
+            <select
+              value={seedingRateUnit}
+              onChange={(e) => setSeedingRateUnit(e.target.value)}
+              className="border p-2 w-full"
+            >
+              <option value="seeds/acre">seeds/acre</option>
+              <option value="lbs/acre">lbs/acre</option>
+            </select>
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Seeds Per Pound (Optional)</label>
+            <input
+              type="text"
+              value={overrideSeeds}
+              onChange={(e) => setOverrideSeeds(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Seeds Per Unit (Override)</label>
+            <input
+              type="text"
+              value={seedsPerUnitOverride}
+              onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
         </div>
       </div>
 
       {/* Market and ROI Inputs */}
       <div>
-        <h2 className="text-blue-600 text-lg font-[Montserrat]">Market and ROI Inputs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <input
-            type="text"
-            placeholder="Market Price"
-            value={marketPrice}
-            onChange={(e) => setMarketPrice(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <select
-            value={marketPriceUnit}
-            onChange={(e) => setMarketPriceUnit(e.target.value)}
-            className="border p-2 w-full"
-          >
-            <option value="bu">bu</option>
-            <option value="ton">ton</option>
-            <option value="cwt">cwt</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Dealer Discount (%)"
-            value={dealerDiscount}
-            onChange={(e) => setDealerDiscount(e.target.value)}
-            className="border p-2 w-full"
-          />
-          <input
-            type="text"
-            placeholder="Grower Discount (%)"
-            value={growerDiscount}
-            onChange={(e) => setGrowerDiscount(e.target.value)}
-            className="border p-2 w-full"
-          />
+        <h2 className="section-header-blue">Market and ROI Inputs</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 font-semibold">Market Price</label>
+            <input
+              type="text"
+              value={marketPrice}
+              onChange={(e) => setMarketPrice(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Price Unit</label>
+            <select
+              value={marketPriceUnit}
+              onChange={(e) => setMarketPriceUnit(e.target.value)}
+              className="border p-2 w-full"
+            >
+              <option value="bu">bu</option>
+              <option value="ton">ton</option>
+              <option value="cwt">cwt</option>
+            </select>
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Dealer Discount (%)</label>
+            <input
+              type="text"
+              value={dealerDiscount}
+              onChange={(e) => setDealerDiscount(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Grower Discount (%)</label>
+            <input
+              type="text"
+              value={growerDiscount}
+              onChange={(e) => setGrowerDiscount(e.target.value)}
+              className="border p-2 w-full"
+            />
+          </div>
         </div>
       </div>
 
       {/* Seed Treatment Products */}
       <div>
-        <h2 className="text-blue-600 text-lg font-[Montserrat]">Seed Treatment Products</h2>
+        <h2 className="section-header-blue">Seed Treatment Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[0, 1].map((index) => (
-            <select
-              key={index}
-              value={seedProducts[index]?.["Product Name"] || ""}
-              onChange={(e) => handleSeedProductChange(index, e.target.value)}
-              className="border p-2 w-full"
-            >
-              <option value="">Select Seed Treatment Product</option>
-              {productsSeedTreatment.map((product) => (
-                <option key={product["Product Name"]} value={product["Product Name"]}>
-                  {formatProductLabel(product)}
-                </option>
-              ))}
-            </select>
+            <div key={index}>
+              <label className="block mb-1 font-semibold">Seed Product {index + 1}</label>
+              <select
+                value={seedProducts[index]?.["Product Name"] || ""}
+                onChange={(e) => handleSeedProductChange(index, e.target.value)}
+                className="border p-2 w-full truncate"
+                title={formatProductLabel(seedProducts[index] || { "Product Name": "", "Package Size": "", "Package Units": "", "Package Type": "", "Application Rate": "", "Application Rate Unit": "", "Application Method": "" })}
+              >
+                <option value="">Select Seed Treatment Product</option>
+                {productsSeedTreatment.map((product) => (
+                  <option key={product["Product Name"]} value={product["Product Name"]}>
+                    {formatProductLabel(product)}
+                  </option>
+                ))}
+              </select>
+            </div>
           ))}
         </div>
       </div>
 
       {/* In-Furrow / Foliar Products */}
       <div>
-        <h2 className="text-blue-600 text-lg font-[Montserrat]">In-Furrow / Foliar Products</h2>
+        <h2 className="section-header-blue">In-Furrow / Foliar Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[0, 1, 2, 3].map((index) => (
-            <select
-              key={index}
-              value={foliarProducts[index]?.["Product Name"] || ""}
-              onChange={(e) => handleFoliarProductChange(index, e.target.value)}
-              className="border p-2 w-full"
-            >
-              <option value="">Select Product</option>
-              {productsInFurrowFoliar.map((product) => (
-                <option key={product["Product Name"]} value={product["Product Name"]}>
-                  {formatProductLabel(product)}
-                </option>
-              ))}
-            </select>
+            <div key={index}>
+              <label className="block mb-1 font-semibold">Product {index + 1}</label>
+              <select
+                value={foliarProducts[index]?.["Product Name"] || ""}
+                onChange={(e) => handleFoliarProductChange(index, e.target.value)}
+                className="border p-2 w-full truncate"
+                title={formatProductLabel(foliarProducts[index] || { "Product Name": "", "Package Size": "", "Package Units": "", "Package Type": "", "Application Rate": "", "Application Rate Unit": "", "Application Method": "" })}
+              >
+                <option value="">Select Product</option>
+                {productsInFurrowFoliar.map((product) => (
+                  <option key={product["Product Name"]} value={product["Product Name"]}>
+                    {formatProductLabel(product)}
+                  </option>
+                ))}
+              </select>
+            </div>
           ))}
         </div>
       </div>
@@ -253,7 +295,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <button
           type="button"
           onClick={onCalculate}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-semibold"
+          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-semibold shadow"
         >
           Calculate
         </button>

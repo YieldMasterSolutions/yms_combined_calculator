@@ -44,7 +44,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       case "case": return "Cases";
       case "unit": return "Units";
       case "package": return "Packages";
-      default: return `${word}s`;
+      default: return count > 1 && lower.endsWith("s") ? word : `${word}s`;
     }
   };
 
@@ -56,7 +56,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
   const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
 
-  const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-gray-200";
+  const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-white";
   const headerClass = "text-2xl font-bold font-[Montserrat] mb-2 text-yellow-600";
   const labelClass = "font-bold text-[1.09rem] font-[Montserrat] text-black";
   const valueClass = "font-bold text-[1.09rem] font-[Open_Sans] text-black";
@@ -90,7 +90,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
-      <div key={product.productPackageString + (isSeed ? "-seedcost" : "-foliarcost")}>
+      <div key={product.productPackageString + (isSeed ? "-seedcost" : "-foliarcost")}> 
         <h2 className={headerClass}>{title} ({product.applicationMethod})</h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>

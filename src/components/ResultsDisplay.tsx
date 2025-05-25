@@ -42,7 +42,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       case "case": return "Cases";
       case "unit": return "Units";
       case "package": return "Packages";
-      default: return `${word}s`;
+      default:
+        return count > 1 && lower.endsWith("s") ? word : `${word}s`;
     }
   };
 
@@ -58,7 +59,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[0] :
     marketPriceUnit;
 
-  const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#13213c]";
+  const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#13213c]";
   const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
   const valueClass = "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
 
