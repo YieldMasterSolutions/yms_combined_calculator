@@ -54,10 +54,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   };
 
   const unitLabel =
-    seedType.toLowerCase().includes("corn") ? "bu" :
-    seedType.toLowerCase().includes("soy") ? "bu" :
-    marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[0] :
-    marketPriceUnit;
+    seedType.toLowerCase().includes("corn") ? "bu/acre" :
+    seedType.toLowerCase().includes("soy") ? "bu/acre" :
+    marketPriceUnit.includes("/") ? marketPriceUnit : `${marketPriceUnit}/acre`;
 
   const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#13213c]";
   const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
