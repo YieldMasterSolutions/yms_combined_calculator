@@ -15,7 +15,6 @@ interface ResultsDisplayProps {
   roi4: number;
   roi5: number;
   marketPriceUnit: string;
-  seedType: string;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -29,7 +28,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi4,
   roi5,
   marketPriceUnit,
-  seedType,
 }) => {
   const pluralize = (word: string, count: number) => {
     const lower = word.toLowerCase();
