@@ -191,7 +191,13 @@ export default function Home() {
             totalCostPerAcre={totalCostPerAcre}
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
-            roi={roi}
+            roi={{
+              breakevenYield: roi2 / 2,
+              roi2to1: roi2,
+              roi3to1: roi3,
+              roi4to1: roi4,
+              roi5to1: roi5,
+            }}
             marketPriceUnit={marketPriceUnit}
           />
         </div>
