@@ -8,6 +8,16 @@ import {
   seedTypes,
 } from "../utils/data";
 
+const emptyProduct: ProductData = {
+  "Product Name": "",
+  "Package Size": 0,
+  "Package Units": "",
+  "Package Type": "",
+  "Application Rate": 0,
+  "Application Rate Unit": "",
+  "Application Method": "",
+};
+
 interface CalculatorFormProps {
   seedType: string;
   setSeedType: (value: string) => void;
@@ -251,7 +261,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 value={seedProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleSeedProductChange(index, e.target.value)}
                 className="border p-2 w-full truncate"
-                title={formatProductLabel(seedProducts[index] || { "Product Name": "", "Package Size": "", "Package Units": "", "Package Type": "", "Application Rate": "", "Application Rate Unit": "", "Application Method": "" })}
+                title={formatProductLabel(seedProducts[index] || emptyProduct)}
               >
                 <option value="">Select Seed Treatment Product</option>
                 {productsSeedTreatment.map((product) => (
@@ -276,7 +286,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 value={foliarProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleFoliarProductChange(index, e.target.value)}
                 className="border p-2 w-full truncate"
-                title={formatProductLabel(foliarProducts[index] || { "Product Name": "", "Package Size": "", "Package Units": "", "Package Type": "", "Application Rate": "", "Application Rate Unit": "", "Application Method": "" })}
+                title={formatProductLabel(foliarProducts[index] || emptyProduct)}
               >
                 <option value="">Select Product</option>
                 {productsInFurrowFoliar.map((product) => (
