@@ -14,7 +14,7 @@ const emptyProduct: ProductData = {
   "Package Units": "",
   "Package Type": "",
   "Application Rate": 0,
-  "Application Rate Unit": "",
+  "Application Rate Unit": undefined,
   "Application Method": "",
 };
 
