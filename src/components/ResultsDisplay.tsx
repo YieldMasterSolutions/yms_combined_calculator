@@ -52,7 +52,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     return "Product Cost per Unit";
   };
 
-  const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[0] : marketPriceUnit;
+  const unitLabel =
+    seedType.toLowerCase().includes("corn") ? "bu" :
+    seedType.toLowerCase().includes("soy") ? "bu" :
+    marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[0] :
+    marketPriceUnit;
 
   const cardClass = "mb-8 grid grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#13213c]";
   const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
