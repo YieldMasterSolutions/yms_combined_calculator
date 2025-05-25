@@ -32,11 +32,16 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const pluralize = (word: string, count: number) => {
     const lower = word.toLowerCase();
     if (count === 1) return word;
-    if (lower === "box") return "Boxes";
-    if (lower === "pouch") return "Pouches";
-    if (lower === "pail") return "Pails";
-    if (lower === "jug") return "Jugs";
-    return word.endsWith("s") ? word : `${word}s`;
+    switch (lower) {
+      case "box": return "Boxes";
+      case "pouch": return "Pouches";
+      case "pail": return "Pails";
+      case "jug": return "Jugs";
+      case "case": return "Cases";
+      case "unit": return "Units";
+      case "package": return "Packages";
+      default: return `${word}s`;
+    }
   };
 
   const getCostPerUnitLabel = (unit: string) => {
@@ -78,7 +83,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
       (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
-    const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} acres`;
+    const treatmentUnit = isSeed ? "units" : "acres";
+    const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
       <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}> 

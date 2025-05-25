@@ -95,8 +95,15 @@ export default function Home() {
       foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
 
     const roi = marketPrice
-      ? calculateROI(totalCost, parseFloat(marketPrice), marketPriceUnit)
-      : { breakevenYield: 0, roi2to1: 0, roi3to1: 0, roi4to1: 0, roi5to1: 0, unit: marketPriceUnit };
+      ? calculateROI(totalDiscounted / parseFloat(acres), parseFloat(marketPrice), marketPriceUnit)
+      : {
+          breakevenYield: 0,
+          roi2to1: 0,
+          roi3to1: 0,
+          roi4to1: 0,
+          roi5to1: 0,
+          unit: marketPriceUnit,
+        };
 
     setSeedResults(seedData);
     setFoliarResults(foliarData);
@@ -184,12 +191,7 @@ export default function Home() {
             totalCostPerAcre={totalCostPerAcre}
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
-            roi={{
-              roi2x: roi2,
-              roi3x: roi3,
-              roi4x: roi4,
-              roi5x: roi5,
-            }}
+            roi={roi}
             marketPriceUnit={marketPriceUnit}
           />
         </div>
