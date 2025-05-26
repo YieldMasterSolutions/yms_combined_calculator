@@ -119,6 +119,9 @@ export default function Home() {
     setROI5(roi.roi5to1);
   };
 
+  const breakevenYield =
+    marketPrice && acres ? totalDiscountedCost / parseFloat(acres) / parseFloat(marketPrice) : 0;
+
   return (
     <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white px-4 py-6 font-[Open_Sans]">
       <div className="max-w-6xl mx-auto">
@@ -178,6 +181,7 @@ export default function Home() {
               roi5={roi5}
               marketPriceUnit={marketPriceUnit}
               seedType={seedType}
+              breakevenYield={breakevenYield}
             />
           </div>
         )}
@@ -198,7 +202,7 @@ export default function Home() {
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
             roi={{
-              breakevenYield: marketPrice && acres ? totalDiscountedCost / parseFloat(acres) / parseFloat(marketPrice) : 0,
+              breakevenYield: breakevenYield,
               roi2to1: roi2,
               roi3to1: roi3,
               roi4to1: roi4,

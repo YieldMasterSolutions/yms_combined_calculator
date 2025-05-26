@@ -151,7 +151,9 @@ body {
 /* ──────────────────────────────────────────────
    Input & Dropdown Enhancements
 ─────────────────────────────────────────────── */
-input, select, textarea {
+input,
+select,
+textarea {
   font-family: 'Open Sans', sans-serif;
   font-size: 1rem;
   padding: 0.5rem;
