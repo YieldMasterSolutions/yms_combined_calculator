@@ -16,6 +16,7 @@ interface ResultsDisplayProps {
   roi5: number;
   marketPriceUnit: string;
   seedType: string;
+  breakevenYield: number;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -30,6 +31,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   roi5,
   marketPriceUnit,
   seedType,
+  breakevenYield,
 }) => {
   const pluralize = (word: string, count: number) => {
     const lower = word.toLowerCase();
@@ -42,8 +44,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       case "case": return "Cases";
       case "unit": return "Units";
       case "package": return "Packages";
-      default:
-        return count > 1 && lower.endsWith("s") ? word : `${word}s`;
+      default: return count > 1 && lower.endsWith("s") ? word : `${word}s`;
     }
   };
 
@@ -60,11 +61,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       ? marketPriceUnit
       : `${marketPriceUnit}/acre`;
 
-  const breakevenYield = (marketPriceUnit && totalDiscountedCost && parseFloat(marketPriceUnit))
-    ? totalCostPerAcre / parseFloat(marketPriceUnit)
-    : totalCostPerAcre;
-
-  const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#1f2a38]";
+  const cardClass =
+    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#1e293b]";
   const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
   const valueClass = "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
 

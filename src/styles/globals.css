@@ -70,7 +70,8 @@ body {
 }
 
 .dark .card-light {
-  background-color: #13213c;
+  background-color: #1e293b;
+  border: 1px solid #334155;
 }
 
 /* ──────────────────────────────────────────────

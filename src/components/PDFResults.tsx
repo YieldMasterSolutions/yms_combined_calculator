@@ -21,6 +21,7 @@ interface PDFResultsProps {
   };
   marketPriceUnit: string;
   seedType: string;
+  acres: number;
 }
 
 const PDFResults: React.FC<PDFResultsProps> = ({
@@ -34,6 +35,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   roi,
   marketPriceUnit,
   seedType,
+  acres,
 }) => {
   const pluralize = (word: string, count: number) => {
     const lower = word.toLowerCase();
@@ -61,6 +63,10 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     : marketPriceUnit.includes("/")
     ? marketPriceUnit
     : `${marketPriceUnit}/acre`;
+
+  const breakevenYield = acres > 0 && parseFloat(marketPriceUnit) > 0
+    ? totalDiscountedCost / acres / parseFloat(marketPriceUnit)
+    : 0;
 
   const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-white";
   const headerClass = "text-2xl font-bold font-[Montserrat] mb-2 text-yellow-600";
@@ -161,7 +167,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       <h2 className={headerClass}>Breakeven ROI Calculations</h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed to Breakeven</div>
-        <div className={valueClass}>{formatNumber(roi.breakevenYield)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(breakevenYield)} {unitLabel}</div>
 
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi.roi2to1)} {unitLabel}</div>

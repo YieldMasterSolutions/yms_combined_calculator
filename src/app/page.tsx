@@ -198,7 +198,7 @@ export default function Home() {
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
             roi={{
-              breakevenYield: roi2 / 2,
+              breakevenYield: marketPrice && acres ? totalDiscountedCost / parseFloat(acres) / parseFloat(marketPrice) : 0,
               roi2to1: roi2,
               roi3to1: roi3,
               roi4to1: roi4,

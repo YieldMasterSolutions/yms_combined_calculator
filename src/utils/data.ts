@@ -58,7 +58,7 @@ export const seedTypes: SeedType[] = [
   { "Seed Type": "Sunflower", "Seeds/lb": "6500", "Lbs/Unit": 50, "Seeds per Unit": 325000 },
   { "Seed Type": "Peanuts (Medium)", "Seeds/lb": "650", "Lbs/Unit": 50, "Seeds per Unit": 32500 },
   { "Seed Type": "Peanuts (Small)", "Seeds/lb": "1100", "Lbs/Unit": 50, "Seeds per Unit": 55000 },
-  { "Seed Type": "Wheat", "Seeds/lb": "18000", "Lbs/Unit": 50, "Seeds per Unit": 900000 },
+  { "Seed Type": "Wheat", "Seeds/lb": "18000", "Lbs/Unit": 50, "Seeds per Unit": 900000 }
 ];
 
 export const productsSeedTreatment: ProductData[] = [

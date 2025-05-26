@@ -116,7 +116,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
   return (
     <form className="space-y-6 text-[1rem] font-[Open_Sans]">
-      {/* Grower & Rep Info */}
       <div>
         <h2 className="section-header-blue">Grower & Rep Info</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -126,7 +125,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={growerName}
               onChange={(e) => setGrowerName(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -135,13 +134,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={repName}
               onChange={(e) => setRepName(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
         </div>
       </div>
 
-      {/* Crop Inputs */}
       <div>
         <h2 className="section-header-blue">Crop Inputs</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -150,7 +148,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={seedType}
               onChange={(e) => setSeedType(e.target.value)}
-              className="border p-2 w-full truncate"
+              className="border p-2 w-full truncate dark:bg-gray-800 dark:text-white"
             >
               <option value="">Select Seed Type</option>
               {seedTypes.map((type) => (
@@ -166,7 +164,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={acres}
               onChange={(e) => setAcres(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -175,7 +173,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={seedingRate}
               onChange={(e) => setSeedingRate(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -183,31 +181,31 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={seedingRateUnit}
               onChange={(e) => setSeedingRateUnit(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             >
               <option value="seeds/acre">seeds/acre</option>
               <option value="lbs/acre">lbs/acre</option>
             </select>
           </div>
           <div>
-            <label className="block mb-1 font-semibold">Seeds Per Unit Override (Optional)</label>
+            <label className="block mb-1 font-semibold">Seeds Per Unit Override <span className="text-gray-500">(Optional)</span></label>
             <input
               type="text"
               value={seedsPerUnitOverride}
               onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
             <small className="text-gray-500">
-              Default: {selectedSeedDefaults?.["Seeds per Unit"] || "N/A"} seeds/unit
+              Default: {selectedSeedDefaults?.["Seeds/lb"] && selectedSeedDefaults?.["Lbs/Unit"] ? formatNumber(parseFloat(selectedSeedDefaults["Seeds/lb"]) * selectedSeedDefaults["Lbs/Unit"], 0) : "N/A"} seeds/unit
             </small>
           </div>
           <div>
-            <label className="block mb-1 font-semibold">Seeds Per Pound Override (Optional)</label>
+            <label className="block mb-1 font-semibold">Seeds Per Pound Override <span className="text-gray-500">(Optional)</span></label>
             <input
               type="text"
               value={overrideSeeds}
               onChange={(e) => setOverrideSeeds(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
             <small className="text-gray-500">
               Default: {selectedSeedDefaults?.["Seeds/lb"] || "N/A"} seeds/lb
@@ -216,7 +214,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* Market and ROI Inputs */}
       <div>
         <h2 className="section-header-blue">Market and ROI Inputs</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,7 +223,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={marketPrice}
               onChange={(e) => setMarketPrice(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -234,7 +231,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={marketPriceUnit}
               onChange={(e) => setMarketPriceUnit(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             >
               <option value="bu">bu</option>
               <option value="ton">ton</option>
@@ -248,7 +245,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={dealerDiscount}
               onChange={(e) => setDealerDiscount(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -257,13 +254,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={growerDiscount}
               onChange={(e) => setGrowerDiscount(e.target.value)}
-              className="border p-2 w-full"
+              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
         </div>
       </div>
 
-      {/* Seed Treatment Products */}
       <div>
         <h2 className="section-header-blue">Seed Treatment Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -273,7 +269,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               <select
                 value={seedProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleSeedProductChange(index, e.target.value)}
-                className="border p-2 w-full truncate"
+                className="border p-2 w-full truncate dark:bg-gray-800 dark:text-white"
                 title={formatProductLabel(seedProducts[index] || emptyProduct)}
               >
                 <option value="">Select Seed Treatment Product</option>
@@ -288,7 +284,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* In-Furrow / Foliar Products */}
       <div>
         <h2 className="section-header-blue">In-Furrow / Foliar Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -298,7 +293,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               <select
                 value={foliarProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleFoliarProductChange(index, e.target.value)}
-                className="border p-2 w-full truncate"
+                className="border p-2 w-full truncate dark:bg-gray-800 dark:text-white"
                 title={formatProductLabel(foliarProducts[index] || emptyProduct)}
               >
                 <option value="">Select Product</option>
@@ -313,7 +308,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* Calculate Button */}
       <div className="text-center pt-4">
         <button
           type="button"
