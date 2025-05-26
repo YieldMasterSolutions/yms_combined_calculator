@@ -210,6 +210,7 @@ export default function Home() {
             }}
             marketPriceUnit={marketPriceUnit}
             seedType={seedType}
+            acres={parseFloat(acres || "0")}
           />
         </div>
       </div>
