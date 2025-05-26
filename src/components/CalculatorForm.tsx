@@ -86,14 +86,16 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   );
 
   const handleSeedProductChange = (index: number, value: string) => {
-    const selectedProduct = productsSeedTreatment.find((p) => p["Product Name"] === value) || null;
+    const selectedProduct =
+      productsSeedTreatment.find((p) => p["Product Name"] === value) || null;
     const updated = [...seedProducts];
     updated[index] = selectedProduct;
     setSeedProducts(updated);
   };
 
   const handleFoliarProductChange = (index: number, value: string) => {
-    const selectedProduct = productsInFurrowFoliar.find((p) => p["Product Name"] === value) || null;
+    const selectedProduct =
+      productsInFurrowFoliar.find((p) => p["Product Name"] === value) || null;
     const updated = [...foliarProducts];
     updated[index] = selectedProduct;
     setFoliarProducts(updated);
@@ -208,7 +210,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               className="border p-2 w-full"
             />
             <small className="text-gray-500">
-              Default: {selectedSeedDefaults?.["Seeds per Pound"] || "N/A"} seeds/lb
+              Default: {selectedSeedDefaults?.["Seeds/lb"] || "N/A"} seeds/lb
             </small>
           </div>
         </div>

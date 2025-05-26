@@ -22,6 +22,7 @@ export interface SeedType {
   "Seed Type": string;
   "Seeds/lb": string;
   "Lbs/Unit": number;
+  "Seeds per Unit"?: number;
 }
 
 export interface FormData {
@@ -42,22 +43,22 @@ export interface FormData {
 }
 
 export const seedTypes: SeedType[] = [
-  { "Seed Type": "Alfalfa", "Seeds/lb": "210000", "Lbs/Unit": 50 },
-  { "Seed Type": "Barley", "Seeds/lb": "14500", "Lbs/Unit": 50 },
-  { "Seed Type": "Canola", "Seeds/lb": "130000", "Lbs/Unit": 50 },
-  { "Seed Type": "Corn", "Seeds/lb": "1778", "Lbs/Unit": 45 },
-  { "Seed Type": "Flax", "Seeds/lb": "85000", "Lbs/Unit": 50 },
-  { "Seed Type": "Lentils", "Seeds/lb": "16500", "Lbs/Unit": 50 },
-  { "Seed Type": "Peas", "Seeds/lb": "4000", "Lbs/Unit": 50 },
-  { "Seed Type": "Potatoes", "Seeds/lb": "6", "Lbs/Unit": 50 },
-  { "Seed Type": "Edible Beans", "Seeds/lb": "1250", "Lbs/Unit": 50 },
-  { "Seed Type": "Sorghum", "Seeds/lb": "15500", "Lbs/Unit": 50 },
-  { "Seed Type": "Soybeans", "Seeds/lb": "2800", "Lbs/Unit": 50 },
-  { "Seed Type": "Sugarbeets", "Seeds/lb": "2000", "Lbs/Unit": 50 },
-  { "Seed Type": "Sunflower", "Seeds/lb": "6500", "Lbs/Unit": 50 },
-  { "Seed Type": "Peanuts (Medium)", "Seeds/lb": "650", "Lbs/Unit": 50 },
-  { "Seed Type": "Peanuts (Small)", "Seeds/lb": "1100", "Lbs/Unit": 50 },
-  { "Seed Type": "Wheat", "Seeds/lb": "18000", "Lbs/Unit": 50 }
+  { "Seed Type": "Alfalfa", "Seeds/lb": "210000", "Lbs/Unit": 50, "Seeds per Unit": 10500000 },
+  { "Seed Type": "Barley", "Seeds/lb": "14500", "Lbs/Unit": 50, "Seeds per Unit": 725000 },
+  { "Seed Type": "Canola", "Seeds/lb": "130000", "Lbs/Unit": 50, "Seeds per Unit": 6500000 },
+  { "Seed Type": "Corn", "Seeds/lb": "1778", "Lbs/Unit": 45, "Seeds per Unit": 80000 },
+  { "Seed Type": "Flax", "Seeds/lb": "85000", "Lbs/Unit": 50, "Seeds per Unit": 4250000 },
+  { "Seed Type": "Lentils", "Seeds/lb": "16500", "Lbs/Unit": 50, "Seeds per Unit": 825000 },
+  { "Seed Type": "Peas", "Seeds/lb": "4000", "Lbs/Unit": 50, "Seeds per Unit": 200000 },
+  { "Seed Type": "Potatoes", "Seeds/lb": "6", "Lbs/Unit": 50, "Seeds per Unit": 300 },
+  { "Seed Type": "Edible Beans", "Seeds/lb": "1250", "Lbs/Unit": 50, "Seeds per Unit": 62500 },
+  { "Seed Type": "Sorghum", "Seeds/lb": "15500", "Lbs/Unit": 50, "Seeds per Unit": 775000 },
+  { "Seed Type": "Soybeans", "Seeds/lb": "2800", "Lbs/Unit": 50, "Seeds per Unit": 140000 },
+  { "Seed Type": "Sugarbeets", "Seeds/lb": "2000", "Lbs/Unit": 50, "Seeds per Unit": 100000 },
+  { "Seed Type": "Sunflower", "Seeds/lb": "6500", "Lbs/Unit": 50, "Seeds per Unit": 325000 },
+  { "Seed Type": "Peanuts (Medium)", "Seeds/lb": "650", "Lbs/Unit": 50, "Seeds per Unit": 32500 },
+  { "Seed Type": "Peanuts (Small)", "Seeds/lb": "1100", "Lbs/Unit": 50, "Seeds per Unit": 55000 },
+  { "Seed Type": "Wheat", "Seeds/lb": "18000", "Lbs/Unit": 50, "Seeds per Unit": 900000 },
 ];
 
 export const productsSeedTreatment: ProductData[] = [
