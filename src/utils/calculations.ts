@@ -44,9 +44,7 @@ export function calculateSeedTreatmentData(
   selectedProducts: { product: ProductData; applicationMethod: string }[],
   seedsPerUnitOverride: number | undefined
 ): ProductCalculation[] {
-  const seedDefaults = seedTypes.find(
-    (s) => s["Seed Type"].toLowerCase() === seedType.toLowerCase()
-  );
+  const seedDefaults = seedTypes.find(s => s["Seed Type"].toLowerCase() === seedType.toLowerCase());
   const seedsPerPound = seedsPerPoundOverride || parseFloat(seedDefaults?.["Seeds/lb"] || "2800");
   const seedsPerUnit = seedsPerUnitOverride || seedsPerPound * (seedDefaults?.["Lbs/Unit"] || 50);
   const lbsPerUnit = seedDefaults?.["Lbs/Unit"] || 50;
@@ -132,7 +130,7 @@ export function calculateProductData(
   let applicationRate: number | undefined;
   let costPerUnit: number | undefined;
   let rateUnit: string | undefined;
-  let totalProductNeeded: number = 0;
+  let totalProductNeeded = 0;
 
   const finalSeedsPerUnit = seedsPerUnit || 2800 * lbsPerUnit;
   const totalSeeds =
@@ -212,7 +210,7 @@ export function calculateProductData(
     packagesNeeded,
     productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower,
+    discountedTotalCostToGrower: discountedCostToGrower,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
