@@ -95,7 +95,7 @@ export default function Home() {
       foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
 
     const roi = marketPrice
-      ? calculateROI(totalDiscounted / parseFloat(acres), parseFloat(marketPrice), marketPriceUnit)
+      ? calculateROI(totalCost, parseFloat(marketPrice), marketPriceUnit)
       : {
           breakevenYield: 0,
           roi2to1: 0,
@@ -185,7 +185,8 @@ export default function Home() {
           </div>
         )}
 
-        <div className="hidden" ref={pdfRef}>
+        {/* Hidden render block for PDF */}
+        <div className="sr-only print:block" ref={pdfRef}>
           <PDFResults
             growerName={growerName}
             repName={repName}
@@ -195,7 +196,7 @@ export default function Home() {
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
             roi={{
-              breakevenYield: roi2 / 2,
+              breakevenYield: totalCostPerAcre / parseFloat(marketPrice || "1"),
               roi2to1: roi2,
               roi3to1: roi3,
               roi4to1: roi4,

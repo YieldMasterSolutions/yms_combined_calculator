@@ -54,11 +54,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   };
 
   const unitLabel =
-    seedType.toLowerCase().includes("corn") ? "bu/acre" :
-    seedType.toLowerCase().includes("soy") ? "bu/acre" :
-    marketPriceUnit.includes("/") ? marketPriceUnit : `${marketPriceUnit}/acre`;
+    seedType.toLowerCase().includes("corn") || seedType.toLowerCase().includes("soy")
+      ? "bu/acre"
+      : marketPriceUnit.includes("/")
+      ? marketPriceUnit
+      : `${marketPriceUnit}/acre`;
 
-  const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#13213c]";
+  const breakevenYield = (marketPriceUnit && totalDiscountedCost && parseFloat(marketPriceUnit))
+    ? totalCostPerAcre / parseFloat(marketPriceUnit)
+    : totalCostPerAcre;
+
+  const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg bg-gray-100 dark:bg-[#1f2a38]";
   const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
   const valueClass = "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
 
@@ -93,7 +99,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
-      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}>
+      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}> 
         <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
           {title}
         </h2>
@@ -164,7 +170,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       </h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed to Breakeven</div>
-        <div className={valueClass}>{formatNumber(totalCostPerAcre)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(breakevenYield)} {unitLabel}</div>
 
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi2)} {unitLabel}</div>

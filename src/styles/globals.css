@@ -63,6 +63,17 @@ body {
 }
 
 /* ──────────────────────────────────────────────
+   Card Styling
+─────────────────────────────────────────────── */
+.card-light {
+  background-color: #f9fafb;
+}
+
+.dark .card-light {
+  background-color: #13213c;
+}
+
+/* ──────────────────────────────────────────────
    Print & PDF Styling (Grayscale Safe)
 ─────────────────────────────────────────────── */
 @media print {
@@ -76,7 +87,11 @@ body {
   * {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    filter: grayscale(100%);
+    filter: none !important;
+  }
+
+  body {
+    font-size: 12pt;
   }
 
   .label-yellow,
@@ -144,6 +159,14 @@ input, select, textarea {
   box-sizing: border-box;
 }
 
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #1e293b;
+  color: #e6edf3;
+  border-color: #334155;
+}
+
 select option {
   font-size: 0.95rem;
   font-family: 'Open Sans', sans-serif;
@@ -157,4 +180,19 @@ button {
 
 button:hover {
   filter: brightness(1.05);
+}
+
+/* ──────────────────────────────────────────────
+   Utility: Screen Reader Only
+─────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
