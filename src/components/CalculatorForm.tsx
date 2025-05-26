@@ -8,6 +8,9 @@ import {
   seedTypes,
 } from "../utils/data";
 
+import { formatNumber } from "../utils/formatNumber";
+
+
 const emptyProduct: ProductData = {
   "Product Name": "",
   "Package Size": 0,
