@@ -45,9 +45,9 @@ export function calculateSeedTreatmentData(
   seedsPerUnitOverride: number | undefined
 ): ProductCalculation[] {
   const seedDefaults = seedTypes.find((s) => s["Seed Type"].toLowerCase() === seedType.toLowerCase());
-  const seedsPerPound = seedsPerPoundOverride || seedDefaults?.["Seeds per Pound"] || 2800;
-  const seedsPerUnit = seedsPerUnitOverride || seedDefaults?.["Seeds per Unit"] || seedsPerPound * 50;
-  const lbsPerUnit = 50;
+  const seedsPerPound = seedsPerPoundOverride || parseFloat(seedDefaults?.["Seeds/lb"] || "2800");
+  const seedsPerUnit = seedsPerUnitOverride || seedsPerPound * (seedDefaults?.["Lbs/Unit"] || 50);
+  const lbsPerUnit = seedDefaults?.["Lbs/Unit"] || 50;
 
   return selectedProducts
     .filter(({ product }) => product && product["Application Rate"] && product["Package Size"])
