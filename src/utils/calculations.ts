@@ -144,31 +144,32 @@ export function calculateProductData(
   const unitsToBeTreated = totalSeeds / finalSeedsPerUnit;
 
   const applicationRateUnit = product["Application Rate Unit"];
+
   if (applicationRateUnit === "fl oz/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"] ?? 0;
     rateUnit = "fl oz/acre";
-    totalProductNeeded = acres * applicationRate;
+    totalProductNeeded = acres * (applicationRate ?? 0);
   } else if (applicationRateUnit === "oz/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per oz"] ?? 0;
     rateUnit = "oz/acre";
-    totalProductNeeded = acres * applicationRate;
+    totalProductNeeded = acres * (applicationRate ?? 0);
   } else if (applicationRateUnit === "g/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per gram"] ?? 0;
     rateUnit = "g/acre";
-    totalProductNeeded = acres * applicationRate;
+    totalProductNeeded = acres * (applicationRate ?? 0);
   } else if (applicationRateUnit === "oz/unit") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per oz"] ?? 0;
     rateUnit = "oz/unit";
-    totalProductNeeded = unitsToBeTreated * applicationRate;
+    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
   } else if (applicationRateUnit === "fl oz/unit") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"] ?? 0;
     rateUnit = "fl oz/unit";
-    totalProductNeeded = unitsToBeTreated * applicationRate;
+    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
   }
 
   const packageSize = product["Package Size"];
@@ -190,7 +191,7 @@ export function calculateProductData(
   const productPackageString = `${product["Product Name"]} – ${packageSize} ${packageUnits} – ${pluralize(
     packageType,
     Math.ceil(totalProductNeeded / packageSize)
-  )} – ${applicationRate} ${rateUnit} – Treats ${treatmentCapacity || "-"} ${rateUnit?.includes("/unit") ? "units" : "acres"}`;
+  )} – ${applicationRate ?? "-"} ${rateUnit} – Treats ${treatmentCapacity || "-"} ${rateUnit?.includes("/unit") ? "units" : "acres"}`;
 
   const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
