@@ -149,27 +149,27 @@ export function calculateProductData(
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"] ?? 0;
     rateUnit = "fl oz/acre";
-    totalProductNeeded = acres * (applicationRate ?? 0);
+    totalProductNeeded = acres * applicationRate;
   } else if (applicationRateUnit === "oz/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per oz"] ?? 0;
     rateUnit = "oz/acre";
-    totalProductNeeded = acres * (applicationRate ?? 0);
+    totalProductNeeded = acres * applicationRate;
   } else if (applicationRateUnit === "g/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per gram"] ?? 0;
     rateUnit = "g/acre";
-    totalProductNeeded = acres * (applicationRate ?? 0);
+    totalProductNeeded = acres * applicationRate;
   } else if (applicationRateUnit === "oz/unit") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per oz"] ?? 0;
     rateUnit = "oz/unit";
-    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
+    totalProductNeeded = unitsToBeTreated * applicationRate;
   } else if (applicationRateUnit === "fl oz/unit") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"] ?? 0;
     rateUnit = "fl oz/unit";
-    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
+    totalProductNeeded = unitsToBeTreated * applicationRate;
   }
 
   const packageSize = product["Package Size"];
@@ -214,7 +214,7 @@ export function calculateProductData(
     packagesNeeded,
     productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower,
+    discountedTotalCostToGrower: discountedCostToGrower,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
