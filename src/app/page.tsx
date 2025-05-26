@@ -125,7 +125,7 @@ export default function Home() {
           <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={180} height={52} />
         </div>
 
-        <h1 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-4">
+        <h1 className="text-2xl font-bold font-[Montserrat] text-yellow-500 dark:text-yellow-300 mb-4">
           Biological Program Calculator
         </h1>
 
@@ -202,6 +202,7 @@ export default function Home() {
               roi5to1: roi5,
             }}
             marketPriceUnit={marketPriceUnit}
+            seedType={seedType}
           />
         </div>
       </div>
