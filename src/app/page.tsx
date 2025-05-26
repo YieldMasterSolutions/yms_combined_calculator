@@ -63,9 +63,12 @@ export default function Home() {
         applicationMethod: product["Application Method"] || "In-Furrow",
       }));
 
+    const parsedAcres = parseFloat(acres || "0");
+    const parsedMarketPrice = parseFloat(marketPrice || "0");
+
     const seedData = calculateSeedTreatmentData(
       seedType,
-      parseFloat(acres),
+      parsedAcres,
       parseFloat(seedingRate),
       seedingRateUnit,
       overrideSeeds ? parseFloat(overrideSeeds) : undefined,
@@ -76,7 +79,7 @@ export default function Home() {
     );
 
     const foliarData = calculateAllFoliarProductCosts(
-      parseFloat(acres),
+      parsedAcres,
       parseFloat(dealerDiscount || "0"),
       parseFloat(growerDiscount || "0"),
       selectedFoliarProducts
@@ -94,8 +97,8 @@ export default function Home() {
       seedData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
       foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
 
-    const roi = marketPrice
-      ? calculateROI(totalCost, parseFloat(marketPrice), marketPriceUnit)
+    const roi = parsedAcres && parsedMarketPrice
+      ? calculateROI(totalDiscounted / parsedAcres, parsedMarketPrice, marketPriceUnit)
       : {
           breakevenYield: 0,
           roi2to1: 0,
@@ -185,7 +188,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Hidden render block for PDF */}
         <div className="sr-only print:block" ref={pdfRef}>
           <PDFResults
             growerName={growerName}
@@ -196,7 +198,7 @@ export default function Home() {
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
             roi={{
-              breakevenYield: totalCostPerAcre / parseFloat(marketPrice || "1"),
+              breakevenYield: roi2 / 2,
               roi2to1: roi2,
               roi3to1: roi3,
               roi4to1: roi4,
