@@ -17,34 +17,67 @@ h1, h2, h3, h4, h5, h6 {
 :root {
   --yms-blue: #0d3e8c;
   --yms-yellow: #ffc627;
+  --yms-tan: #e6dac0;
   --yms-body-bg: #ffffff;
   --yms-body-fg: #1f2937;
 }
 
-/* Force light mode for PDF & consistent render */
+/* Dark mode override */
+.dark {
+  --yms-body-bg: #000000;
+  --yms-body-fg: #ffffff;
+}
+
+/* Global background and text */
 body {
-  @apply bg-[var(--yms-body-bg)] text-[var(--yms-body-fg)];
+  background-color: var(--yms-body-bg);
+  color: var(--yms-body-fg);
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Font fixes for Tailwind class names */
+/* Tailwind font utilities */
 .font-\[Open_Sans\] {
   font-family: 'Open Sans', sans-serif;
 }
-
 .font-\[Montserrat\] {
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Label and section coloring */
-.label-yellow {
+/* Major headings (like app title) */
+h1 {
+  color: var(--yms-tan);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Sectional headings */
+.section-header-blue {
+  color: var(--yms-blue);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.dark .section-header-blue {
   color: var(--yms-yellow);
 }
 
-.section-header-blue {
-  color: var(--yms-blue);
-  font-size: 1.125rem;
-  font-weight: 600;
+/* Yellow labels */
+.label-yellow {
+  color: var(--yms-yellow);
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+}
+.dark .label-yellow {
+  color: #ffd966;
+}
+
+/* Product descriptions beneath dropdowns */
+.product-description {
+  font-style: italic;
+  font-size: 0.875rem;
+  color: black;
+}
+.dark .product-description {
+  color: var(--yms-yellow);
 }
 
 /* Font size overrides */
@@ -52,7 +85,7 @@ body {
   font-size: 0.95rem !important;
 }
 
-/* Grid spacing fix */
+/* Grid spacing */
 .grid-cols-2 {
   gap: 1rem 2rem !important;
 }
@@ -89,10 +122,9 @@ body {
   }
 }
 
-/* PDF-specific layout */
+/* PDF-specific grayscale layout */
 .print-grayscale * {
-  all: unset;
-  all: revert-layer;
+  all: revert !important;
   font-family: 'Open Sans', sans-serif !important;
   background: #ffffff !important;
   color: #000000 !important;

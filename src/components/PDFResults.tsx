@@ -1,3 +1,5 @@
+// src/components/PDFResults.tsx
+
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
@@ -66,7 +68,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   const cardClass =
     "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-white";
   const headerClass =
-    "text-2xl font-bold font-[Montserrat] mb-2 text-yellow-600";
+    "text-[1.4rem] font-bold font-[Montserrat] mb-2 text-black";
   const labelClass =
     "font-bold text-[1.09rem] font-[Montserrat] text-black";
   const valueClass =
@@ -199,7 +201,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   return (
     <div className="print-grayscale p-6 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-[Montserrat] font-bold mb-2 text-yellow-600">
+        <h1 className="text-[1.75rem] font-[Montserrat] font-bold mb-2 text-black">
           Biological Program Calculator Summary
         </h1>
         <p className="text-lg">

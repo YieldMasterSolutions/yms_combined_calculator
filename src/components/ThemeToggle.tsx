@@ -9,13 +9,15 @@ const ThemeToggle: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      let storedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-      if (!storedTheme) {
-        storedTheme = "light";
-        localStorage.setItem("theme", storedTheme);
+      let stored = localStorage.getItem("theme") as "light" | "dark" | null;
+
+      if (!stored) {
+        stored = "light";
+        localStorage.setItem("theme", stored);
       }
-      setTheme(storedTheme);
-      applyTheme(storedTheme);
+
+      setTheme(stored);
+      applyTheme(stored);
     }
   }, []);
 
@@ -26,16 +28,16 @@ const ThemeToggle: React.FC = () => {
   };
 
   const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-    localStorage.setItem("theme", nextTheme);
-    applyTheme(nextTheme);
+    const next = theme === "light" ? "dark" : "light";
+    setTheme(next);
+    localStorage.setItem("theme", next);
+    applyTheme(next);
   };
 
   return (
     <button
       onClick={toggleTheme}
-      className="absolute top-4 right-4 bg-gray-700 dark:bg-yellow-500 text-white dark:text-black px-3 py-1 rounded hover:opacity-90 text-sm font-semibold shadow transition"
+      className="absolute top-4 right-4 bg-gray-700 dark:bg-yellow-400 text-white dark:text-black px-3 py-1 rounded hover:opacity-90 text-sm font-semibold shadow transition"
       aria-label="Toggle Theme"
     >
       {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}

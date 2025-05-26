@@ -1,16 +1,16 @@
 // src/utils/formatNumber.ts
 
 /**
- * Formats a number for consistent output:
- * - Adds comma separators for thousands
- * - Applies 2 decimal places for currency
- * - Omits decimals for whole numbers when not currency
- * - Returns "-" for invalid or undefined numbers
+ * Formats a number consistently for UI and PDF output:
+ * - Adds commas as thousands separators
+ * - Displays two decimals for currency
+ * - Omits decimals for whole numbers unless currency
+ * - Returns "-" if value is invalid or undefined
  *
- * @param n - The numeric value to format
- * @param decimals - Number of decimal places (default: 2)
- * @param isCurrency - If true, enforces two decimal places
- * @returns A formatted number string
+ * @param n - Number to format
+ * @param decimals - Decimal places (default: 2)
+ * @param isCurrency - If true, always show two decimals
+ * @returns Formatted number string
  */
 export const formatNumber = (
   n: number | undefined,

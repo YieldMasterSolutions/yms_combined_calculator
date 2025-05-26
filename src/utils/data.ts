@@ -5,10 +5,6 @@ export interface ProductData {
   "Product Form"?: "Liquid" | "Dry";
   "Application Method"?: string;
   "Application Rate"?: number;
-  "Application Rate in Fluid Ounces"?: number;
-  "Application Rate in Ounces"?: number;
-  "Application Rate in Grams"?: number;
-  "Application Rate in Ounces per Unit"?: number;
   "Product Cost per fl oz"?: number;
   "Product Cost per oz"?: number;
   "Product Cost per gram"?: number;
@@ -67,7 +63,7 @@ export const productsSeedTreatment: ProductData[] = [
     "Package Size": 120,
     "Package Units": "fl oz",
     "Package Type": "Jugs",
-    "Product Cost per oz": 9.16,
+    "Product Cost per fl oz": 9.16,
     "Application Rate": 1,
     "Application Method": "Seed Coating",
     "Product Form": "Liquid",

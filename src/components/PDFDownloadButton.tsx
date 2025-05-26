@@ -14,15 +14,14 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const input = targetRef.current;
     if (!input) return;
 
-    input.classList.remove("sr-only"); // Temporarily reveal content
+    input.classList.remove("sr-only"); // Temporarily reveal hidden PDF layout
     window.scrollTo(0, 0);
 
-    // Wait for render
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300)); // Ensure layout renders
 
     try {
       const canvas = await html2canvas(input, {
-        backgroundColor: "#ffffff",
+        backgroundColor: "#ffffff", // Force white background
         scale: 2,
         useCORS: true,
         scrollY: -window.scrollY,
@@ -37,7 +36,6 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
       const imgWidth = pageWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      // Multi-page logic
       let remainingHeight = imgHeight;
       let position = 0;
 
@@ -52,10 +50,10 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
       }
 
       pdf.save("Biological_Program_Summary.pdf");
-    } catch (error) {
-      console.error("PDF generation failed:", error);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
     } finally {
-      input.classList.add("sr-only");
+      input.classList.add("sr-only"); // Re-hide
       window.scrollTo(0, 0);
     }
   };
@@ -64,7 +62,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     <button
       type="button"
       onClick={handleDownload}
-      className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow"
+      className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition"
       aria-label="Download PDF"
     >
       Download PDF

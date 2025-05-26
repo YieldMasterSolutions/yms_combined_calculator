@@ -124,14 +124,24 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white px-4 py-6 font-[Open_Sans]">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto relative">
         <ThemeToggle />
         <div className="flex items-center justify-between mb-6">
-          <Image src="/yms_combined_calculator/legendlogo1.png" alt="Legend Seed Logo" width={180} height={52} />
-          <Image src="/yms_combined_calculator/ymslogo3.png" alt="YMS Logo" width={180} height={52} />
+          <Image
+            src="/yms_combined_calculator/ymslogo3.png"
+            alt="YMS Logo"
+            width={180}
+            height={52}
+          />
+          <Image
+            src="/yms_combined_calculator/legendlogo1.png"
+            alt="Legend Seed Logo"
+            width={180}
+            height={52}
+          />
         </div>
 
-        <h1 className="text-2xl font-bold font-[Montserrat] text-yellow-500 dark:text-yellow-300 mb-4">
+        <h1 className="text-3xl font-bold font-[Montserrat] mb-4 text-yellow-600 dark:text-[--yms-tan]">
           Biological Program Calculator
         </h1>
 

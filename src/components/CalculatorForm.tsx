@@ -1,3 +1,5 @@
+// src/components/CalculatorForm.tsx
+
 import React from "react";
 import {
   ProductData,
@@ -5,7 +7,6 @@ import {
   productsInFurrowFoliar,
   seedTypes,
 } from "../utils/data";
-
 import { formatNumber } from "../utils/formatNumber";
 
 interface CalculatorFormProps {
@@ -109,7 +110,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <h2 className="section-header-blue">Grower & Rep Info</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Grower Name</label>
+            <label className="block mb-1 font-bold font-[Montserrat]">
+              Grower Name <span className="text-gray-500">(Optional)</span>
+            </label>
             <input
               type="text"
               value={growerName}
@@ -118,7 +121,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             />
           </div>
           <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Rep Name</label>
+            <label className="block mb-1 font-bold font-[Montserrat]">
+              Rep Name <span className="text-gray-500">(Optional)</span>
+            </label>
             <input
               type="text"
               value={repName}
@@ -170,7 +175,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           </div>
 
           <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Rate Unit</label>
+            <label className="block mb-1 font-bold font-[Montserrat]">Seeding Rate Unit</label>
             <select
               value={seedingRateUnit}
               onChange={(e) => setSeedingRateUnit(e.target.value)}
@@ -178,6 +183,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             >
               <option value="seeds/acre">seeds/acre</option>
               <option value="lbs/acre">lbs/acre</option>
+              <option value="bu/acre">bu/acre</option>
             </select>
           </div>
 
@@ -193,11 +199,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             />
             <small className="text-gray-500">
               Default: {selectedSeedDefaults?.["Seeds/lb"] && selectedSeedDefaults?.["Lbs/Unit"]
-                ? formatNumber(
-                    parseFloat(selectedSeedDefaults["Seeds/lb"]) *
-                      selectedSeedDefaults["Lbs/Unit"],
-                    0
-                  )
+                ? formatNumber(parseFloat(selectedSeedDefaults["Seeds/lb"]) * selectedSeedDefaults["Lbs/Unit"], 0)
                 : "N/A"} seeds/unit
             </small>
           </div>
@@ -236,7 +238,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           </div>
 
           <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Price Unit</label>
+            <label className="block mb-1 font-bold font-[Montserrat]">
+              Price Unit <span className="text-gray-500">(Optional)</span>
+            </label>
             <select
               value={marketPriceUnit}
               onChange={(e) => setMarketPriceUnit(e.target.value)}
@@ -281,7 +285,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[0, 1].map((index) => (
             <div key={index}>
-              <label className="block mb-1 font-bold font-[Montserrat]">Seed Product {index + 1}</label>
+              <label className="block mb-1 font-bold font-[Montserrat]">
+                Seed Product {index + 1}
+              </label>
               <select
                 value={seedProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleSeedProductChange(index, e.target.value)}
@@ -295,7 +301,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 ))}
               </select>
               {seedProducts[index] && (
-                <small className="text-gray-500 block mt-1">
+                <small className="block mt-1 text-sm italic text-black dark:text-yellow-400">
                   {productSummary(seedProducts[index]!)}
                 </small>
               )}
@@ -310,7 +316,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[0, 1, 2, 3].map((index) => (
             <div key={index}>
-              <label className="block mb-1 font-bold font-[Montserrat]">Product {index + 1}</label>
+              <label className="block mb-1 font-bold font-[Montserrat]">
+                Product {index + 1}
+              </label>
               <select
                 value={foliarProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleFoliarProductChange(index, e.target.value)}
@@ -324,7 +332,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 ))}
               </select>
               {foliarProducts[index] && (
-                <small className="text-gray-500 block mt-1">
+                <small className="block mt-1 text-sm italic text-black dark:text-yellow-400">
                   {productSummary(foliarProducts[index]!)}
                 </small>
               )}
