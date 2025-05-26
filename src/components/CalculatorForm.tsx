@@ -81,6 +81,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setFoliarProducts,
   onCalculate,
 }) => {
+  const selectedSeedDefaults = seedTypes.find(
+    (s) => s["Seed Type"].toLowerCase() === seedType.toLowerCase()
+  );
+
   const handleSeedProductChange = (index: number, value: string) => {
     const selectedProduct = productsSeedTreatment.find((p) => p["Product Name"] === value) || null;
     const updated = [...seedProducts];
@@ -184,22 +188,28 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             </select>
           </div>
           <div>
-            <label className="block mb-1 font-semibold">Seeds Per Pound (Optional)</label>
-            <input
-              type="text"
-              value={overrideSeeds}
-              onChange={(e) => setOverrideSeeds(e.target.value)}
-              className="border p-2 w-full"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-semibold">Seeds Per Unit (Override)</label>
+            <label className="block mb-1 font-semibold">Seeds Per Unit Override (Optional)</label>
             <input
               type="text"
               value={seedsPerUnitOverride}
               onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
               className="border p-2 w-full"
             />
+            <small className="text-gray-500">
+              Default: {selectedSeedDefaults?.["Seeds per Unit"] || "N/A"} seeds/unit
+            </small>
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Seeds Per Pound Override (Optional)</label>
+            <input
+              type="text"
+              value={overrideSeeds}
+              onChange={(e) => setOverrideSeeds(e.target.value)}
+              className="border p-2 w-full"
+            />
+            <small className="text-gray-500">
+              Default: {selectedSeedDefaults?.["Seeds per Pound"] || "N/A"} seeds/lb
+            </small>
           </div>
         </div>
       </div>
@@ -227,6 +237,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               <option value="bu">bu</option>
               <option value="ton">ton</option>
               <option value="cwt">cwt</option>
+              <option value="lbs">lbs</option>
             </select>
           </div>
           <div>

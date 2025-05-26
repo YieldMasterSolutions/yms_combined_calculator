@@ -20,6 +20,7 @@ interface PDFResultsProps {
     roi5to1: number;
   };
   marketPriceUnit: string;
+  seedType: string;
 }
 
 const PDFResults: React.FC<PDFResultsProps> = ({
@@ -32,6 +33,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   totalDiscountedCost,
   roi,
   marketPriceUnit,
+  seedType,
 }) => {
   const pluralize = (word: string, count: number) => {
     const lower = word.toLowerCase();
@@ -54,7 +56,11 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     return "Product Cost per Unit";
   };
 
-  const unitLabel = marketPriceUnit.includes("/") ? marketPriceUnit.split("/")[1] : marketPriceUnit;
+  const unitLabel = seedType.toLowerCase().includes("corn") || seedType.toLowerCase().includes("soy")
+    ? "bu/acre"
+    : marketPriceUnit.includes("/")
+    ? marketPriceUnit
+    : `${marketPriceUnit}/acre`;
 
   const cardClass = "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl border font-bold text-[1.13rem] bg-white";
   const headerClass = "text-2xl font-bold font-[Montserrat] mb-2 text-yellow-600";
@@ -66,6 +72,9 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       <>
         <h2 className={headerClass}>Basic Seed Calculations</h2>
         <div className={cardClass}>
+          <div className={labelClass}>Number of Seeds per Unit</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
+
           <div className={labelClass}>Total Number of Units to be Treated</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</div>
 
@@ -74,9 +83,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
           <div className={labelClass}>Total Weight of Seeds to be Treated</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
-
-          <div className={labelClass}>Number of Seeds per Unit</div>
-          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
         </div>
       </>
     );

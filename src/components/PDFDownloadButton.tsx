@@ -15,37 +15,43 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const input = targetRef.current;
     if (!input) return;
 
+    const originalScrollY = window.scrollY;
     const originalDisplay = input.style.display;
     input.style.display = "block";
     window.scrollTo(0, 0);
 
-    const canvas = await html2canvas(input, {
-      backgroundColor: "#ffffff",
-      scale: 2,
-      useCORS: true,
-      scrollY: -window.scrollY,
-      ignoreElements: (el) => el.classList?.contains("no-print"),
-    });
+    try {
+      const canvas = await html2canvas(input, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        scrollY: -window.scrollY,
+        ignoreElements: (el) => el.classList?.contains("no-print"),
+      });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "pt", "a4");
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "pt", "a4");
 
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const imgProps = pdf.getImageProperties(imgData);
-    const imgWidth = pageWidth;
-    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let position = 0;
-    while (position < imgHeight) {
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      position -= pageHeight;
-      if (position + pageHeight < imgHeight) pdf.addPage();
+      let position = 0;
+      while (position < imgHeight) {
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        position -= pageHeight;
+        if (position + pageHeight < imgHeight) pdf.addPage();
+      }
+
+      pdf.save("Biological_Program_Summary.pdf");
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    } finally {
+      input.style.display = originalDisplay;
+      window.scrollTo(0, originalScrollY);
     }
-
-    pdf.save("Biological_Program_Summary.pdf");
-    input.style.display = originalDisplay;
   };
 
   return (

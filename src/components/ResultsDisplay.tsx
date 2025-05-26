@@ -69,6 +69,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           Basic Seed Calculations
         </h2>
         <div className={cardClass}>
+          <div className={labelClass}>Number of Seeds per Unit</div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
+
           <div className={labelClass}>Total Number of Units to Be Treated</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</div>
 
@@ -77,9 +80,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
           <div className={labelClass}>Total Weight of Seeds to Be Treated (lbs)</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
-
-          <div className={labelClass}>Number of Seeds per Unit</div>
-          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
         </div>
       </>
     );
