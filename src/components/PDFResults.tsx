@@ -1,5 +1,3 @@
-// src/components/PDFResults.tsx
-
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
@@ -209,6 +207,9 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         </p>
         <p className="text-lg">
           Dealer/Rep: <span className="font-bold">{repName || "—"}</span>
+        </p>
+        <p className="text-lg">
+          Total Acres: <span className="font-bold">{formatNumber(acres)}</span>
         </p>
       </div>
 

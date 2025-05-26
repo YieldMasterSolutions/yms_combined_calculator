@@ -14,9 +14,10 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const input = targetRef.current;
     if (!input) return;
 
-    input.classList.remove("sr-only"); // Show the content
+    input.classList.remove("sr-only"); // Temporarily reveal content
     window.scrollTo(0, 0);
 
+    // Wait for render
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     try {
@@ -36,13 +37,18 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
       const imgWidth = pageWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
+      // Multi-page logic
+      let remainingHeight = imgHeight;
       let position = 0;
-      while (position < imgHeight) {
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+
+      while (remainingHeight > 0) {
         position -= pageHeight;
-        if (position + pageHeight < imgHeight) {
-          pdf.addPage();
-        }
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        remainingHeight -= pageHeight;
       }
 
       pdf.save("Biological_Program_Summary.pdf");
@@ -58,7 +64,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     <button
       type="button"
       onClick={handleDownload}
-      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded text-lg shadow"
+      className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow"
       aria-label="Download PDF"
     >
       Download PDF

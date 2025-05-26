@@ -62,16 +62,16 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       : `${marketPriceUnit}/acre`;
 
   const cardClass =
-    "card-light mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg";
+    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg card-light";
   const labelClass = "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
   const valueClass = "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
+  const sectionHeaderClass = "text-2xl font-bold font-[Montserrat] mb-2 section-header-blue";
+  const divider = <hr className="my-6 border-gray-300 dark:border-gray-600" />;
 
   const renderBasicSeedCalculations = () =>
     seedTreatmentResults.length > 0 && (
       <>
-        <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
-          Basic Seed Calculations
-        </h2>
+        <h2 className={sectionHeaderClass}>Basic Seed Calculations</h2>
         <div className={cardClass}>
           <div className={labelClass}>Number of Seeds per Unit</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
@@ -85,37 +85,27 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className={labelClass}>Total Weight of Seeds to Be Treated (lbs)</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
         </div>
+        {divider}
       </>
     );
 
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
     const isJug = product.packageType?.toLowerCase() === "jug" && product.packageSize === 320;
-    const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(
-      product.packageType || "package",
-      product.totalProductUnits || 0
-    )}${isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : ""}`;
+    const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(product.packageType || "package", product.totalProductUnits || 0)}` +
+      (isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : "");
 
     const treatmentUnit = isSeed ? "units" : "acres";
-    const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(
-      product.packageType || "package",
-      product.treatmentCapacity || 0
-    )} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
+    const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(product.packageType || "package", product.treatmentCapacity || 0)} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
-      <div key={product.productName + (isSeed ? "-seed" : "-foliar")}>
-        <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
-          {title}
-        </h2>
+      <div key={product.productName + (isSeed ? "-seedcost" : "-foliarcost")}>
+        <h2 className={sectionHeaderClass}>{title}</h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
-          <div className={valueClass}>
-            {formatNumber(product.applicationRate)} {product.rateUnit}
-          </div>
+          <div className={valueClass}>{formatNumber(product.applicationRate)} {product.rateUnit}</div>
 
           <div className={labelClass}>Total Product Needed</div>
-          <div className={valueClass}>
-            {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
-          </div>
+          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
 
           <div className={labelClass}>Total Product Units to Order</div>
           <div className={valueClass}>{packageLabel}</div>
@@ -142,23 +132,20 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className={labelClass}>Product Cost per Acre</div>
           <div className={valueClass}>${formatNumber(product.individualCostPerAcre, 2, true)}</div>
         </div>
+        {divider}
       </div>
     );
   };
 
   const renderSeedTreatmentCosts = () =>
-    seedTreatmentResults.length > 0 &&
-    seedTreatmentResults.map((product) => renderProductCard(product, true));
+    seedTreatmentResults.length > 0 && seedTreatmentResults.map((product) => renderProductCard(product, true));
 
   const renderInFurrowFoliarCosts = () =>
-    inFurrowFoliarResults.length > 0 &&
-    inFurrowFoliarResults.map((product) => renderProductCard(product, false));
+    inFurrowFoliarResults.length > 0 && inFurrowFoliarResults.map((product) => renderProductCard(product, false));
 
   const renderTotalProgramCost = () => (
-    <div>
-      <h2 className="text-2xl font-bold font-[Montserrat] text-blue-700 dark:text-blue-300 mb-2">
-        Total Program Cost
-      </h2>
+    <>
+      <h2 className={sectionHeaderClass}>Total Program Cost</h2>
       <div className={cardClass}>
         <div className={labelClass}>Total Undiscounted Cost</div>
         <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2, true)}</div>
@@ -169,14 +156,13 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div className={labelClass}>Cost per Acre</div>
         <div className={valueClass}>${formatNumber(totalCostPerAcre, 2, true)}</div>
       </div>
-    </div>
+      {divider}
+    </>
   );
 
   const renderROI = () => (
-    <div>
-      <h2 className="text-2xl font-bold text-yellow-600 dark:text-yellow-300 font-[Montserrat] mb-2">
-        Breakeven ROI Calculations
-      </h2>
+    <>
+      <h2 className={sectionHeaderClass}>Breakeven ROI Calculations</h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed to Breakeven</div>
         <div className={valueClass}>{formatNumber(breakevenYield)} {unitLabel}</div>
@@ -193,7 +179,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div className={labelClass}>Yield Needed for 5:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi5)} {unitLabel}</div>
       </div>
-    </div>
+    </>
   );
 
   return (

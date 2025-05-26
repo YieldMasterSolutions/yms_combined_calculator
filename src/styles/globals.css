@@ -14,6 +14,7 @@ html {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
 }
 
 /* ──────────────────────────────────────────────
@@ -28,13 +29,14 @@ h1, h2, h3, h4, h5, h6 {
 
 .dark {
   --yms-body-bg: #0d1117;
-  --yms-body-fg: #e6edf3;
+  --yms-body-fg: #f1f5f9;
 }
 
 body {
   background-color: var(--yms-body-bg);
   color: var(--yms-body-fg);
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1.05rem;
 }
 
 /* ──────────────────────────────────────────────
@@ -83,21 +85,21 @@ body {
   html, body {
     background: #ffffff !important;
     color: #000000 !important;
+    font-size: 14pt !important;
   }
 
   * {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
     filter: none !important;
-  }
-
-  body {
-    font-size: 12pt;
   }
 
   .label-yellow,
   .section-header-blue {
     color: #000000 !important;
+    font-weight: 700 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 1.25rem !important;
   }
 
   @page {
@@ -129,6 +131,7 @@ body {
   color: #000000 !important;
   padding: 1rem;
   font-family: 'Open Sans', sans-serif !important;
+  font-size: 13.5pt !important;
 }
 
 .print-grayscale h1,
@@ -166,13 +169,18 @@ textarea {
 .dark select,
 .dark textarea {
   background-color: #1e293b;
-  color: #e6edf3;
-  border-color: #334155;
+  color: #f1f5f9;
+  border-color: #475569;
 }
 
 select option {
   font-size: 0.95rem;
   font-family: 'Open Sans', sans-serif;
+  color: #000000;
+}
+
+.dark select option {
+  color: #ffffff;
 }
 
 button {
