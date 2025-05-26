@@ -8,16 +8,6 @@ import {
 
 import { formatNumber } from "../utils/formatNumber";
 
-const emptyProduct: ProductData = {
-  "Product Name": "",
-  "Package Size": 0,
-  "Package Units": "",
-  "Package Type": "",
-  "Application Rate": 0,
-  "Application Rate Unit": undefined,
-  "Application Method": "",
-};
-
 interface CalculatorFormProps {
   seedType: string;
   setSeedType: (value: string) => void;
@@ -99,6 +89,17 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     const updated = [...foliarProducts];
     updated[index] = selectedProduct;
     setFoliarProducts(updated);
+  };
+
+  const productSummary = (product: ProductData) => {
+    const size = product["Package Size"];
+    const units = product["Package Units"];
+    const type = product["Package Type"];
+    const rate = product["Application Rate"];
+    const unit = product["Application Rate Unit"];
+    const capacity = rate && size ? Math.floor(size / rate) : "-";
+    const treated = unit?.includes("/unit") ? "units" : "acres";
+    return `${size} ${units} ${type} – ${rate} ${unit} – Treats ${capacity} ${treated}`;
   };
 
   return (
@@ -192,7 +193,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             />
             <small className="text-gray-500">
               Default: {selectedSeedDefaults?.["Seeds/lb"] && selectedSeedDefaults?.["Lbs/Unit"]
-                ? formatNumber(parseFloat(selectedSeedDefaults["Seeds/lb"]) * selectedSeedDefaults["Lbs/Unit"], 0)
+                ? formatNumber(
+                    parseFloat(selectedSeedDefaults["Seeds/lb"]) *
+                      selectedSeedDefaults["Lbs/Unit"],
+                    0
+                  )
                 : "N/A"} seeds/unit
             </small>
           </div>
@@ -339,18 +344,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
       </div>
     </form>
   );
-};
-
-// Simple product metadata below dropdown
-const productSummary = (product: ProductData) => {
-  const size = product["Package Size"];
-  const units = product["Package Units"];
-  const type = product["Package Type"];
-  const rate = product["Application Rate"];
-  const unit = product["Application Rate Unit"];
-  const capacity = rate && size ? Math.floor(size / rate) : "-";
-  const treated = unit?.includes("/unit") ? "units" : "acres";
-  return `${size} ${units} ${type} – ${rate} ${unit} – Treats ${capacity} ${treated}`;
 };
 
 export default CalculatorForm;
