@@ -1,7 +1,7 @@
 // src/components/PDFDownloadButton.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFResults from "./PDFResults";
 import { ProductCalculation } from "../utils/calculations";
@@ -39,6 +39,14 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
   seedType,
   acres,
 }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   const documentProps = (
     <PDFResults
       growerName={growerName}
@@ -60,7 +68,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
       <PDFDownloadLink
         document={documentProps}
         fileName="Biological_Program_Summary.pdf"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition cursor-pointer"
       >
         {({ loading }) =>
           loading ? "Preparing PDF..." : "Download PDF Summary"
