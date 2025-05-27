@@ -23,6 +23,7 @@ h1, h2, h3, h4, h5, h6 {
 :root {
   --yms-blue: #0d3e8c;
   --yms-yellow: #ffc627;
+  --yms-tan: #f5deb3;
   --yms-body-bg: #ffffff;
   --yms-body-fg: #1f2937;
 }
@@ -50,7 +51,7 @@ body {
 }
 
 .dark .label-yellow {
-  color: #ffd966;
+  color: #5ea4f3;
 }
 
 .section-header-blue {
@@ -69,8 +70,6 @@ body {
 ─────────────────────────────────────────────── */
 .card-light {
   background-color: #f9fafb;
-  border: 1px solid #cbd5e1;
-  border-radius: 0.75rem;
 }
 
 .dark .card-light {
@@ -88,15 +87,14 @@ body {
     background: #ffffff !important;
     color: #000000 !important;
     font-size: 14pt !important;
-    margin: 0;
-    padding: 0;
   }
 
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     filter: none !important;
-    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.45 !important;
   }
 
   .label-yellow,
@@ -107,21 +105,9 @@ body {
     font-size: 1.25rem !important;
   }
 
-  .card-light {
-    border: 1px solid #444 !important;
-    background: #ffffff !important;
-    padding: 1rem !important;
-  }
-
-  input, select {
-    border: 1px solid #444 !important;
-    padding: 6px !important;
-    font-size: 13pt !important;
-  }
-
   @page {
-    size: A4 portrait;
-    margin: 1in;
+    size: auto;
+    margin: 0.75in;
   }
 
   .print-page-break {
@@ -141,6 +127,8 @@ body {
   print-color-adjust: exact !important;
   filter: grayscale(100%) !important;
   box-sizing: border-box !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.45 !important;
 }
 
 .print-grayscale {
@@ -149,9 +137,6 @@ body {
   padding: 1rem;
   font-family: 'Open Sans', sans-serif !important;
   font-size: 13.5pt !important;
-  width: 100% !important;
-  max-width: 800px !important;
-  margin: 0 auto !important;
 }
 
 .print-grayscale h1,
@@ -180,10 +165,10 @@ textarea {
   font-family: 'Open Sans', sans-serif;
   font-size: 1rem;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   border-radius: 0.25rem;
   box-sizing: border-box;
-  background-color: #ffffff;
+  overflow-wrap: break-word;
 }
 
 .dark input,

@@ -57,7 +57,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const sectionHeaderClass =
     "text-[1.5rem] font-bold font-[Montserrat] mb-2 text-black dark:text-yellow-400";
   const labelClass =
-    "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
+    "font-bold text-yellow-600 dark:text-blue-300 text-lg font-[Montserrat]";
   const valueClass =
     "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
   const cardClass =

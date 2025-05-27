@@ -115,7 +115,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={growerName}
               onChange={(e) => setGrowerName(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -126,7 +126,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={repName}
               onChange={(e) => setRepName(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
         </div>
@@ -141,7 +141,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={seedType}
               onChange={(e) => setSeedType(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             >
               <option value="">Select Seed Type</option>
               {seedTypes.map((s) => (
@@ -157,7 +157,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={acres}
               onChange={(e) => setAcres(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -166,7 +166,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={seedingRate}
               onChange={(e) => setSeedingRate(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -174,7 +174,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={seedingRateUnit}
               onChange={(e) => setSeedingRateUnit(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             >
               <option value="seeds/acre">seeds/acre</option>
               <option value="lbs/acre">lbs/acre</option>
@@ -189,12 +189,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={seedsPerUnitOverride}
               onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
             <small className="text-gray-500">
               Default:{" "}
               {selectedSeedDefaults?.["Seeds/lb"] && selectedSeedDefaults?.["Lbs/Unit"]
-                ? formatNumber(parseFloat(selectedSeedDefaults["Seeds/lb"]) * selectedSeedDefaults["Lbs/Unit"], 0)
+                ? formatNumber(
+                    parseFloat(selectedSeedDefaults["Seeds/lb"]) * selectedSeedDefaults["Lbs/Unit"],
+                    0
+                  )
                 : "N/A"}{" "}
               seeds/unit
             </small>
@@ -207,7 +210,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={overrideSeeds}
               onChange={(e) => setOverrideSeeds(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
             <small className="text-gray-500">
               Default: {selectedSeedDefaults?.["Seeds/lb"] || "N/A"} seeds/lb
@@ -216,7 +219,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* Market & ROI */}
+      {/* Market Inputs */}
       <div>
         <h2 className="section-header-blue">Market and ROI Inputs</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -226,7 +229,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={marketPrice}
               onChange={(e) => setMarketPrice(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -234,7 +237,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             <select
               value={marketPriceUnit}
               onChange={(e) => setMarketPriceUnit(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             >
               <option value="bu">bu</option>
               <option value="ton">ton</option>
@@ -248,7 +251,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={dealerDiscount}
               onChange={(e) => setDealerDiscount(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -257,7 +260,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               type="text"
               value={growerDiscount}
               onChange={(e) => setGrowerDiscount(e.target.value)}
-              className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
             />
           </div>
         </div>
@@ -275,7 +278,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               <select
                 value={seedProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleSeedProductChange(index, e.target.value)}
-                className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+                className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
               >
                 <option value="">Select Seed Treatment Product</option>
                 {productsSeedTreatment.map((p) => (
@@ -294,7 +297,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* In-Furrow / Foliar Products */}
+      {/* Foliar Products */}
       <div>
         <h2 className="section-header-blue">In-Furrow / Foliar Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -306,7 +309,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               <select
                 value={foliarProducts[index]?.["Product Name"] || ""}
                 onChange={(e) => handleFoliarProductChange(index, e.target.value)}
-                className="border p-2 w-full dark:bg-gray-800 dark:text-white"
+                className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
               >
                 <option value="">Select Product</option>
                 {productsInFurrowFoliar.map((p) => (
@@ -325,7 +328,6 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* Calculate Button */}
       <div className="text-center pt-4">
         <button
           type="button"

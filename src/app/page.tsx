@@ -120,12 +120,17 @@ export default function Home() {
   };
 
   const breakevenYield =
-    marketPrice && acres ? totalDiscountedCost / parseFloat(acres) / parseFloat(marketPrice) : 0;
+    marketPrice && acres
+      ? totalDiscountedCost / parseFloat(acres) / parseFloat(marketPrice)
+      : 0;
 
   return (
     <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white px-4 py-6 font-[Open_Sans]">
       <div className="max-w-6xl mx-auto relative">
-        <ThemeToggle />
+        <div className="flex justify-end mb-2">
+          <ThemeToggle />
+        </div>
+
         <div className="flex items-center justify-between mb-6">
           <Image
             src="/yms_combined_calculator/ymslogo3.png"
@@ -212,7 +217,7 @@ export default function Home() {
             totalUndiscountedCost={totalUndiscountedCost}
             totalDiscountedCost={totalDiscountedCost}
             roi={{
-              breakevenYield: breakevenYield,
+              breakevenYield,
               roi2to1: roi2,
               roi3to1: roi3,
               roi4to1: roi4,

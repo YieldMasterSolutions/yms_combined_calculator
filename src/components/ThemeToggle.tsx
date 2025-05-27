@@ -1,42 +1,75 @@
-// src/components/ThemeToggle.tsx
-
+// src/components/PDFDownloadButton.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
-const ThemeToggle: React.FC = () => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+interface PDFDownloadButtonProps {
+  targetRef: React.RefObject<HTMLDivElement | null>;
+}
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = (localStorage.getItem("theme") as "light" | "dark") || "light";
-      setTheme(stored);
-      applyTheme(stored);
+const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
+  const handleDownload = async () => {
+    const input = targetRef.current;
+    if (!input) return;
+
+    // Temporarily reveal the hidden layout
+    input.classList.remove("sr-only");
+    window.scrollTo(0, 0);
+
+    // Let layout fully render before capture
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    try {
+      const canvas = await html2canvas(input, {
+        backgroundColor: "#ffffff", // force white background
+        scale: 2,
+        useCORS: true,
+        scrollY: -window.scrollY,
+        ignoreElements: (el) => el.classList?.contains("no-print"),
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "pt", "a4");
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let remainingHeight = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+
+      while (remainingHeight > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        remainingHeight -= pageHeight;
+      }
+
+      pdf.save("Biological_Program_Summary.pdf");
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+    } finally {
+      input.classList.add("sr-only");
+      window.scrollTo(0, 0);
     }
-  }, []);
-
-  const applyTheme = (mode: "light" | "dark") => {
-    const root = document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(mode);
-  };
-
-  const toggleTheme = () => {
-    const next = theme === "light" ? "dark" : "light";
-    setTheme(next);
-    localStorage.setItem("theme", next);
-    applyTheme(next);
   };
 
   return (
     <button
-      onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 bg-blue-700 dark:bg-yellow-400 text-white dark:text-black px-4 py-1.5 rounded-lg text-sm font-[Montserrat] font-semibold shadow-md hover:opacity-90 transition"
-      aria-label="Toggle Theme"
+      type="button"
+      onClick={handleDownload}
+      className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition"
+      aria-label="Download PDF"
     >
-      {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+      Download PDF
     </button>
   );
 };
 
-export default ThemeToggle;
+export default PDFDownloadButton;

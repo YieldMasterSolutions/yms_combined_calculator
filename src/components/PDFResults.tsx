@@ -47,7 +47,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       case "jug": return "Jugs";
       case "case": return "Cases";
       case "unit": return "Units";
-      case "package": return "Packages";
       default: return word.endsWith("s") ? word : `${word}s`;
     }
   };
@@ -66,13 +65,10 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       : `${marketPriceUnit}/acre`;
 
   const cardClass =
-    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 border border-gray-500 rounded-md bg-white text-[1.13rem]";
-  const headerClass =
-    "text-[1.4rem] font-bold font-[Montserrat] mb-2 text-black";
-  const labelClass =
-    "font-bold text-[1.09rem] font-[Montserrat] text-black";
-  const valueClass =
-    "font-bold text-[1.09rem] font-[Open_Sans] text-black";
+    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl border border-black text-[1.13rem] bg-white";
+  const headerClass = "text-[1.4rem] font-bold font-[Montserrat] mb-2 text-black";
+  const labelClass = "font-bold text-[1.09rem] font-[Montserrat] text-black";
+  const valueClass = "font-bold text-[1.09rem] font-[Open_Sans] text-black";
 
   const renderBasicSeedCalculations = () =>
     seedTreatmentResults.length > 0 && (
@@ -95,32 +91,21 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     );
 
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
-    const isJug = product.packageType?.toLowerCase() === "jug" && product.packageSize === 320;
     const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(
       product.packageType || "Package",
       product.totalProductUnits || 0
-    )}${isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : ""}`;
+    )}`;
 
     const treatmentUnit = isSeed ? "units" : "acres";
     const rateUnitLabel = getCostPerUnitLabel(product.rateUnit || "");
-    const header = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(
-      product.packageType || "Package",
-      product.treatmentCapacity || 0
-    )} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
+    const header = `${product.productName} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
-      <div key={product.productName + (isSeed ? "-seed" : "-foliar")}>
+      <div key={product.productName + (isSeed ? "-seed" : "-foliar")}>        
         <h2 className={headerClass}>{header} ({product.applicationMethod})</h2>
         <div className={cardClass}>
-          <div className={labelClass}>Application Rate</div>
-          <div className={valueClass}>
-            {formatNumber(product.applicationRate)} {product.rateUnit}
-          </div>
-
           <div className={labelClass}>Total Product Needed</div>
-          <div className={valueClass}>
-            {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
-          </div>
+          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
 
           <div className={labelClass}>Total Product Units to Order</div>
           <div className={valueClass}>{packageLabel}</div>
@@ -196,7 +181,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   );
 
   return (
-    <div className="print-grayscale px-8 pt-8 pb-16 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
+    <div className="print-grayscale p-6 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
       <div className="mb-6 text-center">
         <h1 className="text-[1.75rem] font-[Montserrat] font-bold mb-2 text-black">
           Biological Program Calculator Summary
@@ -205,7 +190,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
           Grower: <span className="font-bold">{growerName || "—"}</span>
         </p>
         <p className="text-lg">
-          Dealer/Rep: <span className="font-bold">{repName || "—"}</span>
+          Dealer or Account Manager: <span className="font-bold">{repName || "—"}</span>
         </p>
         <p className="text-lg">
           Total Acres: <span className="font-bold">{formatNumber(acres)}</span>
