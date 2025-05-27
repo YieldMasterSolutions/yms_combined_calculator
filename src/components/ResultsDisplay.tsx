@@ -43,7 +43,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       case "jug": return "Jugs";
       case "case": return "Cases";
       case "unit": return "Units";
-      default: return `${word}s`;
+      default: return word.endsWith("s") ? word : `${word}s`;
     }
   };
 
@@ -56,7 +56,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   const sectionHeaderClass =
     "text-[1.5rem] font-bold font-[Montserrat] mb-2 text-black dark:text-yellow-400";
-
   const labelClass =
     "font-bold text-yellow-600 dark:text-yellow-300 text-lg font-[Montserrat]";
   const valueClass =
@@ -94,12 +93,18 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
     const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(
-      product.packageType || "package",
+      product.packageType || "Package",
       product.totalProductUnits || 0
     )}`;
 
     const treatmentUnit = isSeed ? "units" : "acres";
     const treatmentCapacity = product.treatmentCapacity || "-";
+    const rateUnitLabel =
+      product.rateUnit?.includes("g")
+        ? "Product Cost per Gram"
+        : product.rateUnit?.includes("fl oz")
+        ? "Product Cost per Fluid Ounce"
+        : "Product Cost per Unit";
 
     const header = `${product.productName} – ${product.applicationRate} ${product.rateUnit} – Treats ${treatmentCapacity} ${treatmentUnit}`;
 
@@ -111,30 +116,24 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className={valueClass}>
             {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
           </div>
-
           <div className={labelClass}>Total Product Units to Order</div>
           <div className={valueClass}>{packageLabel}</div>
-
           <div className={labelClass}>Product Cost per Package</div>
           <div className={valueClass}>
             ${formatNumber(product.productCostPerPackage, 2, true)}
           </div>
-
-          <div className={labelClass}>Cost per Unit</div>
+          <div className={labelClass}>{rateUnitLabel}</div>
           <div className={valueClass}>
             ${formatNumber(product.productCostPerOz, 2, true)}
           </div>
-
           <div className={labelClass}>Total Undiscounted Cost</div>
           <div className={valueClass}>
             ${formatNumber(product.originalTotalCostToGrower, 2, true)}
           </div>
-
           <div className={labelClass}>Total Discounted Cost</div>
           <div className={valueClass}>
             ${formatNumber(product.discountedTotalCostToGrower, 2, true)}
           </div>
-
           {isSeed && (
             <>
               <div className={labelClass}>Cost per Treated Unit</div>
@@ -143,7 +142,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
               </div>
             </>
           )}
-
           <div className={labelClass}>Product Cost per Acre</div>
           <div className={valueClass}>
             ${formatNumber(product.individualCostPerAcre, 2, true)}
@@ -180,9 +178,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <h2 className={sectionHeaderClass}>Breakeven ROI Calculations</h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed to Breakeven</div>
-        <div className={valueClass}>
-          {formatNumber(breakevenYield)} {unitLabel}
-        </div>
+        <div className={valueClass}>{formatNumber(breakevenYield)} {unitLabel}</div>
         <div className={labelClass}>Yield for 2:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi2)} {unitLabel}</div>
         <div className={labelClass}>Yield for 3:1 ROI</div>

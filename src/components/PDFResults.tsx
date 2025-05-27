@@ -48,7 +48,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       case "case": return "Cases";
       case "unit": return "Units";
       case "package": return "Packages";
-      default: return count > 1 && lower.endsWith("s") ? word : `${word}s`;
+      default: return word.endsWith("s") ? word : `${word}s`;
     }
   };
 
@@ -81,13 +81,10 @@ const PDFResults: React.FC<PDFResultsProps> = ({
         <div className={cardClass}>
           <div className={labelClass}>Number of Seeds per Unit</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
-
           <div className={labelClass}>Total Number of Units to Be Treated</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</div>
-
           <div className={labelClass}>Number of Bushels to Be Treated</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalBushels)}</div>
-
           <div className={labelClass}>Total Weight of Seeds to Be Treated (lbs)</div>
           <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
         </div>
@@ -97,54 +94,45 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
     const isJug = product.packageType?.toLowerCase() === "jug" && product.packageSize === 320;
     const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(
-      product.packageType || "package",
+      product.packageType || "Package",
       product.totalProductUnits || 0
     )}${isJug ? ` (${Math.ceil((product.totalProductUnits || 0) / 2)} Cases)` : ""}`;
 
     const treatmentUnit = isSeed ? "units" : "acres";
-    const title = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(
-      product.packageType || "package",
+    const rateUnitLabel = getCostPerUnitLabel(product.rateUnit || "");
+    const header = `${product.productName} – ${product.packageSize} ${product.packageUnits} – ${pluralize(
+      product.packageType || "Package",
       product.treatmentCapacity || 0
     )} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
 
     return (
       <div key={product.productName + (isSeed ? "-seed" : "-foliar")}>
-        <h2 className={headerClass}>
-          {title} ({product.applicationMethod})
-        </h2>
+        <h2 className={headerClass}>{header} ({product.applicationMethod})</h2>
         <div className={cardClass}>
           <div className={labelClass}>Application Rate</div>
           <div className={valueClass}>
             {formatNumber(product.applicationRate)} {product.rateUnit}
           </div>
-
           <div className={labelClass}>Total Product Needed</div>
           <div className={valueClass}>
             {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
           </div>
-
           <div className={labelClass}>Total Product Units to Order</div>
           <div className={valueClass}>{packageLabel}</div>
-
           <div className={labelClass}>Product Cost per Package</div>
           <div className={valueClass}>${formatNumber(product.productCostPerPackage, 2)}</div>
-
-          <div className={labelClass}>{getCostPerUnitLabel(product.rateUnit || "")}</div>
+          <div className={labelClass}>{rateUnitLabel}</div>
           <div className={valueClass}>${formatNumber(product.productCostPerOz, 2)}</div>
-
           <div className={labelClass}>Total Undiscounted Cost</div>
           <div className={valueClass}>${formatNumber(product.originalTotalCostToGrower, 2)}</div>
-
           <div className={labelClass}>Total Discounted Cost</div>
           <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower, 2)}</div>
-
           {isSeed && (
             <>
               <div className={labelClass}>Product Cost per Unit of Treated Seed</div>
               <div className={valueClass}>${formatNumber(product.costPerUnitSeed, 2)}</div>
             </>
           )}
-
           <div className={labelClass}>Product Cost per Acre</div>
           <div className={valueClass}>${formatNumber(product.individualCostPerAcre, 2)}</div>
         </div>
@@ -153,11 +141,9 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   };
 
   const renderSeedTreatmentCosts = () =>
-    seedTreatmentResults.length > 0 &&
     seedTreatmentResults.map((product) => renderProductCard(product, true));
 
   const renderInFurrowFoliarCosts = () =>
-    inFurrowFoliarResults.length > 0 &&
     inFurrowFoliarResults.map((product) => renderProductCard(product, false));
 
   const renderTotalProgramCost = () => (
@@ -166,10 +152,8 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       <div className={cardClass}>
         <div className={labelClass}>Total Undiscounted Cost</div>
         <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2)}</div>
-
         <div className={labelClass}>Total Discounted Cost</div>
         <div className={valueClass}>${formatNumber(totalDiscountedCost, 2)}</div>
-
         <div className={labelClass}>Cost per Acre</div>
         <div className={valueClass}>${formatNumber(totalCostPerAcre, 2)}</div>
       </div>
@@ -182,16 +166,12 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed to Breakeven</div>
         <div className={valueClass}>{formatNumber(roi.breakevenYield)} {unitLabel}</div>
-
         <div className={labelClass}>Yield Needed for 2:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi.roi2to1)} {unitLabel}</div>
-
         <div className={labelClass}>Yield Needed for 3:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi.roi3to1)} {unitLabel}</div>
-
         <div className={labelClass}>Yield Needed for 4:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi.roi4to1)} {unitLabel}</div>
-
         <div className={labelClass}>Yield Needed for 5:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi.roi5to1)} {unitLabel}</div>
       </div>
