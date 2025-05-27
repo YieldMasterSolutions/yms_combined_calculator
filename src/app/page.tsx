@@ -2,12 +2,11 @@
 
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
-import PDFResults from "../components/PDFResults";
 import {
   ProductCalculation,
   calculateSeedTreatmentData,
@@ -17,8 +16,6 @@ import {
 import { ProductData } from "../utils/data";
 
 export default function Home() {
-  const pdfRef = useRef<HTMLDivElement>(null);
-
   const [seedType, setSeedType] = useState("");
   const [acres, setAcres] = useState("");
   const [seedingRate, setSeedingRate] = useState("");
@@ -198,31 +195,27 @@ export default function Home() {
 
         {(seedResults.length > 0 || foliarResults.length > 0) && (
           <div className="text-center mb-4">
-            <PDFDownloadButton targetRef={pdfRef} />
+            <PDFDownloadButton
+              growerName={growerName}
+              repName={repName}
+              seedTreatmentResults={seedResults}
+              inFurrowFoliarResults={foliarResults}
+              totalCostPerAcre={totalCostPerAcre}
+              totalUndiscountedCost={totalUndiscountedCost}
+              totalDiscountedCost={totalDiscountedCost}
+              roi={{
+                breakevenYield,
+                roi2to1: roi2,
+                roi3to1: roi3,
+                roi4to1: roi4,
+                roi5to1: roi5,
+              }}
+              marketPriceUnit={marketPriceUnit}
+              seedType={seedType}
+              acres={parseFloat(acres || "0")}
+            />
           </div>
         )}
-
-        <div className="sr-only print:block" ref={pdfRef}>
-          <PDFResults
-            growerName={growerName}
-            repName={repName}
-            seedTreatmentResults={seedResults}
-            inFurrowFoliarResults={foliarResults}
-            totalCostPerAcre={totalCostPerAcre}
-            totalUndiscountedCost={totalUndiscountedCost}
-            totalDiscountedCost={totalDiscountedCost}
-            roi={{
-              breakevenYield,
-              roi2to1: roi2,
-              roi3to1: roi3,
-              roi4to1: roi4,
-              roi5to1: roi5,
-            }}
-            marketPriceUnit={marketPriceUnit}
-            seedType={seedType}
-            acres={parseFloat(acres || "0")}
-          />
-        </div>
       </div>
     </main>
   );
