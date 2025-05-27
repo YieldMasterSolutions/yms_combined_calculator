@@ -1,8 +1,62 @@
 // src/components/PDFResults.tsx
 
 import React from "react";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Font,
+} from "@react-pdf/renderer";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
+
+Font.register({ family: 'Open Sans', src: 'https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0b.woff2' });
+Font.register({ family: 'Montserrat', src: 'https://fonts.gstatic.com/s/montserrat/v15/JTUQjIg1_i6t8kCHKm45_Q.woff2' });
+
+const styles = StyleSheet.create({
+  page: {
+    padding: 40,
+    fontSize: 11,
+    fontFamily: 'Open Sans',
+    color: '#000000',
+  },
+  header: {
+    fontSize: 20,
+    fontFamily: 'Montserrat',
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  subheader: {
+    fontSize: 14,
+    fontFamily: 'Montserrat',
+    fontWeight: 'bold',
+    marginBottom: 6,
+    marginTop: 20,
+  },
+  section: {
+    marginBottom: 20,
+    padding: 10,
+    border: '2px solid black',
+    backgroundColor: '#e0e0e0',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+    border: '1px solid black',
+    padding: 4,
+  },
+  label: {
+    fontWeight: 'bold',
+    fontFamily: 'Montserrat',
+  },
+  value: {
+    fontFamily: 'Open Sans',
+  },
+});
 
 interface PDFResultsProps {
   growerName: string;
@@ -28,7 +82,6 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   growerName,
   repName,
   seedTreatmentResults,
-  inFurrowFoliarResults,
   totalCostPerAcre,
   totalUndiscountedCost,
   totalDiscountedCost,
@@ -37,173 +90,39 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   seedType,
   acres,
 }) => {
-  const pluralize = (word: string, count: number) => {
-    const lower = word.toLowerCase();
-    if (count === 1) return word;
-    switch (lower) {
-      case "box": return "Boxes";
-      case "pouch": return "Pouches";
-      case "pail": return "Pails";
-      case "jug": return "Jugs";
-      case "case": return "Cases";
-      case "unit": return "Units";
-      case "package": return "Packages";
-      default: return word.endsWith("s") ? word : `${word}s`;
-    }
-  };
-
-  const getCostPerUnitLabel = (unit: string) => {
-    if (unit.includes("g")) return "Product Cost per Gram";
-    if (unit.includes("fl oz")) return "Product Cost per Fluid Ounce";
-    return "Product Cost per Unit";
-  };
-
-  const unitLabel =
-    seedType.toLowerCase().includes("corn") || seedType.toLowerCase().includes("soy")
-      ? "bu/acre"
-      : marketPriceUnit.includes("/")
-      ? marketPriceUnit
-      : `${marketPriceUnit}/acre`;
-
-  const cardClass =
-    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-xl border-2 border-black bg-gray-300 break-inside-avoid";
-  const headerClass = "text-[1.4rem] font-bold font-[Montserrat] mb-2 text-black";
-  const labelClass = "font-bold text-[1.09rem] font-[Montserrat] text-black";
-  const valueClass = "font-bold text-[1.09rem] font-[Open_Sans] text-black border-2 border-black px-2 py-1";
-
-  const renderBasicSeedCalculations = () =>
-    seedTreatmentResults.length > 0 && (
-      <>
-        <h2 className={headerClass}>Basic Seed Calculations</h2>
-        <div className={cardClass}>
-          <div className={labelClass}>Number of Seeds per Unit</div>
-          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</div>
-
-          <div className={labelClass}>Total Number of Units to Be Treated</div>
-          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</div>
-
-          <div className={labelClass}>Number of Bushels to Be Treated</div>
-          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalBushels)}</div>
-
-          <div className={labelClass}>Total Weight of Seeds (lbs)</div>
-          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight)}</div>
-        </div>
-      </>
-    );
-
-  const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
-    const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(
-      product.packageType || "Package",
-      product.totalProductUnits || 0
-    )}`;
-
-    const treatmentUnit = isSeed ? "units" : "acres";
-    const rateUnitLabel = getCostPerUnitLabel(product.rateUnit || "");
-    const header = `${product.productName} – ${product.applicationRate} ${product.rateUnit} – Treats ${product.treatmentCapacity || "-"} ${treatmentUnit}`;
-
-    return (
-      <div key={product.productName + (isSeed ? "-seed" : "-foliar")}> 
-        <h2 className={headerClass}>{header} ({product.applicationMethod})</h2>
-        <div className={cardClass}>
-          <div className={labelClass}>Total Product Needed</div>
-          <div className={valueClass}>{formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}</div>
-
-          <div className={labelClass}>Total Product Units to Order</div>
-          <div className={valueClass}>{packageLabel}</div>
-
-          <div className={labelClass}>Product Cost per Package</div>
-          <div className={valueClass}>${formatNumber(product.productCostPerPackage, 2)}</div>
-
-          <div className={labelClass}>{rateUnitLabel}</div>
-          <div className={valueClass}>${formatNumber(product.productCostPerOz, 2)}</div>
-
-          <div className={labelClass}>Total Undiscounted Cost</div>
-          <div className={valueClass}>${formatNumber(product.originalTotalCostToGrower, 2)}</div>
-
-          <div className={labelClass}>Total Discounted Cost</div>
-          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower, 2)}</div>
-
-          {isSeed && (
-            <>
-              <div className={labelClass}>Product Cost per Unit of Treated Seed</div>
-              <div className={valueClass}>${formatNumber(product.costPerUnitSeed, 2)}</div>
-            </>
-          )}
-
-          <div className={labelClass}>Product Cost per Acre</div>
-          <div className={valueClass}>${formatNumber(product.individualCostPerAcre, 2)}</div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderSeedTreatmentCosts = () =>
-    seedTreatmentResults.map((product) => renderProductCard(product, true));
-
-  const renderInFurrowFoliarCosts = () =>
-    inFurrowFoliarResults.map((product) => renderProductCard(product, false));
-
-  const renderTotalProgramCost = () => (
-    <div>
-      <h2 className={headerClass}>Total Program Cost</h2>
-      <div className={cardClass}>
-        <div className={labelClass}>Total Undiscounted Cost</div>
-        <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2)}</div>
-
-        <div className={labelClass}>Total Discounted Cost</div>
-        <div className={valueClass}>${formatNumber(totalDiscountedCost, 2)}</div>
-
-        <div className={labelClass}>Cost per Acre</div>
-        <div className={valueClass}>${formatNumber(totalCostPerAcre, 2)}</div>
-      </div>
-    </div>
-  );
-
-  const renderROI = () => (
-    <div>
-      <h2 className={headerClass}>Breakeven ROI Calculations</h2>
-      <div className={cardClass}>
-        <div className={labelClass}>Yield Needed to Breakeven</div>
-        <div className={valueClass}>{formatNumber(roi.breakevenYield)} {unitLabel}</div>
-
-        <div className={labelClass}>Yield Needed for 2:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi2to1)} {unitLabel}</div>
-
-        <div className={labelClass}>Yield Needed for 3:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi3to1)} {unitLabel}</div>
-
-        <div className={labelClass}>Yield Needed for 4:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi4to1)} {unitLabel}</div>
-
-        <div className={labelClass}>Yield Needed for 5:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi.roi5to1)} {unitLabel}</div>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="print-grayscale p-6 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
-      <div className="mb-6 text-center">
-        <h1 className="text-[1.75rem] font-[Montserrat] font-bold mb-2 text-black">
-          Biological Program Calculator Summary
-        </h1>
-        <p className="text-lg">
-          Grower: <span className="font-bold">{growerName || "—"}</span>
-        </p>
-        <p className="text-lg">
-          Dealer or Account Manager: <span className="font-bold">{repName || "—"}</span>
-        </p>
-        <p className="text-lg">
-          Total Acres: <span className="font-bold">{formatNumber(acres)}</span>
-        </p>
-      </div>
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.header}>Biological Program Calculator Summary</Text>
+        <Text>Grower: {growerName || '—'}</Text>
+        <Text>Dealer or Account Manager: {repName || '—'}</Text>
+        <Text>Total Acres: {formatNumber(acres)}</Text>
 
-      {renderBasicSeedCalculations()}
-      {renderSeedTreatmentCosts()}
-      {renderInFurrowFoliarCosts()}
-      {renderTotalProgramCost()}
-      {renderROI()}
-    </div>
+        {seedTreatmentResults.length > 0 && (
+          <>
+            <Text style={styles.subheader}>Basic Seed Calculations</Text>
+            <View style={styles.section}>
+              <View style={styles.row}>
+                <Text style={styles.label}>Number of Seeds per Unit</Text>
+                <Text style={styles.value}>{formatNumber(seedTreatmentResults[0].seedsPerUnit)}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Total Number of Units to Be Treated</Text>
+                <Text style={styles.value}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated)}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Number of Bushels to Be Treated</Text>
+                <Text style={styles.value}>{formatNumber(seedTreatmentResults[0].totalBushels)}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Total Weight of Seeds (lbs)</Text>
+                <Text style={styles.value}>{formatNumber(seedTreatmentResults[0].totalWeight)}</Text>
+              </View>
+            </View>
+          </>
+        )}
+      </Page>
+    </Document>
   );
 };
 

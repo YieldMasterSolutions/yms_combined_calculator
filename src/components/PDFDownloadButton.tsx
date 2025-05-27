@@ -2,71 +2,67 @@
 "use client";
 
 import React from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFResults from "./PDFResults";
+import { ProductCalculation } from "../utils/calculations";
 
 interface PDFDownloadButtonProps {
-  targetRef: React.RefObject<HTMLDivElement | null>;
+  growerName: string;
+  repName: string;
+  seedTreatmentResults: ProductCalculation[];
+  inFurrowFoliarResults: ProductCalculation[];
+  totalCostPerAcre: number;
+  totalUndiscountedCost: number;
+  totalDiscountedCost: number;
+  roi: {
+    breakevenYield: number;
+    roi2to1: number;
+    roi3to1: number;
+    roi4to1: number;
+    roi5to1: number;
+  };
+  marketPriceUnit: string;
+  seedType: string;
+  acres: number;
 }
 
-const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
-  const handleDownload = async () => {
-    const input = targetRef.current;
-    if (!input) return;
-
-    input.classList.remove("sr-only");
-    window.scrollTo(0, 0);
-
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    try {
-      const canvas = await html2canvas(input, {
-        backgroundColor: "#ffffff",
-        scale: 2,
-        useCORS: true,
-        scrollY: -window.scrollY,
-        ignoreElements: (el) => el.classList?.contains("no-print"),
-      });
-
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "pt", "a4");
-
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      let position = 0;
-      let remainingHeight = imgHeight;
-
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      remainingHeight -= pageHeight;
-
-      while (remainingHeight > 0) {
-        position -= pageHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        remainingHeight -= pageHeight;
-      }
-
-      pdf.save("Biological_Program_Summary.pdf");
-    } catch (err) {
-      console.error("PDF generation failed:", err);
-    } finally {
-      input.classList.add("sr-only");
-      window.scrollTo(0, 0);
-    }
-  };
-
+const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
+  growerName,
+  repName,
+  seedTreatmentResults,
+  inFurrowFoliarResults,
+  totalCostPerAcre,
+  totalUndiscountedCost,
+  totalDiscountedCost,
+  roi,
+  marketPriceUnit,
+  seedType,
+  acres,
+}) => {
   return (
-    <button
-      type="button"
-      onClick={handleDownload}
+    <PDFDownloadLink
+      document={
+        <PDFResults
+          growerName={growerName}
+          repName={repName}
+          seedTreatmentResults={seedTreatmentResults}
+          inFurrowFoliarResults={inFurrowFoliarResults}
+          totalCostPerAcre={totalCostPerAcre}
+          totalUndiscountedCost={totalUndiscountedCost}
+          totalDiscountedCost={totalDiscountedCost}
+          roi={roi}
+          marketPriceUnit={marketPriceUnit}
+          seedType={seedType}
+          acres={acres}
+        />
+      }
+      fileName="Biological_Program_Summary.pdf"
       className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition"
-      aria-label="Download PDF"
     >
-      Download PDF
-    </button>
+      {({ loading }) =>
+        loading ? "Preparing PDF..." : "Download PDF Summary"
+      }
+    </PDFDownloadLink>
   );
 };
 
