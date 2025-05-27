@@ -2,7 +2,6 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFResults from "./PDFResults";
 import { ProductCalculation } from "../utils/calculations";
