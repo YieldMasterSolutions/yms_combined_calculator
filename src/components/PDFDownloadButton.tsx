@@ -14,16 +14,14 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
     const input = targetRef.current;
     if (!input) return;
 
-    // Temporarily reveal the hidden layout
     input.classList.remove("sr-only");
     window.scrollTo(0, 0);
 
-    // Let layout fully render before capture
     await new Promise((resolve) => setTimeout(resolve, 400));
 
     try {
       const canvas = await html2canvas(input, {
-        backgroundColor: "#ffffff", // force white background
+        backgroundColor: "#ffffff",
         scale: 2,
         useCORS: true,
         scrollY: -window.scrollY,
@@ -38,8 +36,8 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
       const imgWidth = pageWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      let remainingHeight = imgHeight;
       let position = 0;
+      let remainingHeight = imgHeight;
 
       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       remainingHeight -= pageHeight;
@@ -52,8 +50,8 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({ targetRef }) => {
       }
 
       pdf.save("Biological_Program_Summary.pdf");
-    } catch (error) {
-      console.error("PDF generation failed:", error);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
     } finally {
       input.classList.add("sr-only");
       window.scrollTo(0, 0);

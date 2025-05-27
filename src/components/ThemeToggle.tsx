@@ -1,48 +1,225 @@
-// src/components/ThemeToggle.tsx
+/* ──────────────────────────────────────────────
+   File: src/components/ThemeToggle.tsx
+─────────────────────────────────────────────── */
 
-"use client";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-import React, { useEffect, useState } from "react";
+/* ──────────────────────────────────────────────
+   Font Defaults
+─────────────────────────────────────────────── */
+html {
+  font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+}
 
-const ThemeToggle: React.FC = () => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      let stored = localStorage.getItem("theme") as "light" | "dark" | null;
+/* ──────────────────────────────────────────────
+   Light/Dark Mode Variables
+─────────────────────────────────────────────── */
+:root {
+  --yms-blue: #0d3e8c;
+  --yms-yellow: #ffc627;
+  --yms-body-bg: #ffffff;
+  --yms-body-fg: #1f2937;
+}
 
-      if (!stored) {
-        stored = "light";
-        localStorage.setItem("theme", stored);
-      }
+.dark {
+  --yms-body-bg: #0d1117;
+  --yms-body-fg: #f1f5f9;
+}
 
-      setTheme(stored);
-      applyTheme(stored);
-    }
-  }, []);
+body {
+  background-color: var(--yms-body-bg);
+  color: var(--yms-body-fg);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1.05rem;
+}
 
-  const applyTheme = (mode: "light" | "dark") => {
-    const root = document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(mode);
-  };
+/* ──────────────────────────────────────────────
+   Section & Label Styling
+─────────────────────────────────────────────── */
+.label-yellow {
+  color: var(--yms-yellow);
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.25rem;
+}
 
-  const toggleTheme = () => {
-    const next = theme === "light" ? "dark" : "light";
-    setTheme(next);
-    localStorage.setItem("theme", next);
-    applyTheme(next);
-  };
+.dark .label-yellow {
+  color: #5ea4f3;
+}
 
-  return (
-    <button
-      onClick={toggleTheme}
-      className="absolute top-4 right-4 bg-gray-700 dark:bg-yellow-400 text-white dark:text-black px-3 py-1 rounded hover:opacity-90 text-sm font-semibold shadow transition"
-      aria-label="Toggle Theme"
-    >
-      {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-    </button>
-  );
-};
+.section-header-blue {
+  color: var(--yms-blue);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+}
 
-export default ThemeToggle;
+.dark .section-header-blue {
+  color: #5ea4f3;
+}
+
+/* ──────────────────────────────────────────────
+   Descriptors Under Inputs
+─────────────────────────────────────────────── */
+input + small,
+select + small,
+textarea + small {
+  color: #000000;
+}
+
+.dark input + small,
+.dark select + small,
+.dark textarea + small {
+  color: var(--yms-yellow);
+}
+
+/* ──────────────────────────────────────────────
+   Card Styling
+─────────────────────────────────────────────── */
+.card-light {
+  background-color: #f9fafb;
+}
+
+.dark .card-light {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+
+/* ──────────────────────────────────────────────
+   Print & PDF Styling (Grayscale Safe)
+─────────────────────────────────────────────── */
+@media print {
+  color-scheme: only light;
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 14pt !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    filter: none !important;
+  }
+
+  .label-yellow,
+  .section-header-blue {
+    color: #000000 !important;
+    font-weight: 700 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 1.25rem !important;
+  }
+
+  @page {
+    size: auto;
+    margin: 0.75in;
+  }
+
+  .print-page-break {
+    page-break-before: always;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   PDF Specific Cleanup for Canvas Export
+─────────────────────────────────────────────── */
+.print-grayscale * {
+  all: revert !important;
+  font-family: 'Open Sans', sans-serif !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  filter: grayscale(100%) !important;
+  box-sizing: border-box !important;
+}
+
+.print-grayscale {
+  background: #ffffff !important;
+  color: #000000 !important;
+  padding: 1rem;
+  font-family: 'Open Sans', sans-serif !important;
+  font-size: 13.5pt !important;
+}
+
+.print-grayscale h1,
+.print-grayscale h2,
+.print-grayscale h3 {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: bold !important;
+  color: #000000 !important;
+  font-size: 1.5rem !important;
+}
+
+.print-grayscale .label-yellow,
+.print-grayscale .section-header-blue {
+  color: #000000 !important;
+  font-weight: 700 !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 1.25rem !important;
+}
+
+/* ──────────────────────────────────────────────
+   Input & Dropdown Enhancements
+─────────────────────────────────────────────── */
+input,
+select,
+textarea {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: 2px solid #000000;
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+select option {
+  font-size: 0.95rem;
+  font-family: 'Open Sans', sans-serif;
+  color: #000000;
+}
+
+.dark select option {
+  color: #ffffff;
+}
+
+button {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+button:hover {
+  filter: brightness(1.05);
+}
+
+/* ──────────────────────────────────────────────
+   Utility: Screen Reader Only
+─────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
