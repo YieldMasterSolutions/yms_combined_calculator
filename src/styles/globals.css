@@ -88,6 +88,8 @@ body {
     background: #ffffff !important;
     color: #000000 !important;
     font-size: 14pt !important;
+    font-family: 'Open Sans', sans-serif !important;
+    line-height: 1.5 !important;
   }
 
   * {
@@ -95,7 +97,7 @@ body {
     print-color-adjust: exact !important;
     filter: none !important;
     overflow-wrap: break-word !important;
-    line-height: 1.45 !important;
+    box-sizing: border-box !important;
   }
 
   .label-yellow,
@@ -104,6 +106,28 @@ body {
     font-weight: 700 !important;
     font-family: 'Montserrat', sans-serif !important;
     font-size: 1.25rem !important;
+  }
+
+  .card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    background-color: #e0e0e0;
+    border: 2px solid black;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+  }
+
+  .pdf-output-box {
+    border: 2px solid black;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+
+  h2, h3 {
+    page-break-after: avoid;
   }
 
   @page {
