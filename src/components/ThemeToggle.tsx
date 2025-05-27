@@ -9,13 +9,7 @@ const ThemeToggle: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      let stored = localStorage.getItem("theme") as "light" | "dark" | null;
-
-      if (!stored) {
-        stored = "light";
-        localStorage.setItem("theme", stored);
-      }
-
+      const stored = (localStorage.getItem("theme") as "light" | "dark") || "light";
       setTheme(stored);
       applyTheme(stored);
     }
@@ -37,7 +31,7 @@ const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="absolute top-4 right-4 bg-gray-700 dark:bg-yellow-400 text-white dark:text-black px-3 py-1 rounded hover:opacity-90 text-sm font-semibold shadow transition"
+      className="fixed top-4 right-4 z-50 bg-blue-700 dark:bg-yellow-400 text-white dark:text-black px-4 py-1.5 rounded-lg text-sm font-[Montserrat] font-semibold shadow-md hover:opacity-90 transition"
       aria-label="Toggle Theme"
     >
       {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}

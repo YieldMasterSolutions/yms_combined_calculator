@@ -66,7 +66,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
       : `${marketPriceUnit}/acre`;
 
   const cardClass =
-    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl border border-gray-400 text-[1.13rem] bg-white";
+    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 border border-gray-500 rounded-md bg-white text-[1.13rem]";
   const headerClass =
     "text-[1.4rem] font-bold font-[Montserrat] mb-2 text-black";
   const labelClass =
@@ -196,7 +196,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   );
 
   return (
-    <div className="print-grayscale p-6 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
+    <div className="print-grayscale px-8 pt-8 pb-16 text-black bg-white text-[1.11rem] font-[Open_Sans] w-full max-w-[900px] mx-auto">
       <div className="mb-6 text-center">
         <h1 className="text-[1.75rem] font-[Montserrat] font-bold mb-2 text-black">
           Biological Program Calculator Summary
