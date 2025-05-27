@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFResults from "./PDFResults";
 import { ProductCalculation } from "../utils/calculations";
@@ -39,30 +40,34 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
   seedType,
   acres,
 }) => {
+  const documentProps = (
+    <PDFResults
+      growerName={growerName}
+      repName={repName}
+      seedTreatmentResults={seedTreatmentResults}
+      inFurrowFoliarResults={inFurrowFoliarResults}
+      totalCostPerAcre={totalCostPerAcre}
+      totalUndiscountedCost={totalUndiscountedCost}
+      totalDiscountedCost={totalDiscountedCost}
+      roi={roi}
+      marketPriceUnit={marketPriceUnit}
+      seedType={seedType}
+      acres={acres}
+    />
+  );
+
   return (
-    <PDFDownloadLink
-      document={
-        <PDFResults
-          growerName={growerName}
-          repName={repName}
-          seedTreatmentResults={seedTreatmentResults}
-          inFurrowFoliarResults={inFurrowFoliarResults}
-          totalCostPerAcre={totalCostPerAcre}
-          totalUndiscountedCost={totalUndiscountedCost}
-          totalDiscountedCost={totalDiscountedCost}
-          roi={roi}
-          marketPriceUnit={marketPriceUnit}
-          seedType={seedType}
-          acres={acres}
-        />
-      }
-      fileName="Biological_Program_Summary.pdf"
-      className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition"
-    >
-      {({ loading }) =>
-        loading ? "Preparing PDF..." : "Download PDF Summary"
-      }
-    </PDFDownloadLink>
+    <div className="inline-block">
+      <PDFDownloadLink
+        document={documentProps}
+        fileName="Biological_Program_Summary.pdf"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition"
+      >
+        {({ loading }) =>
+          loading ? "Preparing PDF..." : "Download PDF Summary"
+        }
+      </PDFDownloadLink>
+    </div>
   );
 };
 
