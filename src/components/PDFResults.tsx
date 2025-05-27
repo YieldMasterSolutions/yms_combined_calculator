@@ -78,18 +78,14 @@ interface PDFResultsProps {
   acres: number;
 }
 
-const PDFResults: React.FC<PDFResultsProps> = ({
-  growerName,
-  repName,
-  seedTreatmentResults,
-  totalCostPerAcre,
-  totalUndiscountedCost,
-  totalDiscountedCost,
-  roi,
-  marketPriceUnit,
-  seedType,
-  acres,
-}) => {
+const PDFResults: React.FC<PDFResultsProps> = (props) => {
+  const {
+    growerName,
+    repName,
+    seedTreatmentResults,
+    acres
+  } = props;
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
