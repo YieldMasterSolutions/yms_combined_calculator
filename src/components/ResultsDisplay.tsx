@@ -61,7 +61,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const valueClass =
     "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
   const cardClass =
-    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg card-light";
+    "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-600";
 
   const divider = <hr className="my-6 border-gray-300 dark:border-gray-600" />;
 
@@ -192,7 +192,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   );
 
   return (
-    <div className="text-black dark:text-white text-[1.1rem] font-[Open_Sans]">
+    <div className="text-black dark:text-white text-[1.1rem] font-[Open_Sans] px-4">
       {renderBasicSeedCalculations()}
       {renderSeedTreatmentCosts()}
       {renderInFurrowFoliarCosts()}
