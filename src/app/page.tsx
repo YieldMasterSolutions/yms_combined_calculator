@@ -1,4 +1,4 @@
-Current contents of page.tsx for updating.  Regenerate according to all my rules:  // src/app/page.tsx
+// src/app/page.tsx
 
 "use client";
 
