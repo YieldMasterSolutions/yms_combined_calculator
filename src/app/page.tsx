@@ -8,7 +8,6 @@ import CalculatorForm from "../components/CalculatorForm";
 import ResultsDisplay from "../components/ResultsDisplay";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 import PDFResults from "../components/PDFResults";
-import ThemeToggle from "../components/ThemeToggle";
 import {
   ProductCalculation,
   calculateSeedTreatmentData,
@@ -127,10 +126,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white px-4 py-6 font-[Open_Sans]">
       <div className="max-w-6xl mx-auto relative">
-        <div className="flex justify-end mb-2">
-          <ThemeToggle />
-        </div>
-
         <div className="flex items-center justify-between mb-6">
           <Image
             src="/yms_combined_calculator/ymslogo3.png"
