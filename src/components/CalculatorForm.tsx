@@ -1,344 +1,241 @@
-// src/components/CalculatorForm.tsx
+// src/components/PDFResults.tsx
 
 import React from "react";
 import {
-  ProductData,
-  productsSeedTreatment,
-  productsInFurrowFoliar,
-  seedTypes,
-} from "../utils/data";
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Font,
+} from "@react-pdf/renderer";
+import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
 
-interface CalculatorFormProps {
-  seedType: string;
-  setSeedType: (value: string) => void;
-  acres: string;
-  setAcres: (value: string) => void;
-  seedingRate: string;
-  setSeedingRate: (value: string) => void;
-  seedingRateUnit: string;
-  setSeedingRateUnit: (value: string) => void;
-  overrideSeeds: string;
-  setOverrideSeeds: (value: string) => void;
-  seedsPerUnitOverride: string;
-  setSeedsPerUnitOverride: (value: string) => void;
-  marketPrice: string;
-  setMarketPrice: (value: string) => void;
-  marketPriceUnit: string;
-  setMarketPriceUnit: (value: string) => void;
-  dealerDiscount: string;
-  setDealerDiscount: (value: string) => void;
-  growerDiscount: string;
-  setGrowerDiscount: (value: string) => void;
+// Register fonts
+Font.register({
+  family: "Open Sans",
+  src: "https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0b.woff2",
+});
+Font.register({
+  family: "Montserrat",
+  src: "https://fonts.gstatic.com/s/montserrat/v15/JTUQjIg1_i6t8kCHKm45_Q.woff2",
+});
+
+// Styles
+const styles = StyleSheet.create({
+  page: {
+    padding: 40,
+    fontSize: 11,
+    fontFamily: "Open Sans",
+    color: "#000",
+  },
+  header: {
+    fontSize: 20,
+    fontFamily: "Montserrat",
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  subheader: {
+    fontSize: 14,
+    fontFamily: "Montserrat",
+    fontWeight: "bold",
+    marginBottom: 6,
+    marginTop: 20,
+  },
+  section: {
+    marginBottom: 20,
+    padding: 10,
+    border: "2px solid black",
+    backgroundColor: "#e0e0e0",
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderColor: "#000",
+    borderWidth: 1.5,
+    borderStyle: "solid",
+    borderRadius: 2,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    marginBottom: 6,
+  },
+  label: {
+    fontFamily: "Montserrat",
+    fontWeight: "bold",
+    color: "#000",
+    lineHeight: 1.4,
+  },
+  value: {
+    fontFamily: "Open Sans",
+    color: "#000",
+    lineHeight: 1.4,
+  },
+});
+
+interface PDFResultsProps {
   growerName: string;
-  setGrowerName: (value: string) => void;
   repName: string;
-  setRepName: (value: string) => void;
-  seedProducts: (ProductData | null)[];
-  setSeedProducts: (products: (ProductData | null)[]) => void;
-  foliarProducts: (ProductData | null)[];
-  setFoliarProducts: (products: (ProductData | null)[]) => void;
-  onCalculate: () => void;
+  seedTreatmentResults: ProductCalculation[];
+  inFurrowFoliarResults: ProductCalculation[];
+  totalCostPerAcre: number;
+  totalUndiscountedCost: number;
+  totalDiscountedCost: number;
+  roi: {
+    breakevenYield: number;
+    roi2to1: number;
+    roi3to1: number;
+    roi4to1: number;
+    roi5to1: number;
+  };
+  marketPriceUnit: string;
+  seedType: string;
+  acres: number;
 }
 
-const CalculatorForm: React.FC<CalculatorFormProps> = ({
-  seedType,
-  setSeedType,
-  acres,
-  setAcres,
-  seedingRate,
-  setSeedingRate,
-  seedingRateUnit,
-  setSeedingRateUnit,
-  overrideSeeds,
-  setOverrideSeeds,
-  seedsPerUnitOverride,
-  setSeedsPerUnitOverride,
-  marketPrice,
-  setMarketPrice,
-  marketPriceUnit,
-  setMarketPriceUnit,
-  dealerDiscount,
-  setDealerDiscount,
-  growerDiscount,
-  setGrowerDiscount,
+const PDFResults: React.FC<PDFResultsProps> = ({
   growerName,
-  setGrowerName,
   repName,
-  setRepName,
-  seedProducts,
-  setSeedProducts,
-  foliarProducts,
-  setFoliarProducts,
-  onCalculate,
+  seedTreatmentResults,
+  inFurrowFoliarResults,
+  totalCostPerAcre,
+  totalUndiscountedCost,
+  totalDiscountedCost,
+  roi,
+  marketPriceUnit,
+  seedType,
+  acres,
 }) => {
-  const selectedSeedDefaults = seedTypes.find(
-    (s) => s["Seed Type"].toLowerCase() === seedType.toLowerCase()
+  const renderRow = (label: string, value: string | number) => (
+    <View style={styles.row}>
+      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.value}>{value}</Text>
+    </View>
   );
 
-  const handleSeedProductChange = (index: number, value: string) => {
-    const selected = productsSeedTreatment.find((p) => p["Product Name"] === value) || null;
-    const updated = [...seedProducts];
-    updated[index] = selected;
-    setSeedProducts(updated);
-  };
-
-  const handleFoliarProductChange = (index: number, value: string) => {
-    const selected = productsInFurrowFoliar.find((p) => p["Product Name"] === value) || null;
-    const updated = [...foliarProducts];
-    updated[index] = selected;
-    setFoliarProducts(updated);
-  };
-
-  const productSummary = (product: ProductData) => {
-    const size = product["Package Size"];
-    const units = product["Package Units"];
-    const type = product["Package Type"];
-    const rate = product["Application Rate"];
-    const unit = product["Application Rate Unit"];
-    const capacity = rate && size ? Math.floor(size / rate) : "-";
-    const treated = unit?.includes("/unit") ? "units" : "acres";
-    return `${size} ${units} ${type} – ${rate} ${unit} – Treats ${capacity} ${treated}`;
-  };
-
   return (
-    <form className="space-y-6 text-[1rem] font-[Open_Sans]">
-      {/* Grower Info */}
-      <div>
-        <h2 className="section-header-blue">Grower & Rep Info</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">
-              Grower Name <span className="text-gray-500">(Optional)</span>
-            </label>
-            <input
-              type="text"
-              value={growerName}
-              onChange={(e) => setGrowerName(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">
-              Dealer or Account Manager Name <span className="text-gray-500">(Optional)</span>
-            </label>
-            <input
-              type="text"
-              value={repName}
-              onChange={(e) => setRepName(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-          </div>
-        </div>
-      </div>
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.header}>Biological Program Calculator Summary</Text>
+        {renderRow("Grower", growerName || "—")}
+        {renderRow("Dealer or Account Manager", repName || "—")}
+        {renderRow("Total Acres", formatNumber(acres))}
+        {renderRow("Seed Type", seedType)}
 
-      {/* Crop Inputs */}
-      <div>
-        <h2 className="section-header-blue">Crop Inputs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Seed Type</label>
-            <select
-              value={seedType}
-              onChange={(e) => setSeedType(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            >
-              <option value="">Select Seed Type</option>
-              {seedTypes.map((s) => (
-                <option key={s["Seed Type"]} value={s["Seed Type"]}>
-                  {s["Seed Type"]}
-                </option>
+        {/* Seed Calculations */}
+        {seedTreatmentResults.length > 0 && (
+          <>
+            <Text style={styles.subheader}>Basic Seed Calculations</Text>
+            <View style={styles.section}>
+              {renderRow(
+                "Number of Seeds per Unit",
+                formatNumber(seedTreatmentResults[0].seedsPerUnit)
+              )}
+              {renderRow(
+                "Total Number of Units to Be Treated",
+                formatNumber(seedTreatmentResults[0].unitsToBeTreated)
+              )}
+              {renderRow(
+                "Number of Bushels to Be Treated",
+                formatNumber(seedTreatmentResults[0].totalBushels)
+              )}
+              {renderRow(
+                "Total Weight of Seeds (lbs)",
+                formatNumber(seedTreatmentResults[0].totalWeight)
+              )}
+            </View>
+
+            <Text style={styles.subheader}>Seed Treatment Costs</Text>
+            <View style={styles.section}>
+              {renderRow(
+                "Total Amount of Product Needed",
+                formatNumber(seedTreatmentResults[0].totalProductNeeded)
+              )}
+              {renderRow(
+                "Total Product Units to Order",
+                formatNumber(seedTreatmentResults[0].totalProductUnits)
+              )}
+              {renderRow(
+                "Product Cost per Unit",
+                `$${formatNumber(seedTreatmentResults[0].costPerUnit)}`
+              )}
+              {renderRow(
+                "Total Cost to Grower (MSRP)",
+                `$${formatNumber(seedTreatmentResults[0].totalMSRPCost)}`
+              )}
+              {renderRow(
+                "Total Discounted Cost to Grower",
+                `$${formatNumber(seedTreatmentResults[0].totalDiscountedCost)}`
+              )}
+              {renderRow(
+                "Cost per Unit of Treated Seed",
+                `$${formatNumber(seedTreatmentResults[0].costPerUnitTreatedSeed)}`
+              )}
+              {renderRow(
+                "Individual Cost of Seed Treatment per Acre",
+                `$${formatNumber(seedTreatmentResults[0].costPerAcre)}`
+              )}
+            </View>
+          </>
+        )}
+
+        {/* In-Furrow / Foliar */}
+        {inFurrowFoliarResults.length > 0 && (
+          <>
+            <Text style={styles.subheader}>In-Furrow / Foliar Product Costs</Text>
+            <View style={styles.section}>
+              {inFurrowFoliarResults.map((product, idx) => (
+                <View key={idx}>
+                  {renderRow("Product Name", `${product.name} (${product.applicationMethod})`)}
+                  {renderRow(
+                    "Total Product Needed",
+                    `${formatNumber(product.totalProductNeeded)}`
+                  )}
+                  {renderRow(
+                    "Total Product Units to Order",
+                    `${formatNumber(product.totalProductUnits)}`
+                  )}
+                  {renderRow(
+                    "Cost per Acre",
+                    `$${formatNumber(product.costPerAcre)}`
+                  )}
+                  {renderRow(
+                    "Total Cost (MSRP)",
+                    `$${formatNumber(product.totalMSRPCost)}`
+                  )}
+                  {renderRow(
+                    "Discounted Total Cost",
+                    `$${formatNumber(product.totalDiscountedCost)}`
+                  )}
+                </View>
               ))}
-            </select>
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Acres</label>
-            <input
-              type="text"
-              value={acres}
-              onChange={(e) => setAcres(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Seeding Rate</label>
-            <input
-              type="text"
-              value={seedingRate}
-              onChange={(e) => setSeedingRate(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Seeding Rate Unit</label>
-            <select
-              value={seedingRateUnit}
-              onChange={(e) => setSeedingRateUnit(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            >
-              <option value="seeds/acre">seeds/acre</option>
-              <option value="lbs/acre">lbs/acre</option>
-              <option value="bu/acre">bu/acre</option>
-            </select>
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">
-              Seeds Per Unit Override <span className="text-gray-500">(Optional)</span>
-            </label>
-            <input
-              type="text"
-              value={seedsPerUnitOverride}
-              onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-            <small className="text-gray-500">
-              Default:{" "}
-              {selectedSeedDefaults?.["Seeds/lb"] && selectedSeedDefaults?.["Lbs/Unit"]
-                ? formatNumber(
-                    parseFloat(selectedSeedDefaults["Seeds/lb"]) * selectedSeedDefaults["Lbs/Unit"],
-                    0
-                  )
-                : "N/A"}{" "}
-              seeds/unit
-            </small>
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">
-              Seeds Per Pound Override <span className="text-gray-500">(Optional)</span>
-            </label>
-            <input
-              type="text"
-              value={overrideSeeds}
-              onChange={(e) => setOverrideSeeds(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-            <small className="text-gray-500">
-              Default: {selectedSeedDefaults?.["Seeds/lb"] || "N/A"} seeds/lb
-            </small>
-          </div>
-        </div>
-      </div>
+            </View>
+          </>
+        )}
 
-      {/* Market Inputs */}
-      <div>
-        <h2 className="section-header-blue">Market and ROI Inputs</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Market Price</label>
-            <input
-              type="text"
-              value={marketPrice}
-              onChange={(e) => setMarketPrice(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Price Unit</label>
-            <select
-              value={marketPriceUnit}
-              onChange={(e) => setMarketPriceUnit(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            >
-              <option value="bu">bu</option>
-              <option value="ton">ton</option>
-              <option value="cwt">cwt</option>
-              <option value="lbs">lbs</option>
-            </select>
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Dealer Discount (%)</label>
-            <input
-              type="text"
-              value={dealerDiscount}
-              onChange={(e) => setDealerDiscount(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-bold font-[Montserrat]">Grower Discount (%)</label>
-            <input
-              type="text"
-              value={growerDiscount}
-              onChange={(e) => setGrowerDiscount(e.target.value)}
-              className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-            />
-          </div>
-        </div>
-      </div>
+        {/* Total Program Cost */}
+        <Text style={styles.subheader}>Total Program Cost</Text>
+        <View style={styles.section}>
+          {renderRow("Total Undiscounted Cost", `$${formatNumber(totalUndiscountedCost)}`)}
+          {renderRow("Total Discounted Cost", `$${formatNumber(totalDiscountedCost)}`)}
+          {renderRow("Total Cost per Acre", `$${formatNumber(totalCostPerAcre)}`)}
+        </View>
 
-      {/* Seed Products */}
-      <div>
-        <h2 className="section-header-blue">Seed Treatment Products</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[0, 1].map((index) => (
-            <div key={index}>
-              <label className="block mb-1 font-bold font-[Montserrat]">
-                Seed Product {index + 1}
-              </label>
-              <select
-                value={seedProducts[index]?.["Product Name"] || ""}
-                onChange={(e) => handleSeedProductChange(index, e.target.value)}
-                className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-              >
-                <option value="">Select Seed Treatment Product</option>
-                {productsSeedTreatment.map((p) => (
-                  <option key={p["Product Name"]} value={p["Product Name"]}>
-                    {p["Product Name"]}
-                  </option>
-                ))}
-              </select>
-              {seedProducts[index] && (
-                <small className="block mt-1 italic text-black dark:text-yellow-400 text-sm">
-                  {productSummary(seedProducts[index]!)}
-                </small>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Foliar Products */}
-      <div>
-        <h2 className="section-header-blue">In-Furrow / Foliar Products</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[0, 1, 2, 3].map((index) => (
-            <div key={index}>
-              <label className="block mb-1 font-bold font-[Montserrat]">
-                Product {index + 1}
-              </label>
-              <select
-                value={foliarProducts[index]?.["Product Name"] || ""}
-                onChange={(e) => handleFoliarProductChange(index, e.target.value)}
-                className="border border-black p-2 w-full dark:bg-gray-800 dark:text-white"
-              >
-                <option value="">Select Product</option>
-                {productsInFurrowFoliar.map((p) => (
-                  <option key={p["Product Name"]} value={p["Product Name"]}>
-                    {p["Product Name"]}
-                  </option>
-                ))}
-              </select>
-              {foliarProducts[index] && (
-                <small className="block mt-1 italic text-black dark:text-yellow-400 text-sm">
-                  {productSummary(foliarProducts[index]!)}
-                </small>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="text-center pt-4">
-        <button
-          type="button"
-          onClick={onCalculate}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow"
-        >
-          Calculate
-        </button>
-      </div>
-    </form>
+        {/* ROI */}
+        <Text style={styles.subheader}>Breakeven ROI Calculations</Text>
+        <View style={styles.section}>
+          {renderRow(`Breakeven Yield (${marketPriceUnit})`, formatNumber(roi.breakevenYield))}
+          {renderRow(`Yield for 2:1 ROI`, formatNumber(roi.roi2to1))}
+          {renderRow(`Yield for 3:1 ROI`, formatNumber(roi.roi3to1))}
+          {renderRow(`Yield for 4:1 ROI`, formatNumber(roi.roi4to1))}
+          {renderRow(`Yield for 5:1 ROI`, formatNumber(roi.roi5to1))}
+        </View>
+      </Page>
+    </Document>
   );
 };
 
-export default CalculatorForm;
+export default PDFResults;
