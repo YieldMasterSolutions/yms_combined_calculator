@@ -46,14 +46,14 @@ export default function Home() {
 
   const handleCalculate = () => {
     const selectedSeedProducts = seedProducts
-      .filter((product): product is ProductData => product !== null)
+      .filter((p): p is ProductData => p !== null)
       .map((product) => ({
         product,
         applicationMethod: product["Application Method"] || "Seed Treatment",
       }));
 
     const selectedFoliarProducts = foliarProducts
-      .filter((product): product is ProductData => product !== null)
+      .filter((p): p is ProductData => p !== null)
       .map((product) => ({
         product,
         applicationMethod: product["Application Method"] || "In-Furrow",
