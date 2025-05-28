@@ -89,7 +89,7 @@ body {
     color: #000000 !important;
     font-size: 14pt !important;
     font-family: 'Open Sans', sans-serif !important;
-    line-height: 1.5 !important;
+    line-height: 1.6 !important;
   }
 
   * {
@@ -124,6 +124,7 @@ body {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
+    background-color: #e0e0e0;
   }
 
   h2, h3 {
