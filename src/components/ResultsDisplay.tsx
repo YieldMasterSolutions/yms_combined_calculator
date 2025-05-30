@@ -71,30 +71,23 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <h2 className={sectionHeaderClass}>Basic Seed Calculations</h2>
         <div className={cardClass}>
           <div className={labelClass}>Number of Seeds per Unit</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].seedsPerUnit)}
-          </div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].seedsPerUnit, 2)}</div>
           <div className={labelClass}>Total Number of Units to Be Treated</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].unitsToBeTreated)}
-          </div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].unitsToBeTreated, 2)}</div>
           <div className={labelClass}>Number of Bushels to Be Treated</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].totalBushels)}
-          </div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalBushels, 2)}</div>
           <div className={labelClass}>Total Weight of Seeds (lbs)</div>
-          <div className={valueClass}>
-            {formatNumber(seedTreatmentResults[0].totalWeight)}
-          </div>
+          <div className={valueClass}>{formatNumber(seedTreatmentResults[0].totalWeight, 2)}</div>
         </div>
         {divider}
       </>
     );
 
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
-    const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(
+    const packageCount = product.totalProductUnits || 0;
+    const packageLabel = `${formatNumber(packageCount, 0)} ${pluralize(
       product.packageType || "Package",
-      product.totalProductUnits || 0
+      packageCount
     )}`;
 
     const treatmentUnit = isSeed ? "units" : "acres";
@@ -113,39 +106,25 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <h2 className={sectionHeaderClass}>{header}</h2>
         <div className={cardClass}>
           <div className={labelClass}>Total Product Needed</div>
-          <div className={valueClass}>
-            {formatNumber(product.totalProductNeeded)} {product.rateUnit?.split("/")[0]}
-          </div>
+          <div className={valueClass}>{formatNumber(product.totalProductNeeded, 2)} {product.rateUnit?.split("/")[0]}</div>
           <div className={labelClass}>Total Product Units to Order</div>
           <div className={valueClass}>{packageLabel}</div>
           <div className={labelClass}>Product Cost per Package</div>
-          <div className={valueClass}>
-            ${formatNumber(product.productCostPerPackage, 2, true)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.productCostPerPackage, 2)}</div>
           <div className={labelClass}>{rateUnitLabel}</div>
-          <div className={valueClass}>
-            ${formatNumber(product.productCostPerOz, 2, true)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.productCostPerOz, 2)}</div>
           <div className={labelClass}>Total Undiscounted Cost</div>
-          <div className={valueClass}>
-            ${formatNumber(product.originalTotalCostToGrower, 2, true)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.originalTotalCostToGrower, 2)}</div>
           <div className={labelClass}>Total Discounted Cost</div>
-          <div className={valueClass}>
-            ${formatNumber(product.discountedTotalCostToGrower, 2, true)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower, 2)}</div>
           {isSeed && (
             <>
               <div className={labelClass}>Cost per Treated Unit</div>
-              <div className={valueClass}>
-                ${formatNumber(product.costPerUnitSeed, 2, true)}
-              </div>
+              <div className={valueClass}>${formatNumber(product.productCostPerUnitSeed, 2)}</div>
             </>
           )}
           <div className={labelClass}>Product Cost per Acre</div>
-          <div className={valueClass}>
-            ${formatNumber(product.individualCostPerAcre, 2, true)}
-          </div>
+          <div className={valueClass}>${formatNumber(product.individualCostPerAcre, 2)}</div>
         </div>
         {divider}
       </div>
@@ -163,11 +142,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <h2 className={sectionHeaderClass}>Total Program Cost</h2>
       <div className={cardClass}>
         <div className={labelClass}>Total Undiscounted Cost</div>
-        <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2, true)}</div>
+        <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2)}</div>
         <div className={labelClass}>Total Discounted Cost</div>
-        <div className={valueClass}>${formatNumber(totalDiscountedCost, 2, true)}</div>
+        <div className={valueClass}>${formatNumber(totalDiscountedCost, 2)}</div>
         <div className={labelClass}>Cost per Acre</div>
-        <div className={valueClass}>${formatNumber(totalCostPerAcre, 2, true)}</div>
+        <div className={valueClass}>${formatNumber(totalCostPerAcre, 2)}</div>
       </div>
       {divider}
     </>
@@ -178,15 +157,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <h2 className={sectionHeaderClass}>Breakeven ROI Calculations</h2>
       <div className={cardClass}>
         <div className={labelClass}>Yield Needed to Breakeven</div>
-        <div className={valueClass}>{formatNumber(breakevenYield)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(breakevenYield, 2)} {unitLabel}</div>
         <div className={labelClass}>Yield for 2:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi2)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi2, 2)} {unitLabel}</div>
         <div className={labelClass}>Yield for 3:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi3)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi3, 2)} {unitLabel}</div>
         <div className={labelClass}>Yield for 4:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi4)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi4, 2)} {unitLabel}</div>
         <div className={labelClass}>Yield for 5:1 ROI</div>
-        <div className={valueClass}>{formatNumber(roi5)} {unitLabel}</div>
+        <div className={valueClass}>{formatNumber(roi5, 2)} {unitLabel}</div>
       </div>
     </>
   );

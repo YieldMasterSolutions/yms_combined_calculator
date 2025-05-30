@@ -12,68 +12,73 @@ import {
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
 
-// Register fonts
+// Register fonts (must use .ttf for react-pdf)
 Font.register({
   family: "Open Sans",
-  src: "https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFVZ0b.woff2",
+  src: "https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFUZ0ef8pkAg.ttf",
 });
 Font.register({
   family: "Montserrat",
-  src: "https://fonts.gstatic.com/s/montserrat/v15/JTUQjIg1_i6t8kCHKm45_Q.woff2",
+  src: "https://fonts.gstatic.com/s/montserrat/v15/JTUQjIg1_i6t8kCHKm45xW4.ttf",
 });
 
 const styles = StyleSheet.create({
   page: {
     padding: 40,
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: "Open Sans",
     color: "#000",
   },
   header: {
     fontSize: 20,
     fontFamily: "Montserrat",
-    fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
+    fontWeight: "bold",
+  },
+  section: {
+    marginBottom: 16,
+    padding: 10,
+    border: "1pt solid #999",
+    borderRadius: 4,
+    backgroundColor: "#f9f9f9",
   },
   subheader: {
     fontSize: 14,
     fontFamily: "Montserrat",
-    fontWeight: "bold",
     marginBottom: 6,
-    marginTop: 20,
-  },
-  section: {
-    marginBottom: 20,
-    padding: 10,
-    border: "2px solid black",
-    backgroundColor: "#e0e0e0",
+    fontWeight: "bold",
   },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    borderColor: "#000",
-    borderWidth: 1.5,
-    borderStyle: "solid",
-    borderRadius: 2,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   label: {
     fontFamily: "Montserrat",
+    fontSize: 11,
     fontWeight: "bold",
-    color: "#000",
-    lineHeight: 1.4,
+    color: "#333",
   },
   value: {
     fontFamily: "Open Sans",
+    fontSize: 11,
     color: "#000",
-    lineHeight: 1.4,
   },
 });
+
+const pluralize = (word: string, count: number) => {
+  if (count === 1) return word;
+  switch (word.toLowerCase()) {
+    case "box": return "Boxes";
+    case "pail": return "Pails";
+    case "pouch": return "Pouches";
+    case "jug": return "Jugs";
+    case "case": return "Cases";
+    case "unit": return "Units";
+    default: return word.endsWith("s") ? word : `${word}s`;
+  }
+};
 
 interface PDFResultsProps {
   growerName: string;
@@ -115,53 +120,66 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     </View>
   );
 
+  const unitLabel = seedType.toLowerCase().includes("corn") || seedType.toLowerCase().includes("soy")
+    ? "bu/acre"
+    : marketPriceUnit.includes("/")
+    ? marketPriceUnit
+    : `${marketPriceUnit}/acre`;
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <Text style={styles.header}>Biological Program Calculator Summary</Text>
-        {renderRow("Grower", growerName || "—")}
-        {renderRow("Dealer or Account Manager", repName || "—")}
-        {renderRow("Total Acres", formatNumber(acres))}
-        {renderRow("Seed Type", seedType)}
+
+        <View style={styles.section}>
+          {renderRow("Grower", growerName || "—")}
+          {renderRow("Rep or Dealer", repName || "—")}
+          {renderRow("Total Acres", formatNumber(acres))}
+          {renderRow("Seed Type", seedType)}
+        </View>
 
         {seedTreatmentResults.length > 0 && (
           <>
             <Text style={styles.subheader}>Basic Seed Calculations</Text>
             <View style={styles.section}>
               {renderRow("Number of Seeds per Unit", formatNumber(seedTreatmentResults[0].seedsPerUnit))}
-              {renderRow("Total Number of Units to Be Treated", formatNumber(seedTreatmentResults[0].unitsToBeTreated))}
+              {renderRow("Total Units to Be Treated", formatNumber(seedTreatmentResults[0].unitsToBeTreated))}
               {renderRow("Number of Bushels to Be Treated", formatNumber(seedTreatmentResults[0].totalBushels))}
-              {renderRow("Total Weight of Seeds (lbs)", formatNumber(seedTreatmentResults[0].totalWeight))}
+              {renderRow("Total Seed Weight (lbs)", formatNumber(seedTreatmentResults[0].totalWeight))}
             </View>
 
             <Text style={styles.subheader}>Seed Treatment Costs</Text>
-            <View style={styles.section}>
-              {renderRow("Total Amount of Product Needed", formatNumber(seedTreatmentResults[0].totalProductNeeded))}
-              {renderRow("Total Product Units to Order", formatNumber(seedTreatmentResults[0].totalProductUnits))}
-              {renderRow("Product Cost per Package", `$${formatNumber(seedTreatmentResults[0].productCostPerPackage)}`)}
-              {renderRow("Total Cost to Grower (MSRP)", `$${formatNumber(seedTreatmentResults[0].originalTotalCostToGrower)}`)}
-              {renderRow("Total Discounted Cost to Grower", `$${formatNumber(seedTreatmentResults[0].discountedTotalCostToGrower)}`)}
-              {renderRow("Cost per Unit of Treated Seed", `$${formatNumber(seedTreatmentResults[0].productCostPerUnitSeed)}`)}
-              {renderRow("Individual Cost of Seed Treatment per Acre", `$${formatNumber(seedTreatmentResults[0].individualCostPerAcre)}`)}
-            </View>
+            {seedTreatmentResults.map((p, i) => (
+              <View style={styles.section} key={i}>
+                {renderRow("Product Name", p.productName)}
+                {renderRow("Application Rate", `${p.applicationRate} ${p.rateUnit}`)}
+                {renderRow("Total Product Needed", `${formatNumber(p.totalProductNeeded)} ${p.rateUnit?.split("/")[0]}`)}
+                {renderRow("Total Product Units to Order", `${formatNumber(p.totalProductUnits)} ${pluralize(p.packageType || "Unit", p.totalProductUnits || 0)}`)}
+                {renderRow("Product Cost per Package", `$${formatNumber(p.productCostPerPackage)}`)}
+                {renderRow("Total Cost (MSRP)", `$${formatNumber(p.originalTotalCostToGrower)}`)}
+                {renderRow("Discounted Total Cost", `$${formatNumber(p.discountedTotalCostToGrower)}`)}
+                {renderRow("Cost per Unit Treated", `$${formatNumber(p.productCostPerUnitSeed)}`)}
+                {renderRow("Cost per Acre", `$${formatNumber(p.individualCostPerAcre)}`)}
+              </View>
+            ))}
           </>
         )}
 
         {inFurrowFoliarResults.length > 0 && (
           <>
             <Text style={styles.subheader}>In-Furrow / Foliar Product Costs</Text>
-            <View style={styles.section}>
-              {inFurrowFoliarResults.map((product, idx) => (
-                <View key={idx}>
-                  {renderRow("Product Name", `${product.productName} (${product.applicationMethod})`)}
-                  {renderRow("Total Product Needed", formatNumber(product.totalProductNeeded))}
-                  {renderRow("Total Product Units to Order", formatNumber(product.totalProductUnits))}
-                  {renderRow("Cost per Acre", `$${formatNumber(product.individualCostPerAcre)}`)}
-                  {renderRow("Total Cost (MSRP)", `$${formatNumber(product.originalTotalCostToGrower)}`)}
-                  {renderRow("Discounted Total Cost", `$${formatNumber(product.discountedTotalCostToGrower)}`)}
-                </View>
-              ))}
-            </View>
+            {inFurrowFoliarResults.map((p, i) => (
+              <View style={styles.section} key={i}>
+                {renderRow("Product Name", `${p.productName} (${p.applicationMethod})`)}
+                {renderRow("Application Rate", `${p.applicationRate} ${p.rateUnit}`)}
+                {renderRow("Total Product Needed", `${formatNumber(p.totalProductNeeded)} ${p.rateUnit?.split("/")[0]}`)}
+                {renderRow("Total Product Units to Order", `${formatNumber(p.totalProductUnits)} ${pluralize(p.packageType || "Unit", p.totalProductUnits || 0)}`)}
+                {renderRow("Product Cost per Package", `$${formatNumber(p.productCostPerPackage)}`)}
+                {renderRow("Total Cost (MSRP)", `$${formatNumber(p.originalTotalCostToGrower)}`)}
+                {renderRow("Discounted Total Cost", `$${formatNumber(p.discountedTotalCostToGrower)}`)}
+                {renderRow("Cost per Acre", `$${formatNumber(p.individualCostPerAcre)}`)}
+              </View>
+            ))}
           </>
         )}
 
@@ -174,11 +192,11 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
         <Text style={styles.subheader}>Breakeven ROI Calculations</Text>
         <View style={styles.section}>
-          {renderRow(`Breakeven Yield (${marketPriceUnit})`, formatNumber(roi.breakevenYield))}
-          {renderRow(`Yield for 2:1 ROI`, formatNumber(roi.roi2to1))}
-          {renderRow(`Yield for 3:1 ROI`, formatNumber(roi.roi3to1))}
-          {renderRow(`Yield for 4:1 ROI`, formatNumber(roi.roi4to1))}
-          {renderRow(`Yield for 5:1 ROI`, formatNumber(roi.roi5to1))}
+          {renderRow(`Breakeven Yield (${unitLabel})`, formatNumber(roi.breakevenYield))}
+          {renderRow("Yield for 2:1 ROI", formatNumber(roi.roi2to1))}
+          {renderRow("Yield for 3:1 ROI", formatNumber(roi.roi3to1))}
+          {renderRow("Yield for 4:1 ROI", formatNumber(roi.roi4to1))}
+          {renderRow("Yield for 5:1 ROI", formatNumber(roi.roi5to1))}
         </View>
       </Page>
     </Document>
