@@ -145,7 +145,7 @@ export default function Home() {
         <CalculatorForm
           seedType={seedType}
           setSeedType={setSeedType}
-          acres={parseFloat(acres || "0")}
+          acres={acres}
           setAcres={setAcres}
           seedingRate={seedingRate}
           setSeedingRate={setSeedingRate}
