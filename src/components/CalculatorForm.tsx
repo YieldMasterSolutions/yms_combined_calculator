@@ -1,4 +1,4 @@
-// src/components/CalculatorForm.tsx
+\// src/components/CalculatorForm.tsx
 
 import React from "react";
 import { ProductData, productsSeedTreatment, productsInFurrowFoliar, seedTypes } from "../utils/data";
@@ -95,7 +95,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <option value="">-- Select Product --</option>
           {products.map((p) => (
             <option key={p["Product Name"]} value={p["Product Name"]}>
-              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Unit"]} – ${p["Application Rate"]} ${p["Rate Unit"]} per ${p["Application Method"]}`}
+              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} – ${p["Application Rate"]} ${p["Rate Unit"]} per ${p["Application Method"]}`}
             </option>
           ))}
         </select>
@@ -177,3 +177,4 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 };
 
 export default CalculatorForm;
+
