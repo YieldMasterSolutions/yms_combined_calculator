@@ -1,7 +1,12 @@
 // src/components/CalculatorForm.tsx
 
 import React from "react";
-import { ProductData, seedTypes, productsSeedTreatment, productsInFurrowFoliar } from "../utils/data";
+import {
+  ProductData,
+  seedTypes,
+  productsSeedTreatment,
+  productsInFurrowFoliar,
+} from "../utils/data";
 
 interface CalculatorFormProps {
   seedType: string;
@@ -83,7 +88,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <select value={seedType} onChange={(e) => setSeedType(e.target.value)}>
           <option value="">-- Select Seed Type --</option>
           {seedTypes.map((seed) => (
-            <option key={seed} value={seed}>{seed}</option>
+            <option key={seed.value} value={seed.value}>{seed.label}</option>
           ))}
         </select>
 
