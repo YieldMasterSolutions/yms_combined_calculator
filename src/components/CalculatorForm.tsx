@@ -87,8 +87,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <label className="block">Seed Type</label>
         <select value={seedType} onChange={(e) => setSeedType(e.target.value)}>
           <option value="">-- Select Seed Type --</option>
-          {seedTypes.map((seed, index) => (
-            <option key={index} value={seed}>{seed}</option>
+          {seedTypes.map((seed) => (
+            <option key={seed["Seed Type"]} value={seed["Seed Type"]}>
+              {seed["Seed Type"]}
+            </option>
           ))}
         </select>
 
@@ -108,7 +110,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <input type="number" value={overrideSeeds} onChange={(e) => setOverrideSeeds(e.target.value)} />
 
         <label className="block">Seeds Per Unit (Override)</label>
-        <input type="number" value={seedsPerUnitOverride} onChange={(e) => setSeedsPerUnitOverride(e.target.value)} />
+        <input
+          type="number"
+          value={seedsPerUnitOverride}
+          onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
+        />
       </div>
 
       {/* Market & ROI Inputs */}
@@ -150,7 +156,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               <option value="">-- Select Product --</option>
               {productsSeedTreatment.map((product) => (
                 <option key={product.Name} value={product.Name}>
-                  {`${product.Name} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Rate"]} ${product["Rate Units"]} per ${product["Rate Basis"]}`}
+                  {`${product.Name} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} per ${product["Application Method"]}`}
                 </option>
               ))}
             </select>
@@ -173,7 +179,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
               <option value="">-- Select Product --</option>
               {productsInFurrowFoliar.map((product) => (
                 <option key={product.Name} value={product.Name}>
-                  {`${product.Name} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Rate"]} ${product["Rate Units"]} per ${product["Rate Basis"]}`}
+                  {`${product.Name} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} per ${product["Application Method"]}`}
                 </option>
               ))}
             </select>
