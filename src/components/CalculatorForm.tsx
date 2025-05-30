@@ -87,8 +87,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <label className="block">Seed Type</label>
         <select value={seedType} onChange={(e) => setSeedType(e.target.value)}>
           <option value="">-- Select Seed Type --</option>
-          {seedTypes.map((seed) => (
-            <option key={seed.value} value={seed.value}>{seed.label}</option>
+          {seedTypes.map((seed, index) => (
+            <option key={index} value={seed}>{seed}</option>
           ))}
         </select>
 
