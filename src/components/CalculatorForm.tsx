@@ -145,9 +145,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <div key={idx}>
             <label>Seed Treatment Product {idx + 1}</label>
             <select
-              value={seedProducts[idx]?.Name || ""}
+              value={seedProducts[idx]?.["Product Name"] || ""}
               onChange={(e) => {
-                const selected = productsSeedTreatment.find((p) => p.Name === e.target.value) || null;
+                const selected = productsSeedTreatment.find((p) => p["Product Name"] === e.target.value) || null;
                 const updated = [...seedProducts];
                 updated[idx] = selected;
                 setSeedProducts(updated);
@@ -155,8 +155,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             >
               <option value="">-- Select Product --</option>
               {productsSeedTreatment.map((product) => (
-                <option key={product.Name} value={product.Name}>
-                  {`${product.Name} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} per ${product["Application Method"]}`}
+                <option key={product["Product Name"]} value={product["Product Name"]}>
+                  {`${product["Product Name"]} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} per ${product["Application Method"]}`}
                 </option>
               ))}
             </select>
@@ -168,9 +168,9 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <div key={idx}>
             <label>Foliar/In-Furrow Product {idx + 1}</label>
             <select
-              value={foliarProducts[idx]?.Name || ""}
+              value={foliarProducts[idx]?.["Product Name"] || ""}
               onChange={(e) => {
-                const selected = productsInFurrowFoliar.find((p) => p.Name === e.target.value) || null;
+                const selected = productsInFurrowFoliar.find((p) => p["Product Name"] === e.target.value) || null;
                 const updated = [...foliarProducts];
                 updated[idx] = selected;
                 setFoliarProducts(updated);
@@ -178,8 +178,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             >
               <option value="">-- Select Product --</option>
               {productsInFurrowFoliar.map((product) => (
-                <option key={product.Name} value={product.Name}>
-                  {`${product.Name} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} per ${product["Application Method"]}`}
+                <option key={product["Product Name"]} value={product["Product Name"]}>
+                  {`${product["Product Name"]} – ${product["Package Size"]} ${product["Package Units"]} – ${product["Application Rate"]} ${product["Application Rate Unit"]} per ${product["Application Method"]}`}
                 </option>
               ))}
             </select>
