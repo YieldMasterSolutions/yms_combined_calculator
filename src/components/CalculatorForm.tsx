@@ -69,7 +69,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   const inputClass = "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
   const labelClass = "text-yellow-500 font-semibold";
   const helperTextClass = "text-xs text-gray-300 italic mt-1";
-  const sectionTitleClass = "text-xl font-bold text-blue-400 mt-6 mb-2 font-[Montserrat]";
+  const sectionTitleClass = "text-2xl font-bold text-blue-400 mt-6 mb-2 font-[Montserrat]";
 
   const renderProductDropdown = (
     products: ProductData[],
@@ -95,7 +95,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <option value="">-- Select Product --</option>
           {products.map((p) => (
             <option key={p["Product Name"]} value={p["Product Name"]}>
-              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} – ${p["Application Rate"]} ${p["Rate Unit"]} per ${p["Application Method"]}`}
+              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Unit"]} – ${p["Application Rate"]} ${p["Rate Unit"]} per ${p["Application Method"]}`}
             </option>
           ))}
         </select>
@@ -115,7 +115,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     : "Calculated using Seeds/lb × Lbs/Unit";
 
   return (
-    <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
       <div className="md:col-span-2">
         <h2 className={sectionTitleClass}>Grower and Dealer Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -170,11 +170,60 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </div>
       </div>
 
-      {/* Remaining layout unchanged */}
-      {/* ... */}
+      <div className="md:col-span-2">
+        <h2 className={sectionTitleClass}>Market and ROI Inputs</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className={labelClass}>Market Price</label>
+            <input className={inputClass} value={marketPrice} onChange={(e) => setMarketPrice(e.target.value)} />
+          </div>
+          <div>
+            <label className={labelClass}>Market Unit</label>
+            <select className={inputClass} value={marketPriceUnit} onChange={(e) => setMarketPriceUnit(e.target.value)}>
+              <option value="bu">bu</option>
+              <option value="cwt">cwt</option>
+              <option value="ton">ton</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelClass}>Dealer Discount %</label>
+            <input className={inputClass} value={dealerDiscount} onChange={(e) => setDealerDiscount(e.target.value)} />
+          </div>
+          <div>
+            <label className={labelClass}>Grower Discount %</label>
+            <input className={inputClass} value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} />
+          </div>
+        </div>
+      </div>
+
+      <div className="md:col-span-2">
+        <h2 className={sectionTitleClass}>Product Inputs</h2>
+        <h3 className="text-lg font-bold text-yellow-600">Seed Treatment Products</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {renderProductDropdown(productsSeedTreatment, seedProducts, setSeedProducts, "Seed Treatment Product 1", 0)}
+          {renderProductDropdown(productsSeedTreatment, seedProducts, setSeedProducts, "Seed Treatment Product 2", 1)}
+        </div>
+
+        <h3 className="text-lg font-bold text-yellow-600">In-Furrow / Foliar Products</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 1", 0)}
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 2", 1)}
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 3", 2)}
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 4", 3)}
+        </div>
+      </div>
+
+      <div className="md:col-span-2 text-center mt-6">
+        <button
+          type="button"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded text-lg shadow"
+          onClick={onCalculate}
+        >
+          Calculate
+        </button>
+      </div>
     </form>
   );
 };
 
 export default CalculatorForm;
- 
