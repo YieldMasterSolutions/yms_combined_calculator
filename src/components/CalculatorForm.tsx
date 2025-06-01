@@ -71,10 +71,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setFoliarProducts,
   onCalculate,
 }) => {
-  const inputClass = "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
+  const inputClass =
+    "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
   const labelClass = "text-yellow-500 font-semibold text-sm";
   const helperClass = "text-xs text-gray-300 italic mt-1";
-  const sectionTitleClass = "text-xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
+  const sectionTitleClass =
+    "text-xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
 
   const renderProductDropdown = (
     products: ProductData[],
@@ -107,7 +109,12 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </select>
         {selectedProduct && (
           <div className={helperClass}>
-            {`Treats approximately ${(parseFloat(selectedProduct["Package Size"]) / parseFloat(selectedProduct["Application Rate"]) || 0).toFixed(1)} ${selectedProduct["Application Method"] === "Planter Box Treatment" ? "units" : "acres"}`}
+            {`Treats approximately ${(parseFloat(String(selectedProduct["Package Size"])) /
+              parseFloat(String(selectedProduct["Application Rate"])) || 0).toFixed(1)} ${
+              selectedProduct["Application Method"] === "Planter Box Treatment"
+                ? "units"
+                : "acres"
+            }`}
           </div>
         )}
       </div>
