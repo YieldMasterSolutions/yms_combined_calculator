@@ -73,10 +73,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 }) => {
   const inputClass =
     "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
-  const labelClass = "text-yellow-500 font-semibold text-sm";
-  const helperClass = "text-xs text-gray-300 italic mt-1";
+  const labelClass = "text-gray-300 font-semibold text-sm";
+  const helperClass = "text-xs text-gray-400 italic mt-1";
   const sectionTitleClass =
-    "text-xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
+    "text-2xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
 
   const renderProductDropdown = (
     products: ProductData[],
@@ -153,7 +153,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
       <div>
         <h2 className={sectionTitleClass}>Crop Inputs</h2>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Seed Type</label>
             <select
@@ -221,7 +221,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
       <div>
         <h2 className={sectionTitleClass}>Market and ROI Inputs</h2>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Market Price</label>
             <input
@@ -263,7 +263,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 
       <div>
         <h2 className={sectionTitleClass}>Product Inputs</h2>
-        <div className="text-yellow-500 font-bold mb-2">Seed Treatment Products</div>
+        <div className="text-yellow-400 font-bold mb-2">Seed Treatment Products</div>
         <div className="grid md:grid-cols-2 gap-4">
           {renderProductDropdown(
             productsSeedTreatment,
@@ -280,7 +280,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             1
           )}
         </div>
-        <div className="text-yellow-500 font-bold mt-4 mb-2">
+        <div className="text-yellow-400 font-bold mt-4 mb-2">
           In-Furrow / Foliar Products
         </div>
         <div className="grid md:grid-cols-2 gap-4">
