@@ -24,7 +24,7 @@ export default function Home() {
   const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
 
   const [marketPrice, setMarketPrice] = useState("");
-  const [marketPriceUnit, setMarketPriceUnit] = useState("bu");
+  const [marketPriceUnit, setMarketPriceUnit] = useState("bushel");
   const [dealerDiscount, setDealerDiscount] = useState("");
   const [growerDiscount, setGrowerDiscount] = useState("");
 

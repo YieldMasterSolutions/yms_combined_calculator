@@ -62,7 +62,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     "font-bold text-black dark:text-white text-lg font-[Open_Sans]";
   const cardClass =
     "mb-8 grid grid-cols-1 md:grid-cols-2 gap-4 p-6 rounded-2xl shadow-lg border border-gray-300 dark:border-gray-600";
-
   const divider = <hr className="my-6 border-gray-300 dark:border-gray-600" />;
 
   const renderBasicSeedCalculations = () =>
@@ -84,10 +83,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     );
 
   const renderProductCard = (product: ProductCalculation, isSeed: boolean) => {
-    const packageCount = product.totalProductUnits || 0;
-    const packageLabel = `${formatNumber(packageCount, 0)} ${pluralize(
+    const packageLabel = `${formatNumber(product.totalProductUnits || 0, 0)} ${pluralize(
       product.packageType || "Package",
-      packageCount
+      product.totalProductUnits || 0
     )}`;
 
     const treatmentUnit = isSeed ? "units" : "acres";
@@ -119,7 +117,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower, 2)}</div>
           {isSeed && (
             <>
-              <div className={labelClass}>Cost per Treated Unit</div>
+              <div className={labelClass}>Cost per Treated Unit (MSRP)</div>
               <div className={valueClass}>${formatNumber(product.productCostPerUnitSeed, 2)}</div>
             </>
           )}
@@ -131,17 +129,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     );
   };
 
-  const renderSeedTreatmentCosts = () =>
-    seedTreatmentResults.map((product) => renderProductCard(product, true));
-
-  const renderInFurrowFoliarCosts = () =>
-    inFurrowFoliarResults.map((product) => renderProductCard(product, false));
+  const renderSeedTreatmentCosts = () => seedTreatmentResults.map((product) => renderProductCard(product, true));
+  const renderInFurrowFoliarCosts = () => inFurrowFoliarResults.map((product) => renderProductCard(product, false));
 
   const renderTotalProgramCost = () => (
     <>
       <h2 className={sectionHeaderClass}>Total Program Cost</h2>
       <div className={cardClass}>
-        <div className={labelClass}>Total Undiscounted Cost</div>
+        <div className={labelClass}>Total Undiscounted Cost (MSRP)</div>
         <div className={valueClass}>${formatNumber(totalUndiscountedCost, 2)}</div>
         <div className={labelClass}>Total Discounted Cost</div>
         <div className={valueClass}>${formatNumber(totalDiscountedCost, 2)}</div>

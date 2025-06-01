@@ -7,30 +7,19 @@ import {
   Text,
   View,
   StyleSheet,
-  Font,
 } from "@react-pdf/renderer";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
-
-Font.register({
-  family: "Open Sans",
-  src: "https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFUZ0ef8pkAg.ttf",
-});
-Font.register({
-  family: "Montserrat",
-  src: "https://fonts.gstatic.com/s/montserrat/v15/JTUQjIg1_i6t8kCHKm45xW4.ttf",
-});
 
 const styles = StyleSheet.create({
   page: {
     padding: 40,
     fontSize: 12,
-    fontFamily: "Open Sans",
+    fontFamily: "Helvetica",
     color: "#000",
   },
   header: {
     fontSize: 20,
-    fontFamily: "Montserrat",
     marginBottom: 10,
     textAlign: "center",
     fontWeight: "bold",
@@ -44,7 +33,6 @@ const styles = StyleSheet.create({
   },
   subheader: {
     fontSize: 14,
-    fontFamily: "Montserrat",
     marginBottom: 6,
     fontWeight: "bold",
   },
@@ -54,13 +42,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   label: {
-    fontFamily: "Montserrat",
     fontSize: 11,
     fontWeight: "bold",
     color: "#333",
   },
   value: {
-    fontFamily: "Open Sans",
     fontSize: 11,
     color: "#000",
   },
@@ -120,7 +106,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
   );
 
   const unitLabel = seedType.toLowerCase().includes("corn") || seedType.toLowerCase().includes("soy")
-    ? "bu/acre"
+    ? "bushel/acre"
     : marketPriceUnit.includes("/")
     ? marketPriceUnit
     : `${marketPriceUnit}/acre`;
@@ -132,7 +118,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
         <View style={styles.section}>
           {renderRow("Grower", growerName || "—")}
-          {renderRow("Dealer or Account Manager", repName || "—")}
+          {renderRow("Rep or Dealer", repName || "—")}
           {renderRow("Total Acres", formatNumber(acres))}
           {renderRow("Seed Type", seedType)}
         </View>
@@ -154,10 +140,10 @@ const PDFResults: React.FC<PDFResultsProps> = ({
                 {renderRow("Application Rate", `${p.applicationRate} ${p.rateUnit}`)}
                 {renderRow("Total Product Needed", `${formatNumber(p.totalProductNeeded)} ${p.rateUnit?.split("/")[0]}`)}
                 {renderRow("Total Product Units to Order", `${formatNumber(p.totalProductUnits)} ${pluralize(p.packageType || "Unit", p.totalProductUnits || 0)}`)}
-                {renderRow("Product Cost per Package", `$${formatNumber(p.productCostPerPackage)}`)}
+                {renderRow("Product Cost per Package (MSRP)", `$${formatNumber(p.productCostPerPackage)}`)}
                 {renderRow("Total Cost (MSRP)", `$${formatNumber(p.originalTotalCostToGrower)}`)}
                 {renderRow("Discounted Total Cost", `$${formatNumber(p.discountedTotalCostToGrower)}`)}
-                {renderRow("Cost per Unit Treated", `$${formatNumber(p.productCostPerUnitSeed)}`)}
+                {renderRow("Cost per Unit Treated (MSRP)", `$${formatNumber(p.productCostPerUnitSeed)}`)}
                 {renderRow("Cost per Acre", `$${formatNumber(p.individualCostPerAcre)}`)}
               </View>
             ))}
@@ -173,7 +159,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
                 {renderRow("Application Rate", `${p.applicationRate} ${p.rateUnit}`)}
                 {renderRow("Total Product Needed", `${formatNumber(p.totalProductNeeded)} ${p.rateUnit?.split("/")[0]}`)}
                 {renderRow("Total Product Units to Order", `${formatNumber(p.totalProductUnits)} ${pluralize(p.packageType || "Unit", p.totalProductUnits || 0)}`)}
-                {renderRow("Product Cost per Package", `$${formatNumber(p.productCostPerPackage)}`)}
+                {renderRow("Product Cost per Package (MSRP)", `$${formatNumber(p.productCostPerPackage)}`)}
                 {renderRow("Total Cost (MSRP)", `$${formatNumber(p.originalTotalCostToGrower)}`)}
                 {renderRow("Discounted Total Cost", `$${formatNumber(p.discountedTotalCostToGrower)}`)}
                 {renderRow("Cost per Acre", `$${formatNumber(p.individualCostPerAcre)}`)}
@@ -184,7 +170,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
         <Text style={styles.subheader}>Total Program Cost</Text>
         <View style={styles.section}>
-          {renderRow("Total Undiscounted Cost", `$${formatNumber(totalUndiscountedCost)}`)}
+          {renderRow("Total Undiscounted Cost (MSRP)", `$${formatNumber(totalUndiscountedCost)}`)}
           {renderRow("Total Discounted Cost", `$${formatNumber(totalDiscountedCost)}`)}
           {renderRow("Total Cost per Acre", `$${formatNumber(totalCostPerAcre)}`)}
         </View>

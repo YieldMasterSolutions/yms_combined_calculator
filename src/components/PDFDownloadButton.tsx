@@ -1,7 +1,8 @@
 // src/components/PDFDownloadButton.tsx
+
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFResults from "./PDFResults";
 import { ProductCalculation } from "../utils/calculations";
@@ -39,37 +40,24 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
   seedType,
   acres,
 }) => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
-  const hasResults =
-    seedTreatmentResults.length > 0 || inFurrowFoliarResults.length > 0;
-
-  const documentProps = (
-    <PDFResults
-      growerName={growerName}
-      repName={repName}
-      seedTreatmentResults={seedTreatmentResults}
-      inFurrowFoliarResults={inFurrowFoliarResults}
-      totalCostPerAcre={totalCostPerAcre}
-      totalUndiscountedCost={totalUndiscountedCost}
-      totalDiscountedCost={totalDiscountedCost}
-      roi={roi}
-      marketPriceUnit={marketPriceUnit}
-      seedType={seedType}
-      acres={acres}
-    />
-  );
-
-  return hasResults ? (
+  return (
     <div className="inline-block">
       <PDFDownloadLink
-        document={documentProps}
+        document={
+          <PDFResults
+            growerName={growerName}
+            repName={repName}
+            seedTreatmentResults={seedTreatmentResults}
+            inFurrowFoliarResults={inFurrowFoliarResults}
+            totalCostPerAcre={totalCostPerAcre}
+            totalUndiscountedCost={totalUndiscountedCost}
+            totalDiscountedCost={totalDiscountedCost}
+            roi={roi}
+            marketPriceUnit={marketPriceUnit}
+            seedType={seedType}
+            acres={acres}
+          />
+        }
         fileName="Biological_Program_Summary.pdf"
         className="bg-blue-600 hover:bg-blue-700 text-white font-[Montserrat] font-semibold py-2 px-6 rounded text-lg shadow transition cursor-pointer"
       >
@@ -78,7 +66,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
         }
       </PDFDownloadLink>
     </div>
-  ) : null;
+  );
 };
 
 export default PDFDownloadButton;
