@@ -107,7 +107,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         </select>
         {selectedProduct && (
           <div className={helperClass}>
-            {`Treats ${selectedProduct["TreatmentCapacity"]} ${selectedProduct["Application Method"] === "Planter Box Treatment" ? "units" : "acres"}`}
+            {`Treats approximately ${(parseFloat(selectedProduct["Package Size"]) / parseFloat(selectedProduct["Application Rate"]) || 0).toFixed(1)} ${selectedProduct["Application Method"] === "Planter Box Treatment" ? "units" : "acres"}`}
           </div>
         )}
       </div>
