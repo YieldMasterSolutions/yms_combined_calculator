@@ -121,9 +121,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
     );
   };
 
-  const seedHelperText = seedType.toLowerCase().includes("corn")
+  const normalizedSeed = seedType.toLowerCase();
+  const seedHelperText = normalizedSeed.includes("corn")
     ? "Default Seeds/Unit: 80,000"
-    : seedType.toLowerCase().includes("soy")
+    : normalizedSeed.includes("soy")
     ? "Default Seeds/Unit: 140,000"
     : "Calculated using Seeds/lb × Lbs/Unit";
 
@@ -133,7 +134,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <h2 className={sectionTitleClass}>Grower and Dealer Information</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Grower Name</label>
+            <label className={labelClass}>Grower Name (Optional)</label>
             <input
               className={inputClass}
               value={growerName}
@@ -141,7 +142,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             />
           </div>
           <div>
-            <label className={labelClass}>Dealer or Account Manager Name</label>
+            <label className={labelClass}>Dealer or Account Manager Name (Optional)</label>
             <input
               className={inputClass}
               value={repName}
@@ -198,22 +199,25 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             </select>
           </div>
           <div>
-            <label className={labelClass}>Override: Seeds per lb</label>
+            <label className={labelClass}>Override: Seeds per lb (Optional)</label>
             <input
               className={inputClass}
               value={overrideSeeds}
               onChange={(e) => setOverrideSeeds(e.target.value)}
             />
+            <div className={helperClass}>
+              Default: Based on crop — e.g. Soybeans = 2800, Wheat = 18000
+            </div>
           </div>
           <div>
-            <label className={labelClass}>Seeds Per Unit (Override)</label>
+            <label className={labelClass}>Seeds Per Unit (Override) (Optional)</label>
             <input
               className={inputClass}
               value={seedsPerUnitOverride}
               onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
             />
             <div className={helperClass}>
-              Optional: overrides default seeds/unit if filled
+              Optional: Default varies — e.g. Corn = 80000, Soy = 140000
             </div>
           </div>
         </div>
@@ -223,7 +227,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <h2 className={sectionTitleClass}>Market and ROI Inputs</h2>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Market Price</label>
+            <label className={labelClass}>Market Price (Optional)</label>
             <input
               className={inputClass}
               value={marketPrice}
@@ -231,19 +235,19 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             />
           </div>
           <div>
-            <label className={labelClass}>Market Unit</label>
+            <label className={labelClass}>Market Unit (Optional)</label>
             <select
               className={inputClass}
               value={marketPriceUnit}
               onChange={(e) => setMarketPriceUnit(e.target.value)}
             >
-              <option value="bu">bu</option>
+              <option value="bushel">bushel</option>
               <option value="cwt">cwt</option>
               <option value="ton">ton</option>
             </select>
           </div>
           <div>
-            <label className={labelClass}>Dealer Discount %</label>
+            <label className={labelClass}>Dealer Discount % (Optional)</label>
             <input
               className={inputClass}
               value={dealerDiscount}
@@ -251,7 +255,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
             />
           </div>
           <div>
-            <label className={labelClass}>Grower Discount %</label>
+            <label className={labelClass}>Grower Discount % (Optional)</label>
             <input
               className={inputClass}
               value={growerDiscount}
