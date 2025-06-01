@@ -47,6 +47,9 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
 
   if (!mounted) return null;
 
+  const hasResults =
+    seedTreatmentResults.length > 0 || inFurrowFoliarResults.length > 0;
+
   const documentProps = (
     <PDFResults
       growerName={growerName}
@@ -63,7 +66,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
     />
   );
 
-  return (
+  return hasResults ? (
     <div className="inline-block">
       <PDFDownloadLink
         document={documentProps}
@@ -75,7 +78,7 @@ const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
         }
       </PDFDownloadLink>
     </div>
-  );
+  ) : null;
 };
 
 export default PDFDownloadButton;

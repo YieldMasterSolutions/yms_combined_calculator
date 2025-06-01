@@ -1,6 +1,6 @@
 // src/components/CalculatorForm.tsx
 
-import React, { useEffect } from "react";
+import React from "react";
 import {
   ProductData,
   productsSeedTreatment,
@@ -73,18 +73,8 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
 }) => {
   const inputClass = "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
   const labelClass = "text-gray-300 font-semibold text-sm";
-  const helperClass = "text-xs text-gray-400 italic mt-1";
+  const helperClass = "text-sm italic mt-1 text-black dark:text-gray-400";
   const sectionTitleClass = "text-2xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
-
-  // Auto-populate override fields on crop selection
-  useEffect(() => {
-    const selectedSeed = seedTypes.find((s) => s["Seed Type"] === seedType);
-    if (selectedSeed) {
-      if (!overrideSeeds) setOverrideSeeds(selectedSeed["Seeds/lb"]);
-      if (!seedsPerUnitOverride && selectedSeed["Seeds per Unit"])
-        setSeedsPerUnitOverride(selectedSeed["Seeds per Unit"].toString());
-    }
-  }, [seedType]);
 
   const renderProductDropdown = (
     products: ProductData[],

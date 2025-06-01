@@ -12,7 +12,6 @@ import {
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
 
-// Register fonts (must use .ttf for react-pdf)
 Font.register({
   family: "Open Sans",
   src: "https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-UFUZ0ef8pkAg.ttf",
@@ -133,7 +132,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
 
         <View style={styles.section}>
           {renderRow("Grower", growerName || "—")}
-          {renderRow("Rep or Dealer", repName || "—")}
+          {renderRow("Dealer or Account Manager", repName || "—")}
           {renderRow("Total Acres", formatNumber(acres))}
           {renderRow("Seed Type", seedType)}
         </View>
