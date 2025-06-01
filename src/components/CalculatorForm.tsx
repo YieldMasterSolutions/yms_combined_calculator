@@ -1,6 +1,6 @@
 // src/components/CalculatorForm.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ProductData,
   productsSeedTreatment,
@@ -71,12 +71,20 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setFoliarProducts,
   onCalculate,
 }) => {
-  const inputClass =
-    "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
+  const inputClass = "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
   const labelClass = "text-gray-300 font-semibold text-sm";
   const helperClass = "text-xs text-gray-400 italic mt-1";
-  const sectionTitleClass =
-    "text-2xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
+  const sectionTitleClass = "text-2xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
+
+  // Auto-populate override fields on crop selection
+  useEffect(() => {
+    const selectedSeed = seedTypes.find((s) => s["Seed Type"] === seedType);
+    if (selectedSeed) {
+      if (!overrideSeeds) setOverrideSeeds(selectedSeed["Seeds/lb"]);
+      if (!seedsPerUnitOverride && selectedSeed["Seeds per Unit"])
+        setSeedsPerUnitOverride(selectedSeed["Seeds per Unit"].toString());
+    }
+  }, [seedType]);
 
   const renderProductDropdown = (
     products: ProductData[],
@@ -93,8 +101,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           className={inputClass}
           value={selectedProduct?.["Product Name"] || ""}
           onChange={(e) => {
-            const product =
-              products.find((p) => p["Product Name"] === e.target.value) || null;
+            const product = products.find((p) => p["Product Name"] === e.target.value) || null;
             const updated = [...selected];
             updated[index] = product;
             setSelected(updated);
@@ -111,22 +118,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <div className={helperClass}>
             {`Treats approximately ${(parseFloat(String(selectedProduct["Package Size"])) /
               parseFloat(String(selectedProduct["Application Rate"])) || 0).toFixed(1)} ${
-              selectedProduct["Application Method"] === "Planter Box Treatment"
-                ? "units"
-                : "acres"
+              selectedProduct["Application Method"] === "Planter Box Treatment" ? "units" : "acres"
             }`}
           </div>
         )}
       </div>
     );
   };
-
-  const normalizedSeed = seedType.toLowerCase();
-  const seedHelperText = normalizedSeed.includes("corn")
-    ? "Default Seeds/Unit: 80,000"
-    : normalizedSeed.includes("soy")
-    ? "Default Seeds/Unit: 140,000"
-    : "Calculated using Seeds/lb × Lbs/Unit";
 
   return (
     <form className="space-y-6">
@@ -135,19 +133,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Grower Name (Optional)</label>
-            <input
-              className={inputClass}
-              value={growerName}
-              onChange={(e) => setGrowerName(e.target.value)}
-            />
+            <input className={inputClass} value={growerName} onChange={(e) => setGrowerName(e.target.value)} />
           </div>
           <div>
             <label className={labelClass}>Dealer or Account Manager Name (Optional)</label>
-            <input
-              className={inputClass}
-              value={repName}
-              onChange={(e) => setRepName(e.target.value)}
-            />
+            <input className={inputClass} value={repName} onChange={(e) => setRepName(e.target.value)} />
           </div>
         </div>
       </div>
@@ -157,11 +147,7 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Seed Type</label>
-            <select
-              className={inputClass}
-              value={seedType}
-              onChange={(e) => setSeedType(e.target.value)}
-            >
+            <select className={inputClass} value={seedType} onChange={(e) => setSeedType(e.target.value)}>
               <option value="">-- Select Seed Type --</option>
               {seedTypes.map((type) => (
                 <option key={type["Seed Type"]} value={type["Seed Type"]}>
@@ -169,56 +155,31 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
                 </option>
               ))}
             </select>
-            {seedType && <div className={helperClass}>{seedHelperText}</div>}
           </div>
           <div>
             <label className={labelClass}>Total Acres</label>
-            <input
-              className={inputClass}
-              value={acres}
-              onChange={(e) => setAcres(e.target.value)}
-            />
+            <input className={inputClass} value={acres} onChange={(e) => setAcres(e.target.value)} />
           </div>
           <div>
             <label className={labelClass}>Seeding Rate</label>
-            <input
-              className={inputClass}
-              value={seedingRate}
-              onChange={(e) => setSeedingRate(e.target.value)}
-            />
+            <input className={inputClass} value={seedingRate} onChange={(e) => setSeedingRate(e.target.value)} />
           </div>
           <div>
             <label className={labelClass}>Rate Unit</label>
-            <select
-              className={inputClass}
-              value={seedingRateUnit}
-              onChange={(e) => setSeedingRateUnit(e.target.value)}
-            >
+            <select className={inputClass} value={seedingRateUnit} onChange={(e) => setSeedingRateUnit(e.target.value)}>
               <option value="seeds/acre">seeds/acre</option>
               <option value="lbs/acre">lbs/acre</option>
             </select>
           </div>
           <div>
             <label className={labelClass}>Override: Seeds per lb (Optional)</label>
-            <input
-              className={inputClass}
-              value={overrideSeeds}
-              onChange={(e) => setOverrideSeeds(e.target.value)}
-            />
-            <div className={helperClass}>
-              Default: Based on crop — e.g. Soybeans = 2800, Wheat = 18000
-            </div>
+            <input className={inputClass} value={overrideSeeds} onChange={(e) => setOverrideSeeds(e.target.value)} />
+            <div className={helperClass}>Default: Based on crop — e.g. Soybeans = 2800, Wheat = 18000</div>
           </div>
           <div>
             <label className={labelClass}>Seeds Per Unit (Override) (Optional)</label>
-            <input
-              className={inputClass}
-              value={seedsPerUnitOverride}
-              onChange={(e) => setSeedsPerUnitOverride(e.target.value)}
-            />
-            <div className={helperClass}>
-              Optional: Default varies — e.g. Corn = 80000, Soy = 140000
-            </div>
+            <input className={inputClass} value={seedsPerUnitOverride} onChange={(e) => setSeedsPerUnitOverride(e.target.value)} />
+            <div className={helperClass}>Optional: Default varies — e.g. Corn = 80000, Soy = 140000</div>
           </div>
         </div>
       </div>
@@ -228,19 +189,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Market Price (Optional)</label>
-            <input
-              className={inputClass}
-              value={marketPrice}
-              onChange={(e) => setMarketPrice(e.target.value)}
-            />
+            <input className={inputClass} value={marketPrice} onChange={(e) => setMarketPrice(e.target.value)} />
           </div>
           <div>
             <label className={labelClass}>Market Unit (Optional)</label>
-            <select
-              className={inputClass}
-              value={marketPriceUnit}
-              onChange={(e) => setMarketPriceUnit(e.target.value)}
-            >
+            <select className={inputClass} value={marketPriceUnit} onChange={(e) => setMarketPriceUnit(e.target.value)}>
               <option value="bushel">bushel</option>
               <option value="cwt">cwt</option>
               <option value="ton">ton</option>
@@ -248,19 +201,11 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           </div>
           <div>
             <label className={labelClass}>Dealer Discount % (Optional)</label>
-            <input
-              className={inputClass}
-              value={dealerDiscount}
-              onChange={(e) => setDealerDiscount(e.target.value)}
-            />
+            <input className={inputClass} value={dealerDiscount} onChange={(e) => setDealerDiscount(e.target.value)} />
           </div>
           <div>
             <label className={labelClass}>Grower Discount % (Optional)</label>
-            <input
-              className={inputClass}
-              value={growerDiscount}
-              onChange={(e) => setGrowerDiscount(e.target.value)}
-            />
+            <input className={inputClass} value={growerDiscount} onChange={(e) => setGrowerDiscount(e.target.value)} />
           </div>
         </div>
       </div>
@@ -269,53 +214,15 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
         <h2 className={sectionTitleClass}>Product Inputs</h2>
         <div className="text-yellow-400 font-bold mb-2">Seed Treatment Products</div>
         <div className="grid md:grid-cols-2 gap-4">
-          {renderProductDropdown(
-            productsSeedTreatment,
-            seedProducts,
-            setSeedProducts,
-            "Seed Treatment Product 1",
-            0
-          )}
-          {renderProductDropdown(
-            productsSeedTreatment,
-            seedProducts,
-            setSeedProducts,
-            "Seed Treatment Product 2",
-            1
-          )}
+          {renderProductDropdown(productsSeedTreatment, seedProducts, setSeedProducts, "Seed Treatment Product 1", 0)}
+          {renderProductDropdown(productsSeedTreatment, seedProducts, setSeedProducts, "Seed Treatment Product 2", 1)}
         </div>
-        <div className="text-yellow-400 font-bold mt-4 mb-2">
-          In-Furrow / Foliar Products
-        </div>
+        <div className="text-yellow-400 font-bold mt-4 mb-2">In-Furrow / Foliar Products</div>
         <div className="grid md:grid-cols-2 gap-4">
-          {renderProductDropdown(
-            productsInFurrowFoliar,
-            foliarProducts,
-            setFoliarProducts,
-            "In-Furrow/Foliar Product 1",
-            0
-          )}
-          {renderProductDropdown(
-            productsInFurrowFoliar,
-            foliarProducts,
-            setFoliarProducts,
-            "In-Furrow/Foliar Product 2",
-            1
-          )}
-          {renderProductDropdown(
-            productsInFurrowFoliar,
-            foliarProducts,
-            setFoliarProducts,
-            "In-Furrow/Foliar Product 3",
-            2
-          )}
-          {renderProductDropdown(
-            productsInFurrowFoliar,
-            foliarProducts,
-            setFoliarProducts,
-            "In-Furrow/Foliar Product 4",
-            3
-          )}
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 1", 0)}
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 2", 1)}
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 3", 2)}
+          {renderProductDropdown(productsInFurrowFoliar, foliarProducts, setFoliarProducts, "In-Furrow/Foliar Product 4", 3)}
         </div>
       </div>
 
