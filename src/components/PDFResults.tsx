@@ -143,7 +143,7 @@ const PDFResults: React.FC<PDFResultsProps> = ({
                 {renderRow("Product Cost per Package (MSRP)", `$${formatNumber(p.productCostPerPackage)}`)}
                 {renderRow("Total Cost (MSRP)", `$${formatNumber(p.originalTotalCostToGrower)}`)}
                 {renderRow("Discounted Total Cost", `$${formatNumber(p.discountedTotalCostToGrower)}`)}
-                {renderRow("Cost per Unit Treated (MSRP)", `$${formatNumber(p.productCostPerUnitSeed)}`)}
+                {renderRow("Cost per Unit Treated", `$${formatNumber(p.productCostPerUnitSeed)}`)}
                 {renderRow("Cost per Acre", `$${formatNumber(p.individualCostPerAcre)}`)}
               </View>
             ))}
