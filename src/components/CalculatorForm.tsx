@@ -71,12 +71,10 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
   setFoliarProducts,
   onCalculate,
 }) => {
-  const inputClass =
-    "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
+  const inputClass = "bg-black text-white border border-gray-400 px-2 py-1 rounded w-full";
   const labelClass = "text-yellow-500 font-semibold text-sm";
   const helperClass = "text-xs text-gray-300 italic mt-1";
-  const sectionTitleClass =
-    "text-xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
+  const sectionTitleClass = "text-xl font-bold text-yellow-400 mt-6 mb-2 font-[Montserrat]";
 
   const renderProductDropdown = (
     products: ProductData[],
@@ -103,13 +101,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <option value="">-- Select Product --</option>
           {products.map((p) => (
             <option key={p["Product Name"]} value={p["Product Name"]}>
-              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} – ${p["Application Rate"]} ${p["RateUnit"]} per ${p["ApplicationMethod"]}`}
+              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} – ${p["Application Rate"]} ${p["Application Rate Unit"]}`}
             </option>
           ))}
         </select>
         {selectedProduct && (
           <div className={helperClass}>
-            {`Treats ${selectedProduct["TreatmentCapacity"]} ${selectedProduct["ApplicationMethod"] === "Planter Box Treatment" ? "units" : "acres"}`}
+            {`Treats ${selectedProduct["TreatmentCapacity"]} ${selectedProduct["Application Method"] === "Planter Box Treatment" ? "units" : "acres"}`}
           </div>
         )}
       </div>
