@@ -103,13 +103,13 @@ const CalculatorForm: React.FC<CalculatorFormProps> = ({
           <option value="">-- Select Product --</option>
           {products.map((p) => (
             <option key={p["Product Name"]} value={p["Product Name"]}>
-              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Unit"]} – ${p["Application Rate"]} ${p["Rate Unit"]} per ${p["Application Method"]}`}
+              {`${p["Product Name"]} – ${p["Package Size"]} ${p["Package Units"]} – ${p["Application Rate"]} ${p["RateUnit"]} per ${p["ApplicationMethod"]}`}
             </option>
           ))}
         </select>
         {selectedProduct && (
           <div className={helperClass}>
-            {`Treats ${selectedProduct["Treatment Capacity"]} ${selectedProduct["Application Method"] === "Planter Box Treatment" ? "units" : "acres"}`}
+            {`Treats ${selectedProduct["TreatmentCapacity"]} ${selectedProduct["ApplicationMethod"] === "Planter Box Treatment" ? "units" : "acres"}`}
           </div>
         )}
       </div>
