@@ -1,5 +1,3 @@
-// src/components/ResultsDisplay.tsx
-
 import React from "react";
 import { ProductCalculation } from "../utils/calculations";
 import { formatNumber } from "../utils/formatNumber";
@@ -117,7 +115,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className={valueClass}>${formatNumber(product.discountedTotalCostToGrower, 2)}</div>
           {isSeed && (
             <>
-              <div className={labelClass}>Cost per Treated Unit (MSRP)</div>
+              <div className={labelClass}>Cost per Treated Unit</div>
               <div className={valueClass}>${formatNumber(product.productCostPerUnitSeed, 2)}</div>
             </>
           )}
@@ -162,6 +160,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         <div className={labelClass}>Yield for 5:1 ROI</div>
         <div className={valueClass}>{formatNumber(roi5, 2)} {unitLabel}</div>
       </div>
+      <p className="text-sm text-gray-600 dark:text-gray-400 italic mt-2 ml-2">
+        Note: ROI calculations are based on actual product used, not purchased quantity. Leftover product can be used in future applications.
+      </p>
     </>
   );
 
