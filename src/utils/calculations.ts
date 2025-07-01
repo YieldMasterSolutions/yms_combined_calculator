@@ -208,7 +208,8 @@ export function calculateProductData(
     ? (applicationRate ?? 0) * (costPerUnit ?? 0) * discountFactor
     : ((totalProductNeeded ?? 0) * (costPerUnit ?? 0)) / acres;
 
-  const productCostPerUnitSeed = discounted / unitsToBeTreated;
+  const productCostPerUnitSeed =
+    unitsToBeTreated > 0 ? discounted / unitsToBeTreated : 0;
 
   const lbsPerBushel = seedType.toLowerCase() === "corn" ? 56 : 60;
   const totalBushels = totalWeight / lbsPerBushel;
