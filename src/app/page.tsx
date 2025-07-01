@@ -1,5 +1,3 @@
-// src/app/page.tsx
-
 "use client";
 
 import React, { useState } from "react";
@@ -116,8 +114,8 @@ export default function Home() {
   };
 
   const breakevenYield =
-    marketPrice && acres
-      ? totalDiscountedCost / parseFloat(acres) / parseFloat(marketPrice)
+    marketPrice && totalCostPerAcre
+      ? totalCostPerAcre / parseFloat(marketPrice)
       : 0;
 
   return (

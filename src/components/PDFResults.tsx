@@ -1,5 +1,3 @@
-// src/components/PDFResults.tsx
-
 import React from "react";
 import {
   Document,
@@ -49,6 +47,12 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 11,
     color: "#000",
+  },
+  note: {
+    fontSize: 10,
+    color: "#555",
+    marginTop: 12,
+    fontStyle: "italic",
   },
 });
 
@@ -105,11 +109,12 @@ const PDFResults: React.FC<PDFResultsProps> = ({
     </View>
   );
 
-  const unitLabel = seedType.toLowerCase().includes("corn") || seedType.toLowerCase().includes("soy")
-    ? "bushel/acre"
-    : marketPriceUnit.includes("/")
-    ? marketPriceUnit
-    : `${marketPriceUnit}/acre`;
+  const unitLabel =
+    seedType.toLowerCase().includes("corn") || seedType.toLowerCase().includes("soy")
+      ? "bushel/acre"
+      : marketPriceUnit.includes("/")
+      ? marketPriceUnit
+      : `${marketPriceUnit}/acre`;
 
   return (
     <Document>
@@ -183,6 +188,10 @@ const PDFResults: React.FC<PDFResultsProps> = ({
           {renderRow("Yield for 4:1 ROI", formatNumber(roi.roi4to1))}
           {renderRow("Yield for 5:1 ROI", formatNumber(roi.roi5to1))}
         </View>
+
+        <Text style={styles.note}>
+          Note: ROI calculations are based on actual product used, not purchased quantity. Leftover product can be used in future applications.
+        </Text>
       </Page>
     </Document>
   );
