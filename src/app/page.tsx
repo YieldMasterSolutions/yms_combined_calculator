@@ -94,7 +94,7 @@ export default function Home() {
       foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
 
     const roi = parsedAcres && parsedMarketPrice
-      ? calculateROI(totalDiscounted / parsedAcres, parsedMarketPrice, marketPriceUnit)
+      ? calculateROI(totalCost, parsedMarketPrice, marketPriceUnit)
       : {
           breakevenYield: 0,
           roi2to1: 0,
