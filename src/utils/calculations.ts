@@ -1,7 +1,4 @@
-from pathlib import Path
-
-# Re-define after kernel reset
-fixed_calculations_ts = """// src/utils/calculations.ts
+// src/utils/calculations.ts
 
 import { ProductData, seedTypes } from "./data";
 
