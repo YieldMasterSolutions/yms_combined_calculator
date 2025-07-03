@@ -1,3 +1,5 @@
+// src/app/page.tsx
+
 "use client";
 
 import React, { useState } from "react";
@@ -60,17 +62,17 @@ export default function Home() {
     const parsedAcres = parseFloat(acres || "0");
     const parsedMarketPrice = parseFloat(marketPrice || "0");
 
-    const seedData = calculateSeedTreatmentData(
+    const seedData = calculateSeedTreatmentData({
       seedType,
-      parsedAcres,
-      parseFloat(seedingRate),
+      acres: parsedAcres,
+      seedingRate: parseFloat(seedingRate),
       seedingRateUnit,
-      overrideSeeds ? parseFloat(overrideSeeds) : undefined,
-      parseFloat(dealerDiscount || "0"),
-      parseFloat(growerDiscount || "0"),
+      overrideSeeds: overrideSeeds ? parseFloat(overrideSeeds) : undefined,
+      dealerDiscount: parseFloat(dealerDiscount || "0"),
+      growerDiscount: parseFloat(growerDiscount || "0"),
       selectedSeedProducts,
-      seedsPerUnitOverride ? parseFloat(seedsPerUnitOverride) : undefined
-    );
+      seedsPerUnitOverride: seedsPerUnitOverride ? parseFloat(seedsPerUnitOverride) : undefined,
+    });
 
     const foliarData = calculateAllFoliarProductCosts(
       parsedAcres,
