@@ -1,4 +1,7 @@
-// src/utils/calculations.ts
+from pathlib import Path
+
+# Re-define after kernel reset
+fixed_calculations_ts = """// src/utils/calculations.ts
 
 import { ProductData, seedTypes } from "./data";
 
@@ -246,3 +249,9 @@ export function calculateProductData(
     packageType,
   };
 }
+"""
+
+# Write to file
+output_path = Path("/mnt/data/calculations.ts")
+output_path.write_text(fixed_calculations_ts.strip())
+output_path.name
