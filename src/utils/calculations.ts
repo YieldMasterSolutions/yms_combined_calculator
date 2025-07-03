@@ -107,7 +107,6 @@ export function calculateROI(
   unit: string;
 } {
   const breakevenYield = marketPrice > 0 ? totalCostPerAcre / marketPrice : 0;
-
   return {
     breakevenYield,
     roi2to1: (2 * totalCostPerAcre) / marketPrice,
@@ -206,7 +205,7 @@ export function calculateProductData(
 
   const individualCostPerAcre = rateUnit?.includes("/acre")
     ? (applicationRate ?? 0) * (costPerUnit ?? 0) * discountFactor
-    : ((totalProductNeeded ?? 0) * (costPerUnit ?? 0)) / acres;
+    : (totalProductNeeded * (costPerUnit ?? 0)) * discountFactor / acres;
 
   const productCostPerUnitSeed =
     unitsToBeTreated > 0 ? discounted / unitsToBeTreated : 0;
