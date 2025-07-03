@@ -151,27 +151,27 @@ export function calculateProductData(
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"] ?? 0;
     rateUnit = "fl oz/acre";
-    totalProductNeeded = acres * (applicationRate ?? 0);
+    totalProductNeeded = acres * applicationRate;
   } else if (applicationRateUnit === "oz/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per oz"] ?? 0;
     rateUnit = "oz/acre";
-    totalProductNeeded = acres * (applicationRate ?? 0);
+    totalProductNeeded = acres * applicationRate;
   } else if (applicationRateUnit === "g/acre") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per gram"] ?? 0;
     rateUnit = "g/acre";
-    totalProductNeeded = acres * (applicationRate ?? 0);
+    totalProductNeeded = acres * applicationRate;
   } else if (applicationRateUnit === "oz/unit") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per oz"] ?? 0;
     rateUnit = "oz/unit";
-    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
+    totalProductNeeded = unitsToBeTreated * applicationRate;
   } else if (applicationRateUnit === "fl oz/unit") {
     applicationRate = product["Application Rate"];
     costPerUnit = product["Product Cost per fl oz"] ?? 0;
     rateUnit = "fl oz/unit";
-    totalProductNeeded = unitsToBeTreated * (applicationRate ?? 0);
+    totalProductNeeded = unitsToBeTreated * applicationRate;
   }
 
   const packageSize = product["Package Size"];
@@ -189,7 +189,7 @@ export function calculateProductData(
   };
 
   const treatmentCapacity =
-    applicationRate && packageSize ? Math.floor(packageSize / (applicationRate || 1)) : undefined;
+    applicationRate && packageSize ? Math.floor(packageSize / applicationRate) : undefined;
 
   const productPackageString = `${product["Product Name"]} – ${packageSize} ${packageUnits} – ${pluralize(
     packageType,
@@ -202,14 +202,15 @@ export function calculateProductData(
   const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
   const totalCostToGrower = packagesNeeded * productCostPerPackage;
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
-  const discounted = totalCostToGrower * discountFactor;
+  const discountedTotal = totalCostToGrower * discountFactor;
 
+  const discountedCostPerUnit = (costPerUnit ?? 0) * discountFactor;
   const individualCostPerAcre = rateUnit?.includes("/acre")
-    ? (applicationRate ?? 0) * (costPerUnit ?? 0) * discountFactor
-    : ((totalProductNeeded ?? 0) * (costPerUnit ?? 0)) / acres;
+    ? (applicationRate ?? 0) * discountedCostPerUnit
+    : ((totalProductNeeded ?? 0) * discountedCostPerUnit) / acres;
 
   const productCostPerUnitSeed =
-    unitsToBeTreated > 0 ? discounted / unitsToBeTreated : 0;
+    unitsToBeTreated > 0 ? discountedTotal / unitsToBeTreated : 0;
 
   const lbsPerBushel = seedType.toLowerCase() === "corn" ? 56 : 60;
   const totalBushels = totalWeight / lbsPerBushel;
@@ -221,7 +222,7 @@ export function calculateProductData(
     packagesNeeded,
     productPackageString,
     originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower: discounted,
+    discountedTotalCostToGrower: discountedTotal,
     individualCostPerAcre,
     applicationRate,
     rateUnit,
@@ -230,7 +231,7 @@ export function calculateProductData(
     productCostPerOz: costPerUnit,
     totalCostToGrower,
     costPerUnitSeed: productCostPerUnitSeed,
-    discountedCostToGrower: discounted,
+    discountedCostToGrower: discountedTotal,
     productCostPerPackage,
     productCostPerUnitSeed,
     totalSeeds,
