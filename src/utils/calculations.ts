@@ -246,9 +246,4 @@ export function calculateProductData(
     packageType,
   };
 }
-"""
 
-# Write to file
-output_path = Path("/mnt/data/calculations.ts")
-output_path.write_text(fixed_calculations_ts.strip())
-output_path.name
