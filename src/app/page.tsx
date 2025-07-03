@@ -1,4 +1,4 @@
-"""// src/utils/calculations.ts
+// src/utils/calculations.ts
 
 import { ProductData, seedTypes } from "./data";
 
