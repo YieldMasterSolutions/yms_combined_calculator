@@ -1,6 +1,6 @@
 // src/utils/calculations.ts
 
-import { ProductData, seedTypes } from "./data";
+import { ProductData } from "../utils/data";
 
 export interface ProductCalculation {
   applicationRateUnit?: string;
