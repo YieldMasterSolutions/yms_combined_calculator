@@ -1,254 +1,222 @@
-// src/utils/calculations.ts
+// src/app/page.tsx
 
-import { ProductData, seedTypes } from "./data";
+"use client";
 
-export interface ProductCalculation {
-  applicationRateUnit?: string;
-  productName: string;
-  productForm?: string;
-  packagesNeeded: number;
-  productPackageString: string;
-  originalTotalCostToGrower: number;
-  discountedTotalCostToGrower: number;
-  individualCostPerAcre: number;
-  applicationRate?: number;
-  rateUnit?: string;
-  totalProductNeeded?: number;
-  totalProductUnits?: number;
-  productCostPerOz?: number;
-  totalCostToGrower?: number;
-  costPerUnitSeed?: number;
-  discountedCostToGrower?: number;
-  productCostPerPackage?: number;
-  productCostPerUnitSeed?: number;
-  totalSeeds?: number;
-  totalWeight?: number;
-  unitsToBeTreated?: number;
-  seedsPerUnit?: number;
-  treatmentCapacity?: number;
-  totalBushels?: number;
-  packageSize?: number;
-  packageUnits?: string;
-  packageType?: string;
-  applicationMethod?: string;
-}
+import React, { useState } from "react";
+import Image from "next/image";
+import CalculatorForm from "../components/CalculatorForm";
+import ResultsDisplay from "../components/ResultsDisplay";
+import PDFDownloadButton from "../components/PDFDownloadButton";
+import {
+  ProductCalculation,
+  calculateSeedTreatmentData,
+  calculateAllFoliarProductCosts,
+  calculateROI,
+} from "../utils/calculations";
+import { ProductData } from "../utils/data";
 
-export function calculateSeedTreatmentData({
-  seedType,
-  acres,
-  seedingRate,
-  seedingRateUnit,
-  overrideSeeds,
-  dealerDiscount,
-  growerDiscount,
-  selectedSeedProducts,
-  seedsPerUnitOverride,
-}: {
-  seedType: string;
-  acres: number;
-  seedingRate: number;
-  seedingRateUnit: string;
-  overrideSeeds?: number;
-  dealerDiscount: number;
-  growerDiscount: number;
-  selectedSeedProducts: { product: ProductData; applicationMethod: string }[];
-  seedsPerUnitOverride?: number;
-}): ProductCalculation[] {
-  const seedDefaults = seedTypes.find(
-    (s) => s["Seed Type"].toLowerCase() === seedType.toLowerCase()
-  );
-  const seedsPerPound = overrideSeeds || parseFloat(seedDefaults?.["Seeds/lb"] || "2800");
-  const seedsPerUnit = seedsPerUnitOverride || seedsPerPound * (seedDefaults?.["Lbs/Unit"] || 50);
-  const lbsPerUnit = seedDefaults?.["Lbs/Unit"] || 50;
+export default function Home() {
+  const [seedType, setSeedType] = useState("");
+  const [acres, setAcres] = useState("");
+  const [seedingRate, setSeedingRate] = useState("");
+  const [seedingRateUnit, setSeedingRateUnit] = useState("seeds/acre");
+  const [overrideSeeds, setOverrideSeeds] = useState("");
+  const [seedsPerUnitOverride, setSeedsPerUnitOverride] = useState("");
 
-  return selectedSeedProducts
-    .filter(({ product }) => product && product["Application Rate"] && product["Package Size"])
-    .map(({ product, applicationMethod }) => {
-      const base = calculateProductData(
-        acres,
+  const [marketPrice, setMarketPrice] = useState("");
+  const [marketPriceUnit, setMarketPriceUnit] = useState("bushel");
+  const [dealerDiscount, setDealerDiscount] = useState("");
+  const [growerDiscount, setGrowerDiscount] = useState("");
+
+  const [growerName, setGrowerName] = useState("");
+  const [repName, setRepName] = useState("");
+
+  const [seedProducts, setSeedProducts] = useState<(ProductData | null)[]>([null, null]);
+  const [foliarProducts, setFoliarProducts] = useState<(ProductData | null)[]>([null, null, null, null]);
+
+  const [seedResults, setSeedResults] = useState<ProductCalculation[]>([]);
+  const [foliarResults, setFoliarResults] = useState<ProductCalculation[]>([]);
+  const [totalCostPerAcre, setTotalCostPerAcre] = useState(0);
+  const [totalUndiscountedCost, setTotalUndiscountedCost] = useState(0);
+  const [totalDiscountedCost, setTotalDiscountedCost] = useState(0);
+  const [roi2, setROI2] = useState(0);
+  const [roi3, setROI3] = useState(0);
+  const [roi4, setROI4] = useState(0);
+  const [roi5, setROI5] = useState(0);
+
+  const handleCalculate = () => {
+    const selectedSeedProducts = seedProducts
+      .filter((p): p is ProductData => p !== null)
+      .map((product) => ({
         product,
-        dealerDiscount,
-        growerDiscount,
-        seedType,
-        seedsPerPound,
-        lbsPerUnit,
-        seedingRate,
-        seedingRateUnit,
-        seedsPerUnit
-      );
-      return { ...base, applicationMethod };
-    });
-}
+        applicationMethod: product["Application Method"] || "Seed Treatment",
+      }));
 
-export function calculateAllFoliarProductCosts(
-  acres: number,
-  dealerDiscount: number,
-  growerDiscount: number,
-  selectedProducts: { product: ProductData; applicationMethod: string }[]
-): ProductCalculation[] {
-  return selectedProducts
-    .filter(({ product }) => product && product["Application Rate"] && product["Package Size"])
-    .map(({ product, applicationMethod }) => {
-      const base = calculateProductData(
-        acres,
+    const selectedFoliarProducts = foliarProducts
+      .filter((p): p is ProductData => p !== null)
+      .map((product) => ({
         product,
-        dealerDiscount,
-        growerDiscount,
-        "corn",
-        2800,
-        50,
-        32000,
-        "seeds/acre"
-      );
-      return { ...base, applicationMethod };
+        applicationMethod: product["Application Method"] || "In-Furrow",
+      }));
+
+    const parsedAcres = parseFloat(acres || "0");
+    const parsedMarketPrice = parseFloat(marketPrice || "0");
+
+    const seedData = calculateSeedTreatmentData({
+      seedType,
+      acres: parsedAcres,
+      seedingRate: parseFloat(seedingRate),
+      seedingRateUnit,
+      overrideSeeds: overrideSeeds ? parseFloat(overrideSeeds) : undefined,
+      dealerDiscount: parseFloat(dealerDiscount || "0"),
+      growerDiscount: parseFloat(growerDiscount || "0"),
+      selectedProducts: selectedSeedProducts,
+      seedsPerUnitOverride: seedsPerUnitOverride ? parseFloat(seedsPerUnitOverride) : undefined,
     });
-}
 
-export function calculateROI(
-  totalCostPerAcre: number,
-  marketPrice: number,
-  unit: string
-): {
-  breakevenYield: number;
-  roi2to1: number;
-  roi3to1: number;
-  roi4to1: number;
-  roi5to1: number;
-  unit: string;
-} {
-  const breakevenYield = marketPrice > 0 ? totalCostPerAcre / marketPrice : 0;
+    const foliarData = calculateAllFoliarProductCosts(
+      parsedAcres,
+      parseFloat(dealerDiscount || "0"),
+      parseFloat(growerDiscount || "0"),
+      selectedFoliarProducts
+    );
 
-  return {
-    breakevenYield,
-    roi2to1: (2 * totalCostPerAcre) / marketPrice,
-    roi3to1: (3 * totalCostPerAcre) / marketPrice,
-    roi4to1: (4 * totalCostPerAcre) / marketPrice,
-    roi5to1: (5 * totalCostPerAcre) / marketPrice,
-    unit,
+    const totalCost =
+      seedData.reduce((sum, p) => sum + p.individualCostPerAcre, 0) +
+      foliarData.reduce((sum, p) => sum + p.individualCostPerAcre, 0);
+
+    const totalMSRP =
+      seedData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0) +
+      foliarData.reduce((sum, p) => sum + p.originalTotalCostToGrower, 0);
+
+    const totalDiscounted =
+      seedData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0) +
+      foliarData.reduce((sum, p) => sum + p.discountedTotalCostToGrower, 0);
+
+    const roi = parsedAcres && parsedMarketPrice
+      ? calculateROI(totalCost, parsedMarketPrice, marketPriceUnit)
+      : {
+          breakevenYield: 0,
+          roi2to1: 0,
+          roi3to1: 0,
+          roi4to1: 0,
+          roi5to1: 0,
+          unit: marketPriceUnit,
+        };
+
+    setSeedResults(seedData);
+    setFoliarResults(foliarData);
+    setTotalCostPerAcre(totalCost);
+    setTotalUndiscountedCost(totalMSRP);
+    setTotalDiscountedCost(totalDiscounted);
+    setROI2(roi.roi2to1);
+    setROI3(roi.roi3to1);
+    setROI4(roi.roi4to1);
+    setROI5(roi.roi5to1);
   };
-}
 
-export function calculateProductData(
-  acres: number,
-  product: ProductData,
-  dealerDiscount: number = 0,
-  growerDiscount: number = 0,
-  seedType: string,
-  seedsPerPound: number,
-  lbsPerUnit: number,
-  seedingRate: number,
-  seedingRateUnit: string,
-  seedsPerUnit?: number
-): ProductCalculation {
-  let applicationRate: number | undefined;
-  let costPerUnit: number | undefined;
-  let rateUnit: string | undefined;
-  let totalProductNeeded = 0;
-
-  const finalSeedsPerUnit = seedsPerUnit || 2800 * lbsPerUnit;
-  const totalSeeds =
-    seedingRateUnit === "seeds/acre"
-      ? seedingRate * acres
-      : seedingRateUnit === "lbs/acre"
-      ? seedingRate * acres * seedsPerPound
+  const breakevenYield =
+    marketPrice && totalCostPerAcre
+      ? totalCostPerAcre / parseFloat(marketPrice)
       : 0;
 
-  const totalWeight = totalSeeds / seedsPerPound;
-  const unitsToBeTreated = totalSeeds / finalSeedsPerUnit;
+  return (
+    <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white px-4 py-6 font-[Open_Sans]">
+      <div className="max-w-6xl mx-auto relative">
+        <div className="flex items-center justify-between mb-6">
+          <Image
+            src="/yms_combined_calculator/ymslogo3.png"
+            alt="YMS Logo"
+            width={180}
+            height={52}
+          />
+          <Image
+            src="/yms_combined_calculator/legendlogo1.png"
+            alt="Legend Seed Logo"
+            width={180}
+            height={52}
+          />
+        </div>
 
-  const applicationRateUnit = product["Application Rate Unit"];
-  if (applicationRateUnit === "fl oz/acre") {
-    applicationRate = product["Application Rate"] ?? 0;
-    costPerUnit = product["Product Cost per fl oz"] ?? 0;
-    rateUnit = "fl oz/acre";
-    totalProductNeeded = acres * applicationRate;
-  } else if (applicationRateUnit === "oz/acre") {
-    applicationRate = product["Application Rate"] ?? 0;
-    costPerUnit = product["Product Cost per oz"] ?? 0;
-    rateUnit = "oz/acre";
-    totalProductNeeded = acres * applicationRate;
-  } else if (applicationRateUnit === "g/acre") {
-    applicationRate = product["Application Rate"] ?? 0;
-    costPerUnit = product["Product Cost per gram"] ?? 0;
-    rateUnit = "g/acre";
-    totalProductNeeded = acres * applicationRate;
-  } else if (applicationRateUnit === "oz/unit") {
-    applicationRate = product["Application Rate"] ?? 0;
-    costPerUnit = product["Product Cost per oz"] ?? 0;
-    rateUnit = "oz/unit";
-    totalProductNeeded = unitsToBeTreated * applicationRate;
-  } else if (applicationRateUnit === "fl oz/unit") {
-    applicationRate = product["Application Rate"] ?? 0;
-    costPerUnit = product["Product Cost per fl oz"] ?? 0;
-    rateUnit = "fl oz/unit";
-    totalProductNeeded = unitsToBeTreated * applicationRate;
-  }
+        <h1 className="text-3xl font-bold font-[Montserrat] mb-4 text-yellow-600 dark:text-[--yms-tan]">
+          Biological Program Calculator
+        </h1>
 
-  const packageSize = product["Package Size"];
-  const packageUnits = product["Package Units"];
-  const packageType = product["Package Type"];
+        <CalculatorForm
+          seedType={seedType}
+          setSeedType={setSeedType}
+          acres={acres}
+          setAcres={setAcres}
+          seedingRate={seedingRate}
+          setSeedingRate={setSeedingRate}
+          seedingRateUnit={seedingRateUnit}
+          setSeedingRateUnit={setSeedingRateUnit}
+          overrideSeeds={overrideSeeds}
+          setOverrideSeeds={setOverrideSeeds}
+          seedsPerUnitOverride={seedsPerUnitOverride}
+          setSeedsPerUnitOverride={setSeedsPerUnitOverride}
+          marketPrice={marketPrice}
+          setMarketPrice={setMarketPrice}
+          marketPriceUnit={marketPriceUnit}
+          setMarketPriceUnit={setMarketPriceUnit}
+          dealerDiscount={dealerDiscount}
+          setDealerDiscount={setDealerDiscount}
+          growerDiscount={growerDiscount}
+          setGrowerDiscount={setGrowerDiscount}
+          growerName={growerName}
+          setGrowerName={setGrowerName}
+          repName={repName}
+          setRepName={setRepName}
+          seedProducts={seedProducts}
+          setSeedProducts={setSeedProducts}
+          foliarProducts={foliarProducts}
+          setFoliarProducts={setFoliarProducts}
+          onCalculate={handleCalculate}
+        />
 
-  const pluralize = (word: string, count: number) => {
-    const lower = word.toLowerCase();
-    if (lower === "box") return count === 1 ? "Box" : "Boxes";
-    if (lower === "pouch") return count === 1 ? "Pouch" : "Pouches";
-    if (lower === "pail") return count === 1 ? "Pail" : "Pails";
-    if (lower === "jug") return count === 1 ? "Jug" : "Jugs";
-    if (lower === "case") return count === 1 ? "Case" : "Cases";
-    return count === 1 ? word : `${word}s`;
-  };
+        {(seedResults.length > 0 || foliarResults.length > 0) && (
+          <div className="my-8">
+            <ResultsDisplay
+              seedTreatmentResults={seedResults}
+              inFurrowFoliarResults={foliarResults}
+              totalCostPerAcre={totalCostPerAcre}
+              totalUndiscountedCost={totalUndiscountedCost}
+              totalDiscountedCost={totalDiscountedCost}
+              roi2={roi2}
+              roi3={roi3}
+              roi4={roi4}
+              roi5={roi5}
+              marketPriceUnit={marketPriceUnit}
+              seedType={seedType}
+              breakevenYield={breakevenYield}
+            />
+          </div>
+        )}
 
-  const treatmentCapacity =
-    applicationRate && packageSize ? Math.floor(packageSize / applicationRate) : undefined;
-
-  const productPackageString = `${product["Product Name"]} – ${packageSize} ${packageUnits} – ${pluralize(
-    packageType,
-    Math.ceil(totalProductNeeded / packageSize)
-  )} – ${applicationRate ?? "-"} ${rateUnit} – Treats ${treatmentCapacity || "-"} ${
-    rateUnit?.includes("/unit") ? "units" : "acres"
-  }`;
-
-  const productCostPerPackage = (costPerUnit ?? 0) * packageSize;
-  const packagesNeeded = Math.ceil(totalProductNeeded / packageSize);
-  const totalCostToGrower = packagesNeeded * productCostPerPackage;
-  const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
-  const discounted = totalCostToGrower * discountFactor;
-
-  const individualCostPerAcre = acres > 0 ? discounted / acres : 0;
-
-  const productCostPerUnitSeed =
-    unitsToBeTreated > 0 ? discounted / unitsToBeTreated : 0;
-
-  const lbsPerBushel = seedType.toLowerCase() === "corn" ? 56 : 60;
-  const totalBushels = totalWeight / lbsPerBushel;
-
-  return {
-    applicationRateUnit,
-    productName: product["Product Name"],
-    productForm: product["Product Form"],
-    packagesNeeded,
-    productPackageString,
-    originalTotalCostToGrower: totalCostToGrower,
-    discountedTotalCostToGrower: discounted,
-    individualCostPerAcre,
-    applicationRate,
-    rateUnit,
-    totalProductNeeded,
-    totalProductUnits: packagesNeeded,
-    productCostPerOz: costPerUnit,
-    totalCostToGrower,
-    costPerUnitSeed: productCostPerUnitSeed,
-    discountedCostToGrower: discounted,
-    productCostPerPackage,
-    productCostPerUnitSeed,
-    totalSeeds,
-    totalWeight,
-    unitsToBeTreated,
-    seedsPerUnit: finalSeedsPerUnit,
-    treatmentCapacity,
-    totalBushels,
-    packageSize,
-    packageUnits,
-    packageType,
-  };
+        {(seedResults.length > 0 || foliarResults.length > 0) && (
+          <div className="text-center mb-4">
+            <PDFDownloadButton
+              growerName={growerName}
+              repName={repName}
+              seedTreatmentResults={seedResults}
+              inFurrowFoliarResults={foliarResults}
+              totalCostPerAcre={totalCostPerAcre}
+              totalUndiscountedCost={totalUndiscountedCost}
+              totalDiscountedCost={totalDiscountedCost}
+              roi={{
+                breakevenYield,
+                roi2to1: roi2,
+                roi3to1: roi3,
+                roi4to1: roi4,
+                roi5to1: roi5,
+              }}
+              marketPriceUnit={marketPriceUnit}
+              seedType={seedType}
+              acres={parseFloat(acres || "0")}
+            />
+          </div>
+        )}
+      </div>
+    </main>
+  );
 }
