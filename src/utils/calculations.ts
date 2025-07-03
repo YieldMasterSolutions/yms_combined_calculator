@@ -204,14 +204,14 @@ export function calculateProductData(
   const discountFactor = 1 - (dealerDiscount + growerDiscount) / 100;
   const discounted = totalCostToGrower * discountFactor;
 
-  const individualCostPerAcre = rateUnit?.includes("/acre")
-    ? (applicationRate ?? 0) * (costPerUnit ?? 0) * discountFactor
-    : acres > 0
-    ? discounted / acres
-    : 0;
+  const productCostPerUnitSeed = unitsToBeTreated > 0 ? discounted / unitsToBeTreated : 0;
 
-  const productCostPerUnitSeed =
-    unitsToBeTreated > 0 ? discounted / unitsToBeTreated : 0;
+  const individualCostPerAcre =
+    rateUnit?.includes("/acre")
+      ? (applicationRate ?? 0) * (costPerUnit ?? 0) * discountFactor
+      : acres > 0
+      ? discounted / acres
+      : 0;
 
   const lbsPerBushel = seedType.toLowerCase() === "corn" ? 56 : 60;
   const totalBushels = totalWeight / lbsPerBushel;
